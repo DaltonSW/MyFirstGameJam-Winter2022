@@ -1,0 +1,45 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Godot\\MyFirstGameJam-Winter22\\Project\\Project.csproj": {}
+  },
+  "projects": {
+    "D:\\Godot\\MyFirstGameJam-Winter22\\Project\\Project.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Godot\\MyFirstGameJam-Winter22\\Project\\Project.csproj",
+        "projectName": "Project",
+        "projectPath": "D:\\Godot\\MyFirstGameJam-Winter22\\Project\\Project.csproj",
+        "packagesPath": "C:\\Users\\dalto\\.nuget\\packages\\",
+        "outputPath": "D:\\Godot\\MyFirstGameJam-Winter22\\Project\\.mono\\temp\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\dalto\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
