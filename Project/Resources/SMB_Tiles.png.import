@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon.png-f9ba9008f31679cd240e2c5f33a9a4fb.stex"
+path="res://.import/SMB_Tiles.png-475b15688393d10d1187e2c4afa60d1e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/icon.png"
-dest_files=[ "res://.import/icon.png-f9ba9008f31679cd240e2c5f33a9a4fb.stex" ]
+source_file="res://Resources/SMB_Tiles.png"
+dest_files=[ "res://.import/SMB_Tiles.png-475b15688393d10d1187e2c4afa60d1e.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

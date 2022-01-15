@@ -11,8 +11,8 @@ config_version=4
 [application]
 
 config/name="Project"
-run/main_scene="res://Scenes/TestWorld.tscn"
-config/icon="res://Sprites/icon.png"
+run/main_scene="res://Scenes/SMB 1-1.tscn"
+config/icon="res://Resources/icon.png"
 
 [physics]
 

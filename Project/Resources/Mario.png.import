@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/smb_mario_sheet.png-9181faba4b065b24f957341d243d93d4.stex"
+path="res://.import/Mario.png-8c5a4dab1ea4a2fbada706c9edccf639.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/smb_mario_sheet.png"
-dest_files=[ "res://.import/smb_mario_sheet.png-9181faba4b065b24f957341d243d93d4.stex" ]
+source_file="res://Resources/Mario.png"
+dest_files=[ "res://.import/Mario.png-8c5a4dab1ea4a2fbada706c9edccf639.stex" ]
 
 [params]
 
