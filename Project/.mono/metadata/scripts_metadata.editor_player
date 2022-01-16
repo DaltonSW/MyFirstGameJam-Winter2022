@@ -1,1 +1,1 @@
-{"res://Scripts/Player.cs":{"modified_time":"1642244592","class":{"namespace":"","class_name":"Player","nested":false}}}
+{"res://Scripts/Player.cs":{"modified_time":"1642245271","class":{"namespace":"","class_name":"Player","nested":false}},"res://Scripts/RigidPlayer.cs":{"modified_time":"1642271074","class":{"namespace":"","class_name":"RigidPlayer","nested":false}},"res://Scripts/KinematicPlayer.cs":{"modified_time":"1642277109","class":{"namespace":"","class_name":"KinematicPlayer","nested":false}}}

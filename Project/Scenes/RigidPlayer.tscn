@@ -6,6 +6,10 @@
 extents = Vector2( 6, 8 )
 
 [node name="RigidPlayer" type="RigidBody2D"]
+position = Vector2( 59, 39 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
