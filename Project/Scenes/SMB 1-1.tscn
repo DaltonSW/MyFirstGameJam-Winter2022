@@ -66,3 +66,15 @@ position = Vector2( 527, 379 )
 
 [node name="SpawnPoint" type="Position2D" parent="."]
 position = Vector2( 528, 380 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_left = 22.0
+margin_top = 18.0
+margin_right = 325.0
+margin_bottom = 105.0
+text = "R to go back to spawn
+G to (un)equip gun
+Space to shoot"
+__meta__ = {
+"_edit_use_anchors_": false
+}

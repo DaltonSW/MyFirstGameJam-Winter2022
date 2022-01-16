@@ -6,23 +6,30 @@ public class Player : KinematicBody2D
 	PackedScene projectileScene;
 	PackedScene shotgunScene;
 
-	private float JUMP_HEIGHT = 50;
-	private float TIME_IN_AIR = 0.25F;
-	private float MOVE_SPEED = 15;
-	private float GROUND_SPEED_CAP = 150;
-	private float JUMP_SPEED;
-	private float GRAVITY;
-	private float FRICTION = 7;
-	private float JUMP_LOCKOUT = 10;
-	private float CUR_JUMP_BUFFER;
-	private bool IS_SHOTGUN_EQUIPPED = false;
+	Vector2 velocity = new Vector2();
+
+	[Export] private float JUMP_HEIGHT = 50; //pixels
+	[Export] private float TIME_IN_AIR = 0.25F; //honestly no idea
+	[Export] private float MOVE_SPEED = 15; //pixels per second
+	[Export] private float GROUND_SPEED_CAP = 150; //pixels per second
+	[Export] private float JUMP_SPEED;
+	[Export] private float GRAVITY;
+	[Export] private float FRICTION = 7; //no idea
+
+	[Export] private float JUMP_LOCKOUT = 10; //frames
+	[Export] private float CUR_JUMP_BUFFER;
+
+	[Export] private float SHOTGUN_LOCKOUT = 1; //seconds
+	[Export] private float CUR_SHOTGUN_BUFFER;
+
+	[Export] private int SHOTGUN_BLAST_COUNT = 7;
+	[Export] private bool IS_SHOTGUN_EQUIPPED = false;
 
 	enum EquippedWeapon
 	{
 
 	}
 
-	Vector2 velocity = new Vector2();
 
 	public override void _Ready()
 	{
@@ -35,7 +42,6 @@ public class Player : KinematicBody2D
 
 	public override void _PhysicsProcess(float delta)
 	{
-		GD.Print(delta);
 		velocity.y += GRAVITY * delta;
 		
 		if (velocity.x > 0){
@@ -46,14 +52,9 @@ public class Player : KinematicBody2D
 			velocity.x = Math.Min(0, velocity.x + FRICTION);
 		}
 
-		bool right = Input.IsActionPressed("ui_right") 
-			|| Input.IsKeyPressed((int)KeyList.D);
-
-		bool left = Input.IsActionPressed("ui_left") 
-			|| Input.IsKeyPressed((int)KeyList.A);
-
-		bool jump = Input.IsActionPressed("ui_up") 
-			|| Input.IsKeyPressed((int)KeyList.W); 
+		bool right = Input.IsActionPressed("ui_right"); 
+		bool left = Input.IsActionPressed("ui_left"); 
+		bool jump = Input.IsActionJustPressed("ui_up"); 
 
 		if (right) {
 			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
@@ -96,6 +97,25 @@ public class Player : KinematicBody2D
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 	}
 
+	public override void _Process(float delta)
+	{
+		if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
+		{
+			CUR_SHOTGUN_BUFFER = delta;
+			ShootShotgun();
+		}
+
+		if (CUR_SHOTGUN_BUFFER != 0)
+		{
+			CUR_SHOTGUN_BUFFER += delta;	
+		}
+
+		if (CUR_SHOTGUN_BUFFER > SHOTGUN_LOCKOUT)
+		{
+			CUR_SHOTGUN_BUFFER = 0;
+		}
+	}
+
 	public override void _UnhandledInput(InputEvent inputEvent)
 	{
 		if (inputEvent is InputEventKey eventKey)
@@ -117,11 +137,6 @@ public class Player : KinematicBody2D
 				Position2D spawnPoint = (Position2D)GetParent().GetNode("SpawnPoint");
 				Position = spawnPoint.Position;
 			}
-
-			if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.Space && IS_SHOTGUN_EQUIPPED)
-			{
-				ShootBullet();
-			}
 		}
 	}
 
@@ -140,12 +155,14 @@ public class Player : KinematicBody2D
 		AddChild(shotgun);
 	}
 
-	private void ShootBullet()
+	private void ShootShotgun()
 	{
-		Projectile projectile = (Projectile)projectileScene.Instance();
-		Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
-		projectile.Position = bulletSpawn.GlobalPosition;
-		projectile.Rotation = Rotation + (float)(Math.PI * 90 / 180);
-		GetParent().AddChild(projectile);
+		for (int i = 0; i <= SHOTGUN_BLAST_COUNT; i++)
+		{
+			Projectile projectile = (Projectile)projectileScene.Instance();
+			Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
+			projectile.Position = bulletSpawn.GlobalPosition;
+			GetParent().AddChild(projectile);
+		}
 	}
 }
