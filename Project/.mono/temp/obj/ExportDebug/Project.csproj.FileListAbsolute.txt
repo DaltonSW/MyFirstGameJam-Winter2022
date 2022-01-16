@@ -1,0 +1,9 @@
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\bin\ExportDebug\Project.dll
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\bin\ExportDebug\Project.pdb
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.csproj.AssemblyReference.cache
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.GeneratedMSBuildEditorConfig.editorconfig
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.AssemblyInfoInputs.cache
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.AssemblyInfo.cs
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.csproj.CoreCompileInputs.cache
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.dll
+D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportDebug\Project.pdb
