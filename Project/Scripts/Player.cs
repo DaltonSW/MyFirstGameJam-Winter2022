@@ -23,7 +23,9 @@ public class Player : KinematicBody2D
 	[Export] private float CUR_SHOTGUN_BUFFER;
 
 	[Export] private int SHOTGUN_BLAST_COUNT = 7;
-	[Export] private bool IS_SHOTGUN_EQUIPPED = false;
+	private bool IS_SHOTGUN_EQUIPPED = false;
+
+	public bool isFacingLeft = false;
 
 	enum EquippedWeapon
 	{
@@ -58,10 +60,15 @@ public class Player : KinematicBody2D
 
 		if (right) {
 			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
+			GlobalTransform = new Transform2D(new Vector2(1,0), new Vector2(0,1), new Vector2(Position.x, Position.y));
+			isFacingLeft = false;
+
 		}
 
 		if (left) {
 			velocity.x = Math.Max(velocity.x - MOVE_SPEED, -GROUND_SPEED_CAP);
+			GlobalTransform = new Transform2D(new Vector2(-1,0), new Vector2(0,1), new Vector2(Position.x, Position.y));
+			isFacingLeft = true;
 		}
 
 		if (jump && CUR_JUMP_BUFFER == 0)
@@ -162,7 +169,7 @@ public class Player : KinematicBody2D
 			Projectile projectile = (Projectile)projectileScene.Instance();
 			Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
 			projectile.Position = bulletSpawn.GlobalPosition;
-			GetParent().AddChild(projectile);
+			GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
 		}
 	}
 }

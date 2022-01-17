@@ -12,6 +12,11 @@ public class Projectile : Area2D
 	{
 		Random rand = new Random();
 		Rotation = (float)(Math.PI * rand.Next(90 - SPREAD, 90 + SPREAD) / 180);
+		Player player = GetNode<Player>("../Node2D/Player");
+		if (player.isFacingLeft)
+		{
+			Rotation += (float)Math.PI;
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
