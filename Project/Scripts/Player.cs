@@ -22,7 +22,9 @@ public class Player : KinematicBody2D
 	[Export] private float SHOTGUN_LOCKOUT = 1; //seconds
 	[Export] private float CUR_SHOTGUN_BUFFER;
 
-	[Export] private int SHOTGUN_BLAST_COUNT = 7;
+	[Export(PropertyHint.Range, "1,20,")] 
+	private int SHOTGUN_BLAST_COUNT = 7;
+
 	private bool IS_SHOTGUN_EQUIPPED = false;
 
 	public bool isFacingLeft = false;
@@ -164,7 +166,7 @@ public class Player : KinematicBody2D
 
 	private void ShootShotgun()
 	{
-		for (int i = 0; i <= SHOTGUN_BLAST_COUNT; i++)
+		for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
 		{
 			Projectile projectile = (Projectile)projectileScene.Instance();
 			Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");

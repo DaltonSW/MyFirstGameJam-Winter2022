@@ -8,10 +8,14 @@ public class Projectile : Area2D
 	[Export] private int DISTANCE_ALLOWED = 300;
 	[Export] private float DISTANCE_TRAVELLED = 0;
 
+	private static Random RNG = new Random();
+
 	public override void _Ready()
 	{
-		Random rand = new Random();
-		Rotation = (float)(Math.PI * rand.Next(90 - SPREAD, 90 + SPREAD) / 180);
+		this.Connect("area_entered", this, "OnCollision");
+		this.Connect("body_entered", this, "OnCollision");
+
+		Rotation = (float)(Math.PI * RNG.Next(90 - SPREAD, 90 + SPREAD) / 180);
 		Player player = GetNode<Player>("../Node2D/Player");
 		if (player.isFacingLeft)
 		{
@@ -27,7 +31,29 @@ public class Projectile : Area2D
 		DISTANCE_TRAVELLED += amountToMove;
 		if (DISTANCE_TRAVELLED > DISTANCE_ALLOWED)
 		{
-			QueueFree();
+			FreeBullet();
+		}
+	}
+
+	private void FreeBullet()
+	{
+		this.QueueFree();
+	}
+
+	private void OnCollision(Node with)
+	{
+		if(with.Filename != this.Filename)
+		{
+			if(!with.IsClass("TileMap"))
+			{
+				with.QueueFree();
+				FreeBullet();
+			}
+
+			else
+			{
+				FreeBullet();
+			}
 		}
 	}
 }
