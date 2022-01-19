@@ -11,7 +11,7 @@ config_version=4
 [application]
 
 config/name="Project"
-run/main_scene="res://Scenes/SMB 1-1.tscn"
+run/main_scene="res://Scenes/Test Scene 1.tscn"
 config/icon="res://CrystalHeart.png"
 
 [importer_defaults]

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/hippie_run_1.png-2d1c62235249f74286127163aa6e1b06.stex"
+path="res://.import/hippie_idle_0.png-6c5ea2ac9e342a7874747b98793d8c80.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/Images/hippie_run_1.png"
-dest_files=[ "res://.import/hippie_run_1.png-2d1c62235249f74286127163aa6e1b06.stex" ]
+source_file="res://Resources/Images/hippie_idle_0.png"
+dest_files=[ "res://.import/hippie_idle_0.png-6c5ea2ac9e342a7874747b98793d8c80.stex" ]
 
 [params]
 
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=true
-svg/scale=2.0
+svg/scale=1.0
