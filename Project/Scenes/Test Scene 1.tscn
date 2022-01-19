@@ -57,13 +57,16 @@ points = PoolVector2Array( 16, 16, 0.110058, 15.7063, 0, 0, 16, 0.0940857 )
 [node name="Test Scene 1" type="Node2D"]
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
-margin_left = 22.0
-margin_top = 18.0
-margin_right = 325.0
-margin_bottom = 105.0
-text = "R to go back to spawn
-G to (un)equip gun
-Space to shoot"
+margin_left = 10.0
+margin_top = 7.0
+margin_right = 313.0
+margin_bottom = 111.0
+text = "-WASD / Arrows to move
+-R to go back to spawn
+-G to (un)equip gun
+-Space to shoot
+-You can walljump by pressing jump
+again while against a wall"
 __meta__ = {
 "_edit_use_anchors_": false
 }
