@@ -1,9 +1,0 @@
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\bin\ExportRelease\Project.dll
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\bin\ExportRelease\Project.pdb
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.csproj.AssemblyReference.cache
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.GeneratedMSBuildEditorConfig.editorconfig
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.AssemblyInfoInputs.cache
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.AssemblyInfo.cs
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.csproj.CoreCompileInputs.cache
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.dll
-D:\Godot\MyFirstGameJam-Winter22\Project\.mono\temp\obj\ExportRelease\Project.pdb

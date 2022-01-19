@@ -3,8 +3,9 @@ using System;
 
 public class Player : KinematicBody2D
 {
-	PackedScene projectileScene;
-	PackedScene shotgunScene;
+	private PackedScene projectileScene;
+	private PackedScene shotgunScene;
+	private AnimatedSprite animatedSprite;
 
 	Vector2 velocity = new Vector2();
 
@@ -22,7 +23,9 @@ public class Player : KinematicBody2D
 	[Export] private float SHOTGUN_LOCKOUT = 1; //seconds
 	[Export] private float CUR_SHOTGUN_BUFFER;
 
-	[Export] private int SHOTGUN_BLAST_COUNT = 7;
+	[Export(PropertyHint.Range, "1,20,")] 
+	private int SHOTGUN_BLAST_COUNT = 7;
+
 	private bool IS_SHOTGUN_EQUIPPED = false;
 
 	public bool isFacingLeft = false;
@@ -37,6 +40,7 @@ public class Player : KinematicBody2D
 	{
 		projectileScene = GD.Load<PackedScene>("res://Scenes/Projectile.tscn");
 		shotgunScene = GD.Load<PackedScene>("res://Scenes/Shotgun.tscn");
+		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
@@ -106,6 +110,14 @@ public class Player : KinematicBody2D
 
 	public override void _Process(float delta)
 	{
+		if (velocity.x == 0)
+		{
+			animatedSprite.Play("idle");
+		}
+
+		else {
+			animatedSprite.Play("run");
+		}
 		if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
 		{
 			CUR_SHOTGUN_BUFFER = delta;
@@ -141,7 +153,7 @@ public class Player : KinematicBody2D
 
 			if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.R)
 			{
-				Position2D spawnPoint = (Position2D)GetParent().GetNode("SpawnPoint");
+				Position2D spawnPoint = (Position2D)GetParent().GetParent().GetNode("SpawnPoint");
 				Position = spawnPoint.Position;
 			}
 		}
@@ -164,7 +176,7 @@ public class Player : KinematicBody2D
 
 	private void ShootShotgun()
 	{
-		for (int i = 0; i <= SHOTGUN_BLAST_COUNT; i++)
+		for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
 		{
 			Projectile projectile = (Projectile)projectileScene.Instance();
 			Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
