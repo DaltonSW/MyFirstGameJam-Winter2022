@@ -1,0 +1,57 @@
+# Test 1
+
+Cultist: Hello, world!
+Hippie: Groovy, dude.
+
+
+# Test 2
+
+if coin_collected
+	Cultist Two: Why did you take that coin?! You must die.
+	do make_cultist_angry();
+else
+	Cultist Two: You did not take the coin. Why?
+	Hippie: ...
+	- Earthly possessions, like, harsh my mellow.
+	- Just wanted to check the jive over here, my man.
+	Cultist Two: ...
+	Cultist Two: Ok, just curious.
+
+
+//
+// Original Examples
+//
+
+// Character: This is some dialogue.
+// if some_variable == true
+// 	Character: This will only be said if some_variable is true.
+// elif something_else >= 10
+// 	Character: Otherwise, this will be said if something_else is more than 9.
+// else
+// 	Character: And if both of those are false then I'll say this.
+// 	if get_some_value()
+// 		Character: This is an inner condition check where some value was true.
+
+// This is a comment.
+//do play_animation("wave")
+//set some_variable = false
+//set another_variable = get_some_value()
+
+// Character: And here are some response options.
+// - First one
+//	Character: If you choose the first option I'll say this.
+//	Character: You can use indented blocks for responses.
+//	Character: You can also use a goto like the second option.
+//	Character: If you go to # END it will end the conversation.
+//	Character: Otherwise, it will continue below the responses list.
+//- Second option [if check_thing()] goto # Another node
+//- Third one [if some_variable == true]
+//- End conversation goto # END
+//Character: If you picked the first option then we will end up down here.
+//Character: Once a block has no more lines it will end the conversation.
+
+
+//# Another node
+
+//Character: This is a second title. 
+//Character: We are here because you chose the second option.

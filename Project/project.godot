@@ -8,11 +8,36 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Resource",
+"class": "DialogueResource",
+"language": "GDScript",
+"path": "res://addons/saywhat_godot/dialogue_resource.gd"
+} ]
+_global_script_class_icons={
+"DialogueResource": ""
+}
+
 [application]
 
 config/name="Project"
 run/main_scene="res://Scenes/SMB 1-1.tscn"
 config/icon="res://CrystalHeart.png"
+
+[autoload]
+
+DialogueManager="*res://addons/saywhat_godot/dialogue_manager.gd"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/saywhat_godot/plugin.cfg" )
+
+[global]
+
+plugin=false
+width=false
+custom=false
+"custom fonts"=false
 
 [importer_defaults]
 

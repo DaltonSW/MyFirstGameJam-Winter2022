@@ -1,0 +1,105 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://addons/saywhat_godot/dialogue_resource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+titles = {
+"Test 1": "2",
+"Test 2": "8"
+}
+lines = {
+"10": {
+"mutation": {
+"lhs_type": "error",
+"rhs_type": ""
+},
+"next_id": "end",
+"type": "mutation"
+},
+"11": {
+"condition": null,
+"next_conditional_id": "end",
+"next_id": "12",
+"next_id_after": "end",
+"type": "condition"
+},
+"12": {
+"character": "Cultist Two",
+"next_id": "13",
+"replacements": [  ],
+"text": "You did not take the coin. Why?",
+"type": "dialogue"
+},
+"13": {
+"character": "Hippie",
+"next_id": "14",
+"replacements": [  ],
+"text": "...",
+"type": "dialogue"
+},
+"14": {
+"condition": null,
+"next_id": "16",
+"next_id_after": "16",
+"replacements": [  ],
+"responses": [ "14", "15" ],
+"text": "Earthly possessions, like, harsh my mellow.",
+"type": "response"
+},
+"15": {
+"condition": null,
+"next_id": "16",
+"next_id_after": "16",
+"replacements": [  ],
+"responses": [  ],
+"text": "Just wanted to check the jive over here, my man.",
+"type": "response"
+},
+"16": {
+"character": "Cultist Two",
+"next_id": "17",
+"replacements": [  ],
+"text": "...",
+"type": "dialogue"
+},
+"17": {
+"character": "Cultist Two",
+"next_id": "end",
+"replacements": [  ],
+"text": "Ok, just curious.",
+"type": "dialogue"
+},
+"2": {
+"character": "Cultist",
+"next_id": "3",
+"replacements": [  ],
+"text": "Hello, world!",
+"type": "dialogue"
+},
+"3": {
+"character": "Hippie",
+"next_id": "end",
+"replacements": [  ],
+"text": "Groovy, dude.",
+"type": "dialogue"
+},
+"8": {
+"condition": {
+"lhs": "coin_collected",
+"lhs_type": "scalar",
+"rhs_type": ""
+},
+"next_conditional_id": "11",
+"next_id": "9",
+"next_id_after": "end",
+"type": "condition"
+},
+"9": {
+"character": "Cultist Two",
+"next_id": "10",
+"replacements": [  ],
+"text": "Why did you take that coin?! You must die.",
+"type": "dialogue"
+}
+}
