@@ -6,6 +6,7 @@ public class Player : KinematicBody2D
 	private PackedScene projectileScene;
 	private PackedScene shotgunScene;
 	private AnimatedSprite animatedSprite;
+	private Area2D interactionArea;
 
 	Vector2 velocity = new Vector2();
 
@@ -26,9 +27,13 @@ public class Player : KinematicBody2D
 	[Export(PropertyHint.Range, "1,20,")] 
 	private int SHOTGUN_BLAST_COUNT = 7;
 
+	[Export] public bool interacting = false;
+	
 	private bool IS_SHOTGUN_EQUIPPED = false;
 
 	public bool isFacingLeft = false;
+	
+	
 
 	enum EquippedWeapon
 	{
@@ -41,6 +46,7 @@ public class Player : KinematicBody2D
 		projectileScene = GD.Load<PackedScene>("res://Scenes/Projectile.tscn");
 		shotgunScene = GD.Load<PackedScene>("res://Scenes/Shotgun.tscn");
 		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		interactionArea = GetNode<Area2D>("InteractionArea");
 		
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
@@ -60,8 +66,24 @@ public class Player : KinematicBody2D
 
 		bool right = Input.IsActionPressed("ui_right"); 
 		bool left = Input.IsActionPressed("ui_left"); 
-		bool jump = Input.IsActionJustPressed("ui_up"); 
-
+		bool jump = Input.IsActionJustPressed("ui_up");
+		bool interacted = Input.IsActionJustPressed("ui_select");
+		
+		// Iterate through bodies colliding with interaction hitbox
+		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
+			// Interact if button just pressed
+			var interactionMethodName = "interact_with_player";
+			if (!interacting && interacted && body.HasMethod(interactionMethodName)) {
+				interacting = true;
+				body.Call(interactionMethodName);
+			}
+			// Collect if collectable on collision
+			var collectMethodName = "collect";
+			if (body.HasMethod(collectMethodName)) {
+				body.Call(collectMethodName);
+			}
+		}
+		
 		if (right) {
 			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
 			GlobalTransform = new Transform2D(new Vector2(1,0), new Vector2(0,1), new Vector2(Position.x, Position.y));

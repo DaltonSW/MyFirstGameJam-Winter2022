@@ -8,14 +8,11 @@ Hippie: Groovy, dude.
 
 if coin_collected
 	Cultist Two: Why did you take that coin?! You must die.
-	do make_cultist_angry();
+	do make_cultist_angry()
 else
 	Cultist Two: You did not take the coin. Why?
-	Hippie: ...
-	- Earthly possessions, like, harsh my mellow.
-	- Just wanted to check the jive over here, my man.
+	Hippie: Earthly possessions harsh my mellow.
 	Cultist Two: ...
-	Cultist Two: Ok, just curious.
 
 
 //

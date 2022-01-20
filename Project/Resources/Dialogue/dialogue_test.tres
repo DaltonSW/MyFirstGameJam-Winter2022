@@ -11,8 +11,9 @@ titles = {
 lines = {
 "10": {
 "mutation": {
-"lhs_type": "error",
-"rhs_type": ""
+"lhs_args": [  ],
+"lhs_function": "make_cultist_angry",
+"lhs_type": "function"
 },
 "next_id": "end",
 "type": "mutation"
@@ -35,39 +36,14 @@ lines = {
 "character": "Hippie",
 "next_id": "14",
 "replacements": [  ],
-"text": "...",
+"text": "Earthly possessions harsh my mellow.",
 "type": "dialogue"
 },
 "14": {
-"condition": null,
-"next_id": "16",
-"next_id_after": "16",
-"replacements": [  ],
-"responses": [ "14", "15" ],
-"text": "Earthly possessions, like, harsh my mellow.",
-"type": "response"
-},
-"15": {
-"condition": null,
-"next_id": "16",
-"next_id_after": "16",
-"replacements": [  ],
-"responses": [  ],
-"text": "Just wanted to check the jive over here, my man.",
-"type": "response"
-},
-"16": {
-"character": "Cultist Two",
-"next_id": "17",
-"replacements": [  ],
-"text": "...",
-"type": "dialogue"
-},
-"17": {
 "character": "Cultist Two",
 "next_id": "end",
 "replacements": [  ],
-"text": "Ok, just curious.",
+"text": "...",
 "type": "dialogue"
 },
 "2": {
