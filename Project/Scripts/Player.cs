@@ -8,15 +8,15 @@ public class Player : KinematicBody2D
 	private AnimatedSprite animatedSprite;
 	private Area2D interactionArea;
 
-	Vector2 velocity = new Vector2();
+	public Vector2 velocity = new Vector2();
 
-	[Export] private float JUMP_HEIGHT = 50; //pixels
-	[Export] private float TIME_IN_AIR = 0.25F; //honestly no idea
-	[Export] private float MOVE_SPEED = 15; //pixels per second
-	[Export] private float GROUND_SPEED_CAP = 150; //pixels per second
-	[Export] private float JUMP_SPEED;
-	[Export] private float GRAVITY;
-	[Export] private float FRICTION = 7; //no idea
+	[Export] public float JUMP_HEIGHT = 50; //pixels
+	[Export] public float TIME_IN_AIR = 0.25F; //honestly no idea
+	[Export] public float MOVE_SPEED = 15; //pixels per second
+	[Export] public float GROUND_SPEED_CAP = 150; //pixels per second
+	[Export] public float JUMP_SPEED;
+	[Export] public float GRAVITY;
+	[Export] public float FRICTION = 7; //no idea
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames
 	[Export] private float CUR_JUMP_BUFFER;
@@ -172,12 +172,14 @@ public class Player : KinematicBody2D
 					UnequipShotgun();
 				}
 			}
-
-			if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.R)
-			{
-				Position2D spawnPoint = (Position2D)GetParent().GetParent().GetNode("SpawnPoint");
-				Position = spawnPoint.Position;
-			}
+			
+			// Leaving this in so I have the code to reuse, but this should be abstracted to the parent scene
+			// Player scene shouldn't have to rely on the above scenes to have a SpawnPoint
+			// if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.R)
+			// {
+			// 	Position2D spawnPoint = (Position2D)GetParent().GetParent().GetNode("SpawnPoint");
+			// 	Position = spawnPoint.Position;
+			// }
 		}
 	}
 
@@ -205,5 +207,11 @@ public class Player : KinematicBody2D
 			projectile.Position = bulletSpawn.GlobalPosition;
 			GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
 		}
+	}
+
+	public void RecalcPhysics()
+	{
+		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
+		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 	}
 }
