@@ -5,3 +5,4 @@ export_presets.cfg
 
 # Mono-specific ignores
 .mono/
+Project/data_Project
