@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/LabeledSpinner.cs" type="Script" id=1]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+margin_right = 187.0
+margin_bottom = 24.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpinBox" type="SpinBox" parent="."]
+margin_right = 74.0
+margin_bottom = 24.0
+allow_greater = true
+allow_lesser = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_left = 78.0
+margin_top = 5.0
+margin_right = 161.0
+margin_bottom = 19.0
+text = "[Placeholder]"
+__meta__ = {
+"_edit_use_anchors_": false
+}
