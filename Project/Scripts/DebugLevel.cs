@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public class DebugLevel : Node2D
 {
@@ -7,170 +8,133 @@ public class DebugLevel : Node2D
 	private Player player;
 	private Position2D SpawnPoint;
 
-	private Label JumpHeightLabel;
-	private Label TimeInAirLabel;
-	private Label MoveSpeedLabel;
-	private Label GroundSpeedCapLabel;
-	private Label FrictionLabel;
-	private Label GravityLabel;
-	private Label JumpSpeedLabel;
-	private Label PosXLabel;
-	private Label PosYLabel;
-	private Label VelXLabel;
-	private Label VelYLabel;
+	private PackedScene labeledSpinner;
 
-	private string OriginalJumpHeightLabel;
-	private	string OriginalTimeInAirLabel;
-	private	string OriginalMoveSpeedLabel;
-	private	string OriginalGroundSpeedCapLabel;
-	private	string OriginalFrictionLabel;
-	private	string OriginalGravityLabel;
-	private	string OriginalJumpSpeedLabel;
-	private	string OriginalPosXLabel;
-	private	string OriginalPosYLabel;
-	private	string OriginalVelXLabel;
-	private	string OriginalVelYLabel;
+	private VBoxContainer spinnerContainer;
+	private List<LabeledSpinner> spinners;
+	private List<Action<float>> spinnerSetters;
 
-	private CHOSEN_PROP currentProperty = CHOSEN_PROP.JUMP_HEIGHT;
-
-	enum CHOSEN_PROP
-	{
-		JUMP_HEIGHT = 1,
-		TIME_IN_AIR = 2,
-		MOVE_SPEED = 3,
-		GROUND_SPEED_CAP = 4,
-		FRICTION = 5
-	}
+	private List<(Label, string, Func<object>)> propertyLabels;
 
 	public override void _Ready()
 	{
-		playerScene = GD.Load<PackedScene>("res://Scenes/Player.tscn");
+		labeledSpinner = GD.Load<PackedScene>("res://Scenes/LabeledSpinner.tscn");
+		playerScene    = GD.Load<PackedScene>("res://Scenes/Player.tscn");
 		player = (Player)playerScene.Instance();
 		SpawnPoint = GetNode<Position2D>("SpawnPoint");
 		player.Position = SpawnPoint.Position;
 		AddChild(player);
 
-		JumpHeightLabel = GetNode<Label>("LabelGroup/JumpHeight");
-		TimeInAirLabel = GetNode<Label>("LabelGroup/TimeInAir");
-		MoveSpeedLabel = GetNode<Label>("LabelGroup/MoveSpeed");
-		GroundSpeedCapLabel = GetNode<Label>("LabelGroup/GroundSpeedCap");
-		FrictionLabel = GetNode<Label>("LabelGroup/Friction");
-		GravityLabel = GetNode<Label>("LabelGroup/GRAVITY");
-		JumpSpeedLabel = GetNode<Label>("LabelGroup/JUMP_SPEED");
-		PosXLabel = GetNode<Label>("LabelGroup/PosX");
-		PosYLabel = GetNode<Label>("LabelGroup/PosY");
-		VelXLabel = GetNode<Label>("LabelGroup/VelX");
-		VelYLabel = GetNode<Label>("LabelGroup/VelY");
+		spinners = new List<LabeledSpinner>();
+		spinnerSetters = new List<Action<float>>();
+		propertyLabels = new List<(Label, string, Func<object>)>();
+		spinnerContainer = GetNode<VBoxContainer>("UI/SpinnerContainer");
 
-		OriginalJumpHeightLabel = JumpHeightLabel.Text;
-		OriginalTimeInAirLabel = TimeInAirLabel.Text;
-		OriginalMoveSpeedLabel = MoveSpeedLabel.Text;
-		OriginalGroundSpeedCapLabel = GroundSpeedCapLabel.Text;
-		OriginalFrictionLabel = FrictionLabel.Text;
-		OriginalGravityLabel = GravityLabel.Text;
-		OriginalJumpSpeedLabel = JumpSpeedLabel.Text;
-		OriginalPosXLabel = PosXLabel.Text;
-		OriginalPosYLabel = PosYLabel.Text;
-		OriginalVelXLabel = VelXLabel.Text;
-		OriginalVelYLabel = VelYLabel.Text;
+		AddSpinner(v => player.JUMP_HEIGHT = v,      "Jump Height",      player.JUMP_HEIGHT);
+		AddSpinner(v => player.TIME_IN_AIR = v,      "Time in Air",      player.TIME_IN_AIR,      0.05f);
+		AddSpinner(v => player.MOVE_SPEED  = v,      "Move Speed",       player.MOVE_SPEED);
+		AddSpinner(v => player.GROUND_SPEED_CAP = v, "Ground Speed Cap", player.GROUND_SPEED_CAP, 5);
+		AddSpinner(v => player.FRICTION = v,         "Friction",         player.FRICTION);
+
+		AddPropertyLabel("Gravity",    () => player.GRAVITY);
+		AddPropertyLabel("Jump Speed", () => player.JUMP_SPEED);
+		AddPropertyLabel("X Position", () => player.Position.x);
+		AddPropertyLabel("Y Position", () => player.Position.y);
+		AddPropertyLabel("X Velocity", () => player.velocity.x);
+		AddPropertyLabel("Y Velocity", () => player.velocity.y);
 	}
+
+	private void AddPropertyLabel(string propertyName, Func<object> getter)
+	{
+		var label = new Label();
+		propertyLabels.Add((label, propertyName, getter));
+		GetNode<Control>("UI/LabelGroup").AddChild(label);
+	}
+
+	private void AddSpinner(Action<float> action, string label = "", float initialValue = 0, float stepSize = 1)
+	{
+		var spinner = labeledSpinner.Instance<LabeledSpinner>();
+		var spinnerIndex = spinners.Count;
+		spinners.Add(spinner);
+		spinnerSetters.Add(action);
+		spinner.ConfigureAndConnectValueChangedSignal(this, nameof(SetProperty), new object[] { spinnerIndex }, $"({spinnerIndex + 1}) {label}", initialValue, stepSize);
+		spinnerContainer.AddChild(spinner);
+	}
+
+	private void SetProperty(float value, int spinnerSetterIndex)
+	{
+		spinnerSetters[spinnerSetterIndex].Invoke(value);
+		StealFocusFromControls();
+	} 
 
 	public override void _Process(float delta)
 	{
-		JumpHeightLabel.Text = String.Format(OriginalJumpHeightLabel, player.JUMP_HEIGHT);
-		TimeInAirLabel.Text = String.Format(OriginalTimeInAirLabel, player.TIME_IN_AIR);
-		MoveSpeedLabel.Text = String.Format(OriginalMoveSpeedLabel, player.MOVE_SPEED);
-		GroundSpeedCapLabel.Text = String.Format(OriginalGroundSpeedCapLabel, player.GROUND_SPEED_CAP);
-		FrictionLabel.Text = String.Format(OriginalFrictionLabel, player.FRICTION);
-		GravityLabel.Text = String.Format(OriginalGravityLabel, player.GRAVITY);
-		JumpSpeedLabel.Text = String.Format(OriginalJumpSpeedLabel, player.JUMP_SPEED);
-		PosXLabel.Text = String.Format(OriginalPosXLabel, player.Position.x);
-		PosYLabel.Text = String.Format(OriginalPosYLabel, player.Position.y);
-		VelXLabel.Text = String.Format(OriginalVelXLabel, player.velocity.x);
-		VelYLabel.Text = String.Format(OriginalVelYLabel, player.velocity.y);
+		foreach ((Label label, string propertyName, Func<object> getter) in propertyLabels)
+		{
+			label.Text = propertyName + " = " + getter.Invoke();
+		}
+	}
+
+	public override void _Input(InputEvent @event)
+	{
+		if (Input.IsActionJustPressed("ui_cancel"))
+		{
+			StealFocusFromControls();
+		}
+	}
+
+	 // Hack to steal focus from spinners
+	private void StealFocusFromControls()
+	{
+		GetNode<Control>("DummyControl").GrabFocus();
 	}
 
 	public override void _UnhandledInput(InputEvent inputEvent)
 	{
-		if (inputEvent is InputEventKey eventKey)
+		var numberPressed = inputEvent.GetNumberPressed();
+		if (numberPressed is int numberPressedValue)
 		{
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key1 || eventKey.Scancode == (int)KeyList.Kp1))
-			{
-				currentProperty = CHOSEN_PROP.JUMP_HEIGHT;
-			}
-			
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key2 || eventKey.Scancode == (int)KeyList.Kp2))
-			{
-				currentProperty = CHOSEN_PROP.TIME_IN_AIR;
-			}
-			
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key3 || eventKey.Scancode == (int)KeyList.Kp3))
-			{
-				currentProperty = CHOSEN_PROP.MOVE_SPEED;
-			}
-
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key4 || eventKey.Scancode == (int)KeyList.Kp4))
-			{
-				currentProperty = CHOSEN_PROP.GROUND_SPEED_CAP;
-			}
-
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key5 || eventKey.Scancode == (int)KeyList.Kp5))
-			{
-				currentProperty = CHOSEN_PROP.FRICTION;
-			}
-
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Plus || eventKey.Scancode == (int)KeyList.KpAdd))
-			{
-				updateProperty(false);
-			}
-
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Minus || eventKey.Scancode == (int)KeyList.KpSubtract))
-			{
-				updateProperty(true);
-			}
+			GD.Print(numberPressedValue);
+			var spinnerIndex = numberPressedValue - 1;
+			spinners[spinnerIndex].GrabFocusOnSpinner();
 		}
 
 		player.RecalcPhysics();
 	}
 
-	private void updateProperty(bool decrease)
+}
+
+public static class Extensions
+{
+	public static int? GetNumberPressed(this InputEvent inputEvent)
 	{
-		int mult;
-		if(decrease)
+		if (inputEvent is InputEventKey eventKey)
 		{
-			mult = -1;
+			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key1 || eventKey.Scancode == (int)KeyList.Kp1))
+			{
+				return 1;
+			}
+
+			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key2 || eventKey.Scancode == (int)KeyList.Kp2))
+			{
+				return 2;
+			}
+
+			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key3 || eventKey.Scancode == (int)KeyList.Kp3))
+			{
+				return 3;
+			}
+
+			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key4 || eventKey.Scancode == (int)KeyList.Kp4))
+			{
+				return 4;
+			}
+
+			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key5 || eventKey.Scancode == (int)KeyList.Kp5))
+			{
+				return 5;
+			}
 		}
-
-		else
-		{
-			mult = 1;
-		}
-
-		switch (currentProperty)
-		{
-			case CHOSEN_PROP.JUMP_HEIGHT:
-				player.JUMP_HEIGHT += mult * 1;
-				break;
-
-			case CHOSEN_PROP.TIME_IN_AIR:
-				player.TIME_IN_AIR += (float)mult * 0.05F;
-				break;
-
-			case CHOSEN_PROP.MOVE_SPEED:
-				player.MOVE_SPEED += mult * 1;
-				break;
-
-			case CHOSEN_PROP.GROUND_SPEED_CAP:
-				player.GROUND_SPEED_CAP += mult * 5;
-				break;
-
-			case CHOSEN_PROP.FRICTION:
-				player.FRICTION += mult * 1;
-				break;
-
-			default:
-				GD.Print("Error!!");
-				break;
-		}
+		return null;
 	}
 }
