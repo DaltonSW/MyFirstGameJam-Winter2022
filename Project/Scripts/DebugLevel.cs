@@ -94,9 +94,11 @@ public class DebugLevel : Node2D
 		var numberPressed = inputEvent.GetNumberPressed();
 		if (numberPressed is int numberPressedValue)
 		{
-			GD.Print(numberPressedValue);
 			var spinnerIndex = numberPressedValue - 1;
-			spinners[spinnerIndex].GrabFocusOnSpinner();
+			if (0 <= spinnerIndex && spinnerIndex < spinners.Count)
+			{
+				spinners[spinnerIndex].GrabFocusOnSpinner();
+			}
 		}
 
 		player.RecalcPhysics();
@@ -106,35 +108,64 @@ public class DebugLevel : Node2D
 
 public static class Extensions
 {
-	public static int? GetNumberPressed(this InputEvent inputEvent)
+	public static int? GetNumberPressed(this InputEvent inputEvent) =>
+		inputEvent is InputEventKey eventKey
+			? GetNumberPressed(eventKey)
+			: null;
+
+	public static int? GetNumberPressed(this InputEventKey eventKey)
 	{
-		if (inputEvent is InputEventKey eventKey)
+		if (!eventKey.Pressed)
+			return null;
+
+		return eventKey.Scancode.TryNumberKeyScancodeToInt();
+	}
+
+	public static int? TryNumberKeyScancodeToInt(this uint n)
+	{
+		switch (n)
 		{
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key1 || eventKey.Scancode == (int)KeyList.Kp1))
-			{
+			case (int)KeyList.Key0: 
+			case (int)KeyList.Kp0: 
+				return 0;
+
+			case (int)KeyList.Key1: 
+			case (int)KeyList.Kp1: 
 				return 1;
-			}
 
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key2 || eventKey.Scancode == (int)KeyList.Kp2))
-			{
+			case (int)KeyList.Key2: 
+			case (int)KeyList.Kp2: 
 				return 2;
-			}
 
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key3 || eventKey.Scancode == (int)KeyList.Kp3))
-			{
+			case (int)KeyList.Key3: 
+			case (int)KeyList.Kp3: 
 				return 3;
-			}
-
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key4 || eventKey.Scancode == (int)KeyList.Kp4))
-			{
+				
+			case (int)KeyList.Key4: 
+			case (int)KeyList.Kp4: 
 				return 4;
-			}
 
-			if (eventKey.Pressed && (eventKey.Scancode == (int)KeyList.Key5 || eventKey.Scancode == (int)KeyList.Kp5))
-			{
+			case (int)KeyList.Key5: 
+			case (int)KeyList.Kp5: 
 				return 5;
-			}
+
+			case (int)KeyList.Key6: 
+			case (int)KeyList.Kp6: 
+				return 6;
+
+			case (int)KeyList.Key7: 
+			case (int)KeyList.Kp7: 
+				return 7;
+
+			case (int)KeyList.Key8: 
+			case (int)KeyList.Kp8: 
+				return 8;
+
+			case (int)KeyList.Key9: 
+			case (int)KeyList.Kp9: 
+				return 9;
+
+			default: return null;
 		}
-		return null;
 	}
 }
