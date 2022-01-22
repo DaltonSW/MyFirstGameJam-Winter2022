@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scripts/EditorObject.cs" type="Script" id=1]
+[ext_resource path="res://Scenes/Coin.tscn" type="PackedScene" id=2]
+
+[node name="LevelEditor" type="Node2D"]
+
+[node name="Level" type="Node2D" parent="."]
+
+[node name="Coin" parent="Level" instance=ExtResource( 2 )]
+position = Vector2( 159, 92 )
+
+[node name="EditorObject" type="Node2D" parent="."]
+script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="EditorObject"]
+
+[node name="CamContainer" type="Node2D" parent="."]
+
+[node name="Camera" type="Camera2D" parent="CamContainer"]
