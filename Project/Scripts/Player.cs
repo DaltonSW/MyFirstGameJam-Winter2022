@@ -9,6 +9,7 @@ public class Player : KinematicBody2D
 	private Area2D interactionArea;
 
 	public Vector2 velocity = new Vector2();
+	private Vector2 spawnPosition = new Vector2(0, 0);
 
 	[Export] public float JUMP_HEIGHT = 50; //pixels
 	[Export] public float TIME_IN_AIR = 0.25F; //honestly no idea
@@ -54,6 +55,13 @@ public class Player : KinematicBody2D
 
 	public override void _PhysicsProcess(float delta)
 	{
+		if (!Global.isPlaying)
+		{
+			velocity = new Vector2(0, 0);
+			MoveAndSlide(velocity);
+			return;
+		}
+
 		velocity.y += GRAVITY * delta;
 		
 		if (velocity.x > 0){
@@ -178,7 +186,7 @@ public class Player : KinematicBody2D
 			// if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.R)
 			// {
 			// 	Position2D spawnPoint = (Position2D)GetParent().GetParent().GetNode("SpawnPoint");
-			// 	Position = spawnPoint.Position;
+			// 	Position = spawnPoint.GlobalPosition;
 			// }
 		}
 	}
