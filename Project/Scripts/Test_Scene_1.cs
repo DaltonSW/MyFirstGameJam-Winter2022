@@ -20,6 +20,20 @@ public class Test_Scene_1 : Node2D
 			}
 		}
 	}
+
+	public override void _UnhandledInput(InputEvent inputEvent)
+	{
+		if(inputEvent is InputEventKey eventKey)
+		{
+			if(eventKey.Scancode == (int)KeyList.R && eventKey.Pressed)
+			{
+				Player player = GetNode<Player>("Node2D/Player");
+				Position2D spawnPoint = GetNode<Position2D>("SpawnPoint");
+				player.Position = spawnPoint.Position;
+				player.velocity = new Vector2(0, 0);
+			}
+		}
+	}
 }
 
 
