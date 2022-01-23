@@ -186,7 +186,7 @@ public class Player : KinematicBody2D
 			// if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.R)
 			// {
 			// 	Position2D spawnPoint = (Position2D)GetParent().GetParent().GetNode("SpawnPoint");
-			// 	Position = spawnPoint.Position;
+			// 	Position = spawnPoint.GlobalPosition;
 			// }
 		}
 	}

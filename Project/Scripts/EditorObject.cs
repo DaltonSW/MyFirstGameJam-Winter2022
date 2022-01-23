@@ -10,19 +10,20 @@ public class EditorObject : Node2D
 	private Node2D level;
 	private Node2D camContainer;
 	private Camera2D editorCamera;
+	private Camera2D playerCamera;
 	private TileMap tileMap;
 	
 	private PackedScene playerScene;
 	private Player playerNode;
 
-	private Sprite currentMouseSprite = new Sprite() ;
+	public Sprite currentMouseSprite = new Sprite();
 	private Texture tileSpriteForMouse;
 	private Texture playerSpriteForMouse;
 
-	private Vector2 levelSpawnPoint = new Vector2(0, 0);
+	public Vector2 levelSpawnPoint;
 
-	private bool isPlacingPlayer = false;
-	private bool isPlacingTile = false;
+	public bool isPlacingPlayer = false;
+	public bool isPlacingTile = false;
 	private const int tileID = 0; // This won't change unless we implement a sprite sheet
 
 	private Vector2 relativeMousePoint = new Vector2(0, 0);
@@ -46,7 +47,8 @@ public class EditorObject : Node2D
 		level = GetNode<Node2D>("/root/LevelEditor/Level");
 		camContainer = GetNode<Node2D>("/root/LevelEditor/CamContainer");
 
-		editorCamera = camContainer.GetNode<Camera2D>("Camera");
+		playerCamera = camContainer.GetNode<Camera2D>("PlayerCamera");
+		editorCamera = camContainer.GetNode<Camera2D>("EditorCamera");
 		editorCamera.Current = true;
 
 		tileMap = level.GetNode<TileMap>("TileMap");
@@ -93,7 +95,10 @@ public class EditorObject : Node2D
 				removeTile();
 			}
 
-			moveEditor();
+			if (!Global.isPlaying)
+			{
+				moveEditor();
+			}
 		}
 
 		if (Input.IsActionPressed("save_level"))
@@ -166,7 +171,7 @@ public class EditorObject : Node2D
 				if (isPanning)
 				{
 					Vector2 referencePoint = GetViewport().GetMousePosition();
-					camContainer.GlobalPosition -= new Vector2((referencePoint.x - relativeMousePoint.x), (referencePoint.y - relativeMousePoint.y));
+					editorCamera.GlobalPosition -= new Vector2((referencePoint.x - relativeMousePoint.x), (referencePoint.y - relativeMousePoint.y));
 				}
 			}
 
@@ -186,7 +191,7 @@ public class EditorObject : Node2D
 			{
 				isPlacingTile = false;
 				isPlacingPlayer = true;
-				currentMouseSprite.Scale = new Vector2(-2, 2);
+				currentMouseSprite.Scale = new Vector2(-1, 1);
 				currentMouseSprite.Texture = playerSpriteForMouse;
 			}
 
@@ -207,11 +212,15 @@ public class EditorObject : Node2D
 			playerNode = (Player)playerScene.Instance();
 			GetNode("/root/LevelEditor/Level/PlayerNode").AddChild(playerNode);
 			canPlayLevel = true;
+			GetNode<PlayerCamera>("/root/LevelEditor/CamContainer/PlayerCamera").loadPlayer();
 		}
+		levelSpawnPoint = GetGlobalMousePosition();
         playerNode.Owner = level;
 		playerNode.Position = levelSpawnPoint;
 		isPlacingPlayer = false;
 		currentMouseSprite.Texture = null;
+		Position2D levelSpawn = level.GetNode<Position2D>("SpawnPoint");
+		levelSpawn.Position = levelSpawnPoint;
 	}
 
 	private void placeTile()
@@ -268,5 +277,25 @@ public class EditorObject : Node2D
         GetParent().AddChild(newLevel);
         tileMap = GetParent().GetNode<TileMap>("Level/TileMap");
         level = newLevel;
+		Position2D spawnPoint = new Position2D();
+		spawnPoint.GlobalPosition = levelSpawnPoint;
+		level.AddChild(spawnPoint);
     }
+
+	public void swapCameras()
+	{
+		if(editorCamera.Current)
+		{
+			playerCamera.Current = true;
+			editorCamera.Current = false;
+		}
+
+		else if(playerCamera.Current)
+		{
+			playerCamera.Current = false;
+			editorCamera.Current = true;
+		}
+		GD.Print(String.Format("Changed editor camera to {0}", editorCamera.Current));
+		GD.Print(String.Format("Changed player camera to {0}", playerCamera.Current));
+	}
 }
