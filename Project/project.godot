@@ -21,7 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Project"
-run/main_scene="res://Scenes/Test_Scene_1.tscn"
+run/main_scene="res://Scenes/LevelEditor.tscn"
 config/icon="res://CrystalHeart.png"
 
 [autoload]
