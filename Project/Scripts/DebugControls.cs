@@ -31,18 +31,22 @@ public class DebugControls : Control
 	{
 		labeledSpinner = GD.Load<PackedScene>("res://Scenes/LabeledSpinner.tscn");
 
-		player = GetNode<Player>("../Player");
+		String playerPath = Global.inLevelEditor ? "/root/LevelEditor/Level/PlayerNode/Player" : "../Player";
+
+		player = GetNode<Player>(playerPath);
 
 		spinners = new List<LabeledSpinner>();
 		spinnerSetters = new List<Action<float>>();
 		propertyLabels = new List<(Label, string, Func<object>)>();
 		spinnerContainer = GetNode<VBoxContainer>("UI/SpinnerContainer");
 
-		AddSpinner(v => player.JUMP_HEIGHT = v,      "Jump Height",      player.JUMP_HEIGHT);
-		AddSpinner(v => player.TIME_IN_AIR = v,      "Time in Air",      player.TIME_IN_AIR,      0.05f);
-		AddSpinner(v => player.MOVE_SPEED  = v,      "Move Speed",       player.MOVE_SPEED);
-		AddSpinner(v => player.GROUND_SPEED_CAP = v, "Ground Speed Cap", player.GROUND_SPEED_CAP, 5);
-		AddSpinner(v => player.FRICTION = v,         "Friction",         player.FRICTION);
+		AddSpinner(v => player.JUMP_HEIGHT = v,         "Jump Height",          player.JUMP_HEIGHT);
+		AddSpinner(v => player.TIME_IN_AIR = v,         "Time in Air",          player.TIME_IN_AIR,      0.05f);
+		AddSpinner(v => player.MOVE_SPEED  = v,         "Move Speed",           player.MOVE_SPEED);
+		AddSpinner(v => player.GROUND_SPEED_CAP = v,    "Ground Speed Cap",     player.GROUND_SPEED_CAP, 5);
+		AddSpinner(v => player.FRICTION = v,            "Friction",             player.FRICTION);
+		AddSpinner(v => player.BASE_WALL_JUMP_AWAY = v, "Wall Jump - Away",     player.BASE_WALL_JUMP_AWAY);
+		AddSpinner(v => player.WALL_JUMP_SCALE = v,     "Wall Jump Away Scale", player.WALL_JUMP_SCALE,   0.02f);
 
 		AddPropertyLabel("Gravity",    () => player.GRAVITY);
 		AddPropertyLabel("Jump Speed", () => player.JUMP_SPEED);
@@ -85,6 +89,7 @@ public class DebugControls : Control
 		foreach ((Label label, string propertyName, Func<object> getter) in propertyLabels)
 		{
 			label.Text = propertyName + " = " + getter.Invoke();
+			label.Text = String.Format("{0} = {1:F}", propertyName, getter.Invoke());
 		}
 	}
 
@@ -115,6 +120,27 @@ public class DebugControls : Control
 		}
 
 		player.RecalcPhysics();
+	}
+
+	public void _on_DebugControls_mouse_entered()
+	{
+		if (Global.inLevelEditor)
+		{
+			EditorObject editorObject = GetNode<EditorObject>("/root/LevelEditor/EditorObject");
+			editorObject.currentMouseSprite.Texture = null;
+			editorObject.canPlace = false;
+			editorObject.isPlacingPlayer = false;
+			editorObject.isPlacingTile = false;
+		}
+	}
+
+	public void _on_DebugControls_mouse_exited()
+	{
+		if (Global.inLevelEditor)
+		{
+			EditorObject editorObject = GetNode<EditorObject>("/root/LevelEditor/EditorObject");
+			editorObject.canPlace = true;
+		}
 	}
 
 }

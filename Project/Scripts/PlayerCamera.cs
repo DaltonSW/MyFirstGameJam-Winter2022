@@ -7,7 +7,7 @@ public class PlayerCamera : Camera2D
 
     public override void _Ready()
     {
-        
+        player = GetNode<Player>("/root/LevelEditor/Level/PlayerNode/Player");
     }
 
     public override void _Process(float delta)

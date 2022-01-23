@@ -5,7 +5,7 @@ public class EditorObject : Node2D
 {
 	// Use this to prevent swapping out of edit mode without a player spawn set
 	private bool canPlayLevel = false; 
-	private bool canPlace = true;
+	public bool canPlace = true;
 	private bool isPanning = false;
 	private Node2D level;
 	private Node2D camContainer;
@@ -61,6 +61,10 @@ public class EditorObject : Node2D
 		temp.a = 0.5F;
 		currentMouseSprite.Modulate = temp;
 		AddChild(currentMouseSprite, true);
+
+		playerNode = (Player)playerScene.Instance();
+		GetNode("/root/LevelEditor/Level/PlayerNode").AddChild(playerNode);
+		playerNode.Hide();
 	}
 
 	public override void _Process(float delta)
@@ -107,6 +111,8 @@ public class EditorObject : Node2D
 			fileBoxMode = PopupMode.SAVE;
 			systemPopup.Mode = FileDialog.ModeEnum.SaveFile;
 			systemPopup.Show();
+			GetNode<Control>("/root/LevelEditor/UI/DebugControls").Hide();
+			GetNode<Label>("/root/LevelEditor/UI/BasicInstructions").Hide();
 		}
 		
 		if (Input.IsActionPressed("open_level"))
@@ -115,6 +121,8 @@ public class EditorObject : Node2D
 			fileBoxMode = PopupMode.LOAD;
 			systemPopup.Mode = FileDialog.ModeEnum.OpenFile;
 			systemPopup.Show();
+			GetNode<Control>("/root/LevelEditor/UI/DebugControl").Hide();
+			GetNode<Label>("/root/LevelEditor/UI/BasicInstructions").Hide();
 		}
 	}
 
@@ -177,31 +185,31 @@ public class EditorObject : Node2D
 
 			//Key input events
 			if (inputEvent is InputEventKey key)
-		{
-			// Code to select tile to be placed
-			if (key.IsPressed() && key.Scancode == (int)KeyList.T)
 			{
-				currentMouseSprite.Scale = new Vector2(1, 1);
-				currentMouseSprite.Texture = tileSpriteForMouse;
-				isPlacingTile = true;
-			}
-			
-			// Code to select player to be placed
-			if (key.IsPressed() && key.Scancode == (int)KeyList.P)
-			{
-				isPlacingTile = false;
-				isPlacingPlayer = true;
-				currentMouseSprite.Scale = new Vector2(-1, 1);
-				currentMouseSprite.Texture = playerSpriteForMouse;
-			}
+				// Code to select tile to be placed
+				if (key.IsPressed() && key.Scancode == (int)KeyList.T)
+				{
+					currentMouseSprite.Scale = new Vector2(1, 1);
+					currentMouseSprite.Texture = tileSpriteForMouse;
+					isPlacingTile = true;
+				}
+				
+				// Code to select player to be placed
+				if (key.IsPressed() && key.Scancode == (int)KeyList.P)
+				{
+					isPlacingTile = false;
+					isPlacingPlayer = true;
+					currentMouseSprite.Scale = new Vector2(-1, 1);
+					currentMouseSprite.Texture = playerSpriteForMouse;
+				}
 
-			if (key.IsPressed() && key.Scancode == (int)KeyList.Delete)
-			{
-				currentMouseSprite.Texture = null;
-				isPlacingPlayer = false;
-				isPlacingTile = false;
+				if (key.IsPressed() && key.Scancode == (int)KeyList.Delete)
+				{
+					currentMouseSprite.Texture = null;
+					isPlacingPlayer = false;
+					isPlacingTile = false;
+				}
 			}
-		}
 		}
 	}
 
@@ -214,6 +222,7 @@ public class EditorObject : Node2D
 			canPlayLevel = true;
 			GetNode<PlayerCamera>("/root/LevelEditor/CamContainer/PlayerCamera").loadPlayer();
 		}
+		playerNode.Show();
 		levelSpawnPoint = GetGlobalMousePosition();
         playerNode.Owner = level;
 		playerNode.Position = levelSpawnPoint;
@@ -295,7 +304,5 @@ public class EditorObject : Node2D
 			playerCamera.Current = false;
 			editorCamera.Current = true;
 		}
-		GD.Print(String.Format("Changed editor camera to {0}", editorCamera.Current));
-		GD.Print(String.Format("Changed player camera to {0}", playerCamera.Current));
 	}
 }

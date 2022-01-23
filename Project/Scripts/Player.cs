@@ -18,6 +18,8 @@ public class Player : KinematicBody2D
 	[Export] public float JUMP_SPEED;
 	[Export] public float GRAVITY;
 	[Export] public float FRICTION = 7; //no idea
+	[Export] public float BASE_WALL_JUMP_AWAY = 100;
+	[Export] public float WALL_JUMP_SCALE = 2;
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames
 	[Export] private float CUR_JUMP_BUFFER;
@@ -62,7 +64,6 @@ public class Player : KinematicBody2D
 			return;
 		}
 
-		velocity.y += GRAVITY * delta;
 		
 		if (velocity.x > 0){
 			velocity.x = Math.Max(0, velocity.x - FRICTION);
@@ -114,7 +115,10 @@ public class Player : KinematicBody2D
 
 			else if (IsOnWall())
 			{
+				float mult = WALL_JUMP_SCALE;
+				mult *= GetSlideCollision(0).Normal.x > 0 ? 1 : -1 ;
 				velocity.y = (float)(-1.1 * JUMP_SPEED);
+				velocity.x = (float)(mult * BASE_WALL_JUMP_AWAY);
 			}
 			CUR_JUMP_BUFFER += 1;
 		}
@@ -134,6 +138,8 @@ public class Player : KinematicBody2D
 				}
 			}
 		}
+
+		velocity.y += GRAVITY * delta;
 
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 	}
