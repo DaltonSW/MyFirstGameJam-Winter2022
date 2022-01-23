@@ -3,5 +3,5 @@ using System;
 
 public class Global : Node
 {
-	private Boolean isPlaying = false;
+	public static Boolean isPlaying = false;
 }
