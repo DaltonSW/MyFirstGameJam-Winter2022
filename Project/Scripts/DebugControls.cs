@@ -74,7 +74,7 @@ public class DebugControls : Control
 		var spinnerIndex = spinners.Count;
 		spinners.Add(spinner);
 		spinnerSetters.Add(action);
-		spinner.ConfigureAndConnectValueChangedSignal(this, nameof(SetProperty), new object[] { spinnerIndex }, $"({spinnerIndex + 1}) {label}", initialValue, stepSize);
+		spinner.ConfigureAndConnectValueChangedSignal(this, nameof(SetProperty), new object[] { spinnerIndex }, label, initialValue, stepSize);
 		spinnerContainer.AddChild(spinner);
 	}
 
@@ -88,8 +88,7 @@ public class DebugControls : Control
 	{
 		foreach ((Label label, string propertyName, Func<object> getter) in propertyLabels)
 		{
-			label.Text = propertyName + " = " + getter.Invoke();
-			label.Text = String.Format("{0} = {1:F}", propertyName, getter.Invoke());
+			label.Text = string.Format("{0} = {1:F}", propertyName, getter.Invoke());
 		}
 	}
 
@@ -109,16 +108,6 @@ public class DebugControls : Control
 
 	public override void _UnhandledInput(InputEvent inputEvent)
 	{
-		var numberPressed = inputEvent.GetNumberPressed();
-		if (numberPressed is int numberPressedValue)
-		{
-			var spinnerIndex = numberPressedValue - 1;
-			if (0 <= spinnerIndex && spinnerIndex < spinners.Count)
-			{
-				spinners[spinnerIndex].GrabFocusOnSpinner();
-			}
-		}
-
 		player.RecalcPhysics();
 	}
 

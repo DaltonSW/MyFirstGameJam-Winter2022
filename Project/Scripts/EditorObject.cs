@@ -25,6 +25,7 @@ public class EditorObject : Node2D
 	public bool isPlacingPlayer = false;
 	public bool isPlacingTile = false;
 	private const int tileID = 0; // This won't change unless we implement a sprite sheet
+	private int subtileID = 0;
 
 	private Vector2 relativeMousePoint = new Vector2(0, 0);
 
@@ -33,12 +34,12 @@ public class EditorObject : Node2D
 	public PopupMode fileBoxMode = PopupMode.NULL;
 	public FileDialog systemPopup;
 
-    public enum PopupMode
-    {
-        NULL = -1,
-        SAVE = 0,
-        LOAD = 1,
-    }
+	public enum PopupMode
+	{
+		NULL = -1,
+		SAVE = 0,
+		LOAD = 1,
+	}
 
 	public override void _Ready()
 	{
@@ -54,7 +55,7 @@ public class EditorObject : Node2D
 		tileMap = level.GetNode<TileMap>("TileMap");
 		systemPopup = GetNode<FileDialog>("/root/LevelEditor/UI/FileDialog");
 
-		tileSpriteForMouse = (Texture)GD.Load("res://Resources/Images/LevelEditorBlock.png");
+		tileSpriteForMouse = (Texture)GD.Load("res://Resources/Images/LevelEditorBlocks.png");
 		playerSpriteForMouse = (Texture)GD.Load("res://Resources/Images/hippie_idle_0.png");
 
 		Color temp = currentMouseSprite.Modulate;
@@ -189,11 +190,9 @@ public class EditorObject : Node2D
 				// Code to select tile to be placed
 				if (key.IsPressed() && key.Scancode == (int)KeyList.T)
 				{
-					currentMouseSprite.Scale = new Vector2(2, 2);
-					currentMouseSprite.Texture = tileSpriteForMouse;
-					isPlacingTile = true;
+					equipTile();
 				}
-				
+
 				// Code to select player to be placed
 				if (key.IsPressed() && key.Scancode == (int)KeyList.P)
 				{
@@ -201,6 +200,7 @@ public class EditorObject : Node2D
 					isPlacingPlayer = true;
 					currentMouseSprite.Scale = new Vector2(-2, 2);
 					currentMouseSprite.Texture = playerSpriteForMouse;
+					currentMouseSprite.RegionEnabled = false;
 				}
 
 				if (key.IsPressed() && key.Scancode == (int)KeyList.Delete)
@@ -209,8 +209,25 @@ public class EditorObject : Node2D
 					isPlacingPlayer = false;
 					isPlacingTile = false;
 				}
+
+				int? maybeNumPressed = key.GetNumberPressed();
+				if (maybeNumPressed is int numPressed
+					&& 1 <= numPressed && numPressed <= tileMap.NumSubtiles(tileID))
+				{
+					subtileID = numPressed - 1;
+					equipTile();
+				}
 			}
 		}
+	}
+
+	private void equipTile()
+	{
+		currentMouseSprite.Scale = new Vector2(2, 2);
+		currentMouseSprite.Texture = tileSpriteForMouse;
+		currentMouseSprite.RegionRect = tileMap.GetSubtileRegion(tileID, subtileID);
+		currentMouseSprite.RegionEnabled = true;
+		isPlacingTile = true;
 	}
 
 	private void placePlayer()
@@ -224,7 +241,7 @@ public class EditorObject : Node2D
 		}
 		playerNode.Show();
 		levelSpawnPoint = GetGlobalMousePosition();
-        playerNode.Owner = level;
+		playerNode.Owner = level;
 		playerNode.Position = levelSpawnPoint;
 		isPlacingPlayer = false;
 		currentMouseSprite.Texture = null;
@@ -235,13 +252,13 @@ public class EditorObject : Node2D
 	private void placeTile()
 	{
 		Vector2 mousePos = tileMap.WorldToMap(GetGlobalMousePosition());
-		tileMap.SetCell((int)mousePos.x, (int)mousePos.y, tileID);
+		tileMap.SetCell((int)(mousePos.x / tileMap.Scale.x), (int)(mousePos.y / tileMap.Scale.y), tileID, autotileCoord: tileMap.GetSubtileCoord(tileID, subtileID));
 	}
 
 	private void removeTile()
 	{
 		Vector2 mousePos = tileMap.WorldToMap(GetGlobalMousePosition());
-		tileMap.SetCell((int)mousePos.x, (int)mousePos.y, -1);
+		tileMap.SetCell((int)(mousePos.x / tileMap.Scale.x), (int)(mousePos.y / tileMap.Scale.y), -1);
 	}
 
 	private void moveEditor()
@@ -267,29 +284,29 @@ public class EditorObject : Node2D
 		}
 	}
 
-    public void saveLevel()
-    {
-        PackedScene toSave = new PackedScene();
-        tileMap.Owner = level;
-        level.GetNode("PlayerNode").Owner = level;
-        toSave.Pack(level);
-        ResourceSaver.Save(systemPopup.CurrentPath, toSave);
-    }
+	public void saveLevel()
+	{
+		PackedScene toSave = new PackedScene();
+		tileMap.Owner = level;
+		level.GetNode("PlayerNode").Owner = level;
+		toSave.Pack(level);
+		ResourceSaver.Save(systemPopup.CurrentPath, toSave);
+	}
 
-    public void loadLevel()
-    {
-        PackedScene toLoad = new PackedScene();
-        toLoad = (PackedScene)ResourceLoader.Load(systemPopup.CurrentPath);
-        Node2D newLevel = (Node2D)toLoad.Instance();
-        GetParent().RemoveChild(level);
-        level.QueueFree();
-        GetParent().AddChild(newLevel);
-        tileMap = GetParent().GetNode<TileMap>("Level/TileMap");
-        level = newLevel;
+	public void loadLevel()
+	{
+		PackedScene toLoad = new PackedScene();
+		toLoad = (PackedScene)ResourceLoader.Load(systemPopup.CurrentPath);
+		Node2D newLevel = (Node2D)toLoad.Instance();
+		GetParent().RemoveChild(level);
+		level.QueueFree();
+		GetParent().AddChild(newLevel);
+		tileMap = GetParent().GetNode<TileMap>("Level/TileMap");
+		level = newLevel;
 		Position2D spawnPoint = new Position2D();
 		spawnPoint.GlobalPosition = levelSpawnPoint;
 		level.AddChild(spawnPoint);
-    }
+	}
 
 	public void swapCameras()
 	{
@@ -304,5 +321,22 @@ public class EditorObject : Node2D
 			playerCamera.Current = false;
 			editorCamera.Current = true;
 		}
+	}
+}
+
+public static class TileMapExtensions
+{
+	public static int NumSubtiles(this TileMap tileMap, int tileID)
+		=> tileMap.TileSet.TileGetShapes(tileID).Count;
+
+	public static Vector2 GetSubtileCoord(this TileMap tileMap, int tileID, int subtileID)
+		=> (Vector2)((Godot.Collections.Dictionary) tileMap.TileSet.TileGetShapes(tileID)[subtileID])["autotile_coord"];
+
+	public static Rect2 GetSubtileRegion(this TileMap tileMap, int tileID, int subtileID)
+	{
+		var autotileOffset = tileMap.GetSubtileCoord(tileID, subtileID);
+		var tileSize = tileMap.TileSet.AutotileGetSize(tileID);
+		var position = new Vector2(tileSize.x * autotileOffset.x, tileSize.y * autotileOffset.y);
+		return new Rect2(position, tileSize);
 	}
 }

@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Scripts/EditorObject.cs" type="Script" id=1]
 [ext_resource path="res://Scripts/LevelEditorSaveLoad.cs" type="Script" id=2]
-[ext_resource path="res://Resources/Images/SingleTileSet.tres" type="TileSet" id=3]
+[ext_resource path="res://Resources/TileSets/LevelEditorTileSet.tres" type="TileSet" id=3]
 [ext_resource path="res://Scripts/LevelEditor.cs" type="Script" id=4]
 [ext_resource path="res://Scripts/Level.cs" type="Script" id=5]
 [ext_resource path="res://Scripts/PlayerCamera.cs" type="Script" id=6]
@@ -24,9 +24,11 @@ script = ExtResource( 5 )
 [node name="PlayerNode" type="Node2D" parent="Level"]
 
 [node name="TileMap" type="TileMap" parent="Level"]
+scale = Vector2( 2, 2 )
 tile_set = ExtResource( 3 )
-cell_size = Vector2( 32, 32 )
+cell_size = Vector2( 16, 16 )
 format = 1
+tile_data = PoolIntArray( 1441808, 0, 65536, 1966097, 0, 65536 )
 
 [node name="CamContainer" type="Node2D" parent="."]
 
@@ -44,9 +46,10 @@ margin_left = 21.0
 margin_top = 40.0
 margin_right = 457.0
 margin_bottom = 278.0
+rect_min_size = Vector2( 300, 105 )
 access = 2
-current_dir = "/Godot/MyFirstGameJam-Winter22/Project"
-current_path = "/Godot/MyFirstGameJam-Winter22/Project/"
+current_dir = "/Users/david/Godot Projects/MyFirstGameJam-Winter22/Project"
+current_path = "/Users/david/Godot Projects/MyFirstGameJam-Winter22/Project/"
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -57,7 +60,8 @@ margin_left = 944.0
 margin_top = 8.0
 margin_right = 1271.0
 margin_bottom = 158.0
-text = "T to start placing tiles
+text = "T or 1-4 to start placing tiles
+1-4 to select tile type
 P to move player spawn point
 E to swap between editing and playing
 WASD / Middle Mouse to pan cam while editing
