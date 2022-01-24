@@ -95,14 +95,14 @@ public class Player : KinematicBody2D
 		
 		if (right) {
 			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
-			GlobalTransform = new Transform2D(new Vector2(1,0), new Vector2(0,1), new Vector2(Position.x, Position.y));
+			GlobalTransform = new Transform2D(new Vector2(2, 0), new Vector2(0, 2), new Vector2(Position.x, Position.y));
 			isFacingLeft = false;
 
 		}
 
 		if (left) {
 			velocity.x = Math.Max(velocity.x - MOVE_SPEED, -GROUND_SPEED_CAP);
-			GlobalTransform = new Transform2D(new Vector2(-1,0), new Vector2(0,1), new Vector2(Position.x, Position.y));
+			GlobalTransform = new Transform2D(new Vector2(-2, 0), new Vector2(0, 2), new Vector2(Position.x, Position.y));
 			isFacingLeft = true;
 		}
 

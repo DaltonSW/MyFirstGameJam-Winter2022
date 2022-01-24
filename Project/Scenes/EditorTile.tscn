@@ -2,6 +2,5 @@
 
 [ext_resource path="res://Resources/Images/LevelEditorBlocks.png" type="Texture" id=1]
 
-
 [node name="EditorTile" type="Sprite"]
 texture = ExtResource( 1 )

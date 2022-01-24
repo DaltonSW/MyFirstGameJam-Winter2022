@@ -198,7 +198,7 @@ public class EditorObject : Node2D
 				{
 					isPlacingTile = false;
 					isPlacingPlayer = true;
-					currentMouseSprite.Scale = new Vector2(-1, 1);
+					currentMouseSprite.Scale = new Vector2(-2, 2);
 					currentMouseSprite.Texture = playerSpriteForMouse;
 					currentMouseSprite.RegionEnabled = false;
 				}
@@ -223,7 +223,7 @@ public class EditorObject : Node2D
 
 	private void equipTile()
 	{
-		currentMouseSprite.Scale = new Vector2(1, 1);
+		currentMouseSprite.Scale = new Vector2(2, 2);
 		currentMouseSprite.Texture = tileSpriteForMouse;
 		currentMouseSprite.RegionRect = tileMap.GetSubtileRegion(tileID, subtileID);
 		currentMouseSprite.RegionEnabled = true;
@@ -252,7 +252,7 @@ public class EditorObject : Node2D
 	private void placeTile()
 	{
 		Vector2 mousePos = tileMap.WorldToMap(GetGlobalMousePosition());
-		tileMap.SetCell((int)mousePos.x, (int)mousePos.y, tileID, autotileCoord: tileMap.GetSubtileCoord(tileID, subtileID));
+		tileMap.SetCell((int)(mousePos.x / tileMap.Scale.x), (int)(mousePos.y / tileMap.Scale.y), tileID, autotileCoord: tileMap.GetSubtileCoord(tileID, subtileID));
 	}
 
 	private void removeTile()

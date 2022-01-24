@@ -21,12 +21,13 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 8, 16 )
+extents = Vector2( 7.5, 15.5 )
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 8, 16 )
+extents = Vector2( 7.5, 15.5 )
 
 [node name="Player" type="KinematicBody2D"]
+scale = Vector2( 2, 2 )
 script = ExtResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -36,6 +37,7 @@ frame = 3
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.5, 0.5 )
 shape = SubResource( 1 )
 
 [node name="InteractionArea" type="Area2D" parent="."]
@@ -43,6 +45,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="InteractionHitbox" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2( 0.5, 0.5 )
 shape = SubResource( 3 )
 
 [node name="ItemHold" type="Position2D" parent="."]
