@@ -189,7 +189,7 @@ public class EditorObject : Node2D
 				// Code to select tile to be placed
 				if (key.IsPressed() && key.Scancode == (int)KeyList.T)
 				{
-					currentMouseSprite.Scale = new Vector2(1, 1);
+					currentMouseSprite.Scale = new Vector2(2, 2);
 					currentMouseSprite.Texture = tileSpriteForMouse;
 					isPlacingTile = true;
 				}
@@ -199,7 +199,7 @@ public class EditorObject : Node2D
 				{
 					isPlacingTile = false;
 					isPlacingPlayer = true;
-					currentMouseSprite.Scale = new Vector2(-1, 1);
+					currentMouseSprite.Scale = new Vector2(-2, 2);
 					currentMouseSprite.Texture = playerSpriteForMouse;
 				}
 

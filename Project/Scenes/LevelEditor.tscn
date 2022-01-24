@@ -19,22 +19,22 @@ script = ExtResource( 1 )
 [node name="Level" type="Node2D" parent="."]
 script = ExtResource( 5 )
 
-[node name="TileMap" type="TileMap" parent="Level"]
-tile_set = ExtResource( 3 )
-cell_size = Vector2( 16, 16 )
-format = 1
-
 [node name="SpawnPoint" type="Position2D" parent="Level"]
 
 [node name="PlayerNode" type="Node2D" parent="Level"]
 
+[node name="TileMap" type="TileMap" parent="Level"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 32, 32 )
+format = 1
+
 [node name="CamContainer" type="Node2D" parent="."]
 
 [node name="EditorCamera" type="Camera2D" parent="CamContainer"]
-position = Vector2( 512, 300 )
+position = Vector2( 640, 360 )
 
 [node name="PlayerCamera" type="Camera2D" parent="CamContainer"]
-position = Vector2( 512, 300 )
+position = Vector2( 640, 360 )
 script = ExtResource( 6 )
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -53,10 +53,10 @@ __meta__ = {
 }
 
 [node name="BasicInstructions" type="Label" parent="UI"]
-margin_left = 692.0
-margin_top = 11.0
-margin_right = 1019.0
-margin_bottom = 110.0
+margin_left = 944.0
+margin_top = 8.0
+margin_right = 1271.0
+margin_bottom = 158.0
 text = "T to start placing tiles
 P to move player spawn point
 E to swap between editing and playing
@@ -71,6 +71,9 @@ __meta__ = {
 }
 
 [node name="DebugControls" parent="UI" instance=ExtResource( 7 )]
+anchor_right = 0.337
+anchor_bottom = 0.3
+margin_right = 0.639984
 
 [connection signal="confirmed" from="UI/FileDialog" to="." method="_on_FileDialog_confirmed"]
 [connection signal="hide" from="UI/FileDialog" to="." method="_on_FileDialog_hide"]
