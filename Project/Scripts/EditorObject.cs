@@ -258,7 +258,7 @@ public class EditorObject : Node2D
 	private void removeTile()
 	{
 		Vector2 mousePos = tileMap.WorldToMap(GetGlobalMousePosition());
-		tileMap.SetCell((int)mousePos.x, (int)mousePos.y, -1);
+		tileMap.SetCell((int)(mousePos.x / tileMap.Scale.x), (int)(mousePos.y / tileMap.Scale.y), -1);
 	}
 
 	private void moveEditor()
