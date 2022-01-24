@@ -11,15 +11,19 @@ public class Player : KinematicBody2D
 	public Vector2 velocity = new Vector2();
 	private Vector2 spawnPosition = new Vector2(0, 0);
 
-	[Export] public float JUMP_HEIGHT = 50; //pixels
-	[Export] public float TIME_IN_AIR = 0.25F; //honestly no idea
-	[Export] public float MOVE_SPEED = 15; //pixels per second
-	[Export] public float GROUND_SPEED_CAP = 150; //pixels per second
+	[Export] public float JUMP_HEIGHT = 90; //pixels
+	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
+	[Export] public float MOVE_SPEED = 70; //pixels per second
+	[Export] public float GROUND_SPEED_CAP = 250; //pixels per second
 	[Export] public float JUMP_SPEED;
 	[Export] public float GRAVITY;
 	[Export] public float FRICTION = 7; //no idea
 	[Export] public float BASE_WALL_JUMP_AWAY = 100;
 	[Export] public float WALL_JUMP_SCALE = 2;
+
+	[Export] private float DASH_SPEED = 400;
+	[Export] private float DASH_DISTANCE = 200;
+	private float CURRENT_DASH = 0;
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames
 	[Export] private float CUR_JUMP_BUFFER;
@@ -35,8 +39,8 @@ public class Player : KinematicBody2D
 	private bool IS_SHOTGUN_EQUIPPED = false;
 
 	public bool isFacingLeft = false;
-	
-	
+	public bool isDashing = false;
+	private bool canDash = false;
 
 	enum EquippedWeapon
 	{
@@ -61,6 +65,20 @@ public class Player : KinematicBody2D
 		{
 			velocity = new Vector2(0, 0);
 			MoveAndSlide(velocity);
+			return;
+		}
+
+		if (isDashing)
+		{
+			CURRENT_DASH += DASH_SPEED * delta;
+			MoveAndSlide(velocity);
+			if (CURRENT_DASH > DASH_DISTANCE)
+			{
+				velocity = new Vector2(0, 0);
+				isDashing = false;
+				animatedSprite.Play("idle");
+				CURRENT_DASH = 0;
+			}
 			return;
 		}
 
@@ -106,6 +124,13 @@ public class Player : KinematicBody2D
 			isFacingLeft = true;
 		}
 
+		if (Input.IsActionJustPressed("player_dash"))
+		{
+			Dash();
+			MoveAndSlide(velocity);
+			return;
+		}
+
 		if (jump && CUR_JUMP_BUFFER == 0)
 		{
 			if (IsOnFloor())
@@ -123,19 +148,19 @@ public class Player : KinematicBody2D
 			CUR_JUMP_BUFFER += 1;
 		}
 
+		if (IsOnFloor())
+		{
+			canDash = true;
+			CUR_JUMP_BUFFER = 0;
+			CURRENT_DASH = 0;
+		}
+
 		if(CUR_JUMP_BUFFER != 0)
 		{
-			if(IsOnFloor())
+			CUR_JUMP_BUFFER += 1;
+			if(CUR_JUMP_BUFFER > JUMP_LOCKOUT)
 			{
-				CUR_JUMP_BUFFER = 0;
-			}
-
-			else{
-				CUR_JUMP_BUFFER += 1;
-				if(CUR_JUMP_BUFFER > JUMP_LOCKOUT)
-				{
 					CUR_JUMP_BUFFER = 0;
-				}
 			}
 		}
 
@@ -168,7 +193,7 @@ public class Player : KinematicBody2D
 		if (CUR_SHOTGUN_BUFFER > SHOTGUN_LOCKOUT)
 		{
 			CUR_SHOTGUN_BUFFER = 0;
-		}
+		}		
 	}
 
 	public override void _UnhandledInput(InputEvent inputEvent)
@@ -195,6 +220,22 @@ public class Player : KinematicBody2D
 			// 	Position = spawnPoint.GlobalPosition;
 			// }
 		}
+	}
+
+	private void Dash()
+	{
+		animatedSprite.Play("dash");
+		if (isFacingLeft)
+		{
+			velocity = new Vector2(-DASH_SPEED, 0);
+		}
+
+		else
+		{
+			velocity = new Vector2(DASH_SPEED, 0);
+		}
+		isDashing = true;
+		canDash = false;
 	}
 
 	private void UnequipShotgun()
