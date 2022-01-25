@@ -5,7 +5,20 @@ public class Player : KinematicBody2D
 {
 	private PackedScene projectileScene;
 	private PackedScene shotgunScene;
+
+
 	private AnimatedSprite animatedSprite;
+	private Sprite crouchingSprite;
+	private Sprite slidingSprite;
+
+	private CollisionShape2D normalCollision;
+	private CollisionShape2D crouchingCollision;
+	private CollisionShape2D slidingCollision;
+	
+	private CollisionShape2D normalInteraction;
+	private CollisionShape2D crouchingInteraction;
+	private CollisionShape2D slidingInteraction;
+
 	private Area2D interactionArea;
 
 	public Vector2 velocity = new Vector2();
@@ -42,6 +55,9 @@ public class Player : KinematicBody2D
 
 	public bool isFacingLeft = false;
 	public bool isDashing = false;
+	public bool isCrouching = false;
+	public bool isSliding = false;
+
 	private bool canDash = false;
 
 	enum EquippedWeapon
@@ -49,12 +65,28 @@ public class Player : KinematicBody2D
 
 	}
 
+	//if down, change sprite and collisions
+	//if holding down + dash, change sprite and collisions, and apply dash velocity
+	//	if sliding, be able to jump out (might take a bit to feel good)
+
 
 	public override void _Ready()
 	{
 		projectileScene = GD.Load<PackedScene>("res://Scenes/Projectile.tscn");
 		shotgunScene = GD.Load<PackedScene>("res://Scenes/Shotgun.tscn");
+
 		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		crouchingSprite = GetNode<Sprite>("CrouchingSprite");
+		slidingSprite = GetNode<Sprite>("SlidingSprite");
+
+		normalCollision = GetNode<CollisionShape2D>("NormalCollision");
+		crouchingCollision = GetNode<CollisionShape2D>("CrouchingCollision");
+		slidingCollision = GetNode<CollisionShape2D>("SlidingCollision");
+
+		normalInteraction = GetNode<CollisionShape2D>("InteractionArea/NormalInteraction");
+		crouchingInteraction = GetNode<CollisionShape2D>("InteractionArea/CrouchingInteraction");
+		slidingInteraction = GetNode<CollisionShape2D>("InteractionArea/SlidingInteraction");
+
 		interactionArea = GetNode<Area2D>("InteractionArea");
 		
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
@@ -84,54 +116,82 @@ public class Player : KinematicBody2D
 			return;
 		}
 
-		
-		if (velocity.x > 0){
-			velocity.x = Math.Max(0, velocity.x - FRICTION);
-		}
+		bool right = 		Input.IsActionPressed("player_right"); 
+		bool left = 		Input.IsActionPressed("player_left"); 
+		bool crouch =		Input.IsActionPressed("player_crouch");
 
-		if (velocity.x < 0){
-			velocity.x = Math.Min(0, velocity.x + FRICTION);
-		}
+		bool jump = 		Input.IsActionJustPressed("player_jump");
+		bool dash = 		Input.IsActionJustPressed("player_dash");
+		bool shoot = 		Input.IsActionJustPressed("player_shoot");
+		bool melee = 		Input.IsActionJustPressed("player_melee");
+		bool interacted = 	Input.IsActionJustPressed("ui_select");
 
-		bool right = Input.IsActionPressed("ui_right"); 
-		bool left = Input.IsActionPressed("ui_left"); 
-		bool jump = Input.IsActionJustPressed("ui_up");
-		bool interacted = Input.IsActionJustPressed("ui_select");
 		
 		// Iterate through bodies colliding with interaction hitbox
 		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
 			// Interact if button just pressed
-			var interactionMethodName = "interact_with_player";
+			string interactionMethodName = "interact_with_player";
 			if (!interacting && interacted && body.HasMethod(interactionMethodName)) {
 				interacting = true;
 				body.Call(interactionMethodName);
 			}
 			// Collect if collectable on collision
-			var collectMethodName = "collect";
+			string collectMethodName = "collect";
 			if (body.HasMethod(collectMethodName)) {
 				body.Call(collectMethodName);
 			}
 		}
 		
-		if (right) {
+		if (right && !crouch) 
+		{
 			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
 			GlobalTransform = new Transform2D(new Vector2(2, 0), new Vector2(0, 2), new Vector2(Position.x, Position.y));
 			isFacingLeft = false;
 
 		}
 
-		if (left) {
+		if (left && !crouch) 
+		{
 			velocity.x = Math.Max(velocity.x - MOVE_SPEED, -GROUND_SPEED_CAP);
 			GlobalTransform = new Transform2D(new Vector2(-2, 0), new Vector2(0, 2), new Vector2(Position.x, Position.y));
 			isFacingLeft = true;
 		}
-
-		if (Input.IsActionJustPressed("player_dash"))
+		
+		if (crouch)
 		{
-			Dash();
-			MoveAndSlide(velocity);
-			return;
+			animatedSprite.Visible = false;
+			slidingSprite.Visible = false;
+			crouchingSprite.Visible = true;
+
+			normalCollision.Disabled = true;
+			slidingCollision.Disabled = true;
+			crouchingCollision.Disabled = false;
+
+			normalInteraction.Disabled = true;
+			slidingInteraction.Disabled = true;
+			crouchingInteraction.Disabled = false;
+
+			isCrouching = true;
 		}
+
+		if (isCrouching && !crouch)
+		{
+			animatedSprite.Visible = true;
+			crouchingSprite.Visible = false;
+
+			normalCollision.Disabled = false;
+			crouchingCollision.Disabled = true;
+
+			normalInteraction.Disabled = false;
+			crouchingInteraction.Disabled = true;
+		}
+
+		// if (Input.IsActionJustPressed("player_dash"))
+		// {
+		// 	Dash();
+		// 	MoveAndSlide(velocity);
+		// 	return;
+		// }
 
 		if (jump && CUR_JUMP_BUFFER == 0)
 		{
@@ -164,6 +224,14 @@ public class Player : KinematicBody2D
 			{
 					CUR_JUMP_BUFFER = 0;
 			}
+		}
+
+		if (velocity.x > 0){
+			velocity.x = Math.Max(0, velocity.x - FRICTION);
+		}
+
+		if (velocity.x < 0){
+			velocity.x = Math.Min(0, velocity.x + FRICTION);
 		}
 
 		velocity.y += GRAVITY * delta;
@@ -213,32 +281,24 @@ public class Player : KinematicBody2D
 					UnequipShotgun();
 				}
 			}
-			
-			// Leaving this in so I have the code to reuse, but this should be abstracted to the parent scene
-			// Player scene shouldn't have to rely on the above scenes to have a SpawnPoint
-			// if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.R)
-			// {
-			// 	Position2D spawnPoint = (Position2D)GetParent().GetParent().GetNode("SpawnPoint");
-			// 	Position = spawnPoint.GlobalPosition;
-			// }
 		}
 	}
 
-	private void Dash()
-	{
-		animatedSprite.Play("dash");
-		if (isFacingLeft)
-		{
-			velocity = new Vector2(-DASH_SPEED, 0);
-		}
+	// private void Dash()
+	// {
+	// 	animatedSprite.Play("dash");
+	// 	if (isFacingLeft)
+	// 	{
+	// 		velocity = new Vector2(-DASH_SPEED, 0);
+	// 	}
 
-		else
-		{
-			velocity = new Vector2(DASH_SPEED, 0);
-		}
-		isDashing = true;
-		canDash = false;
-	}
+	// 	else
+	// 	{
+	// 		velocity = new Vector2(DASH_SPEED, 0);
+	// 	}
+	// 	isDashing = true;
+	// 	canDash = false;
+	// }
 
 	private void UnequipShotgun()
 	{
