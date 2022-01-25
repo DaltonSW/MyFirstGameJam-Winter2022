@@ -3,6 +3,8 @@ using System;
 
 public class Projectile : Area2D
 {
+	[Export] public float DAMAGE = 7.5F;
+
 	[Export] private int SPEED = 400;
 	[Export] private int SPREAD = 5;
 	[Export] private int DISTANCE_ALLOWED = 300;
@@ -46,6 +48,8 @@ public class Projectile : Area2D
 		{
 			if(!with.IsClass("TileMap"))
 			{
+				// Need to implement something that differentiates if a Node has health or not so we don't try and subtract health from something without that property
+				// Then it'll just be: with.HEALTH -= this.DAMAGE; if with.HEALTH < 0: with.QueueFree();
 				with.QueueFree();
 				FreeBullet();
 			}

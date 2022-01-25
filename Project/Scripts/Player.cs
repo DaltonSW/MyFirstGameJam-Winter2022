@@ -11,14 +11,16 @@ public class Player : KinematicBody2D
 	public Vector2 velocity = new Vector2();
 	private Vector2 spawnPosition = new Vector2(0, 0);
 
-	[Export] public float JUMP_HEIGHT = 90; //pixels
+	[Export] public float HEALTH = 10;
+
+	[Export] public float JUMP_HEIGHT = 145; //pixels
 	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
-	[Export] public float MOVE_SPEED = 70; //pixels per second
-	[Export] public float GROUND_SPEED_CAP = 250; //pixels per second
+	[Export] public float MOVE_SPEED = 60; //pixels per second
+	[Export] public float GROUND_SPEED_CAP = 500; //pixels per second
 	[Export] public float JUMP_SPEED;
 	[Export] public float GRAVITY;
-	[Export] public float FRICTION = 7; //no idea
-	[Export] public float BASE_WALL_JUMP_AWAY = 100;
+	[Export] public float FRICTION = 40; //no idea
+	[Export] public float BASE_WALL_JUMP_AWAY = 350;
 	[Export] public float WALL_JUMP_SCALE = 2;
 
 	[Export] private float DASH_SPEED = 400;

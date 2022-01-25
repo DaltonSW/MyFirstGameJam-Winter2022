@@ -4,6 +4,8 @@ using System;
 public class Enemy : KinematicBody2D
 {
 
+	[Export] public float HEALTH = 10;
+
 	[Export] private int RANDOM_DIR_TICKS = 8;
 	[Export] private int SPEED = 100;
 	private int GRAVITY = 200; //Pretty useless, just makes sure they stay stuck to the ground for now. Will be used if they need to jump eventually
