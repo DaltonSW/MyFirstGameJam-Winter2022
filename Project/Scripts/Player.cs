@@ -39,10 +39,13 @@ public class Player : KinematicBody2D
 	[Export] private float DASH_SPEED = 400;
 	[Export] private float DASH_DISTANCE = 200;
 	private float CURRENT_DASH = 0;
+	
+	[Export] private float SLIDE_SPEED = 400;
+	[Export] private float SLIDE_DISTANCE = 1000;
+	private float CURRENT_SLIDE = 0;
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames
 	[Export] private float CUR_JUMP_BUFFER;
-
 	[Export] private float SHOTGUN_LOCKOUT = 1; //seconds
 	[Export] private float CUR_SHOTGUN_BUFFER;
 
@@ -59,6 +62,7 @@ public class Player : KinematicBody2D
 	public bool isSliding = false;
 
 	private bool canDash = false;
+	private bool canSlide = true;
 
 	enum EquippedWeapon
 	{
@@ -102,8 +106,27 @@ public class Player : KinematicBody2D
 			return;
 		}
 
+		if (isSliding)
+		{
+			CURRENT_SLIDE += SLIDE_SPEED * delta;
+			MoveAndSlide(velocity);
+			if(CURRENT_SLIDE > SLIDE_DISTANCE)
+			{
+				velocity = new Vector2(0, 0);
+				isSliding = false;
+				ClearSpritesAndHitboxes();
+				ActivateNormal();
+				animatedSprite.Play("idle");
+				CURRENT_SLIDE = 0;
+			}
+		}
+
 		if (isDashing)
 		{
+			if (IsOnWall())
+			{
+				isDashing = false;
+			}
 			CURRENT_DASH += DASH_SPEED * delta;
 			MoveAndSlide(velocity);
 			if (CURRENT_DASH > DASH_DISTANCE)
@@ -157,19 +180,10 @@ public class Player : KinematicBody2D
 			isFacingLeft = true;
 		}
 		
-		if (crouch)
+		if (crouch && !isSliding && !isDashing)
 		{
-			animatedSprite.Visible = false;
-			slidingSprite.Visible = false;
-			crouchingSprite.Visible = true;
-
-			normalCollision.Disabled = true;
-			slidingCollision.Disabled = true;
-			crouchingCollision.Disabled = false;
-
-			normalInteraction.Disabled = true;
-			slidingInteraction.Disabled = true;
-			crouchingInteraction.Disabled = false;
+			ClearSpritesAndHitboxes();
+			ActivateCrouch();
 
 			isCrouching = true;
 		}
@@ -186,12 +200,23 @@ public class Player : KinematicBody2D
 			crouchingInteraction.Disabled = true;
 		}
 
-		// if (Input.IsActionJustPressed("player_dash"))
-		// {
-		// 	Dash();
-		// 	MoveAndSlide(velocity);
-		// 	return;
-		// }
+		if (Input.IsActionJustPressed("player_dash"))
+		{
+			if (!IsOnFloor() && canDash)
+			{
+				Dash();
+				MoveAndSlide(velocity);
+				return;
+			}
+
+			if (IsOnFloor())
+			{
+				Slide();
+				MoveAndSlide(velocity);
+				return;
+			}
+			
+		}
 
 		if (jump && CUR_JUMP_BUFFER == 0)
 		{
@@ -284,21 +309,41 @@ public class Player : KinematicBody2D
 		}
 	}
 
-	// private void Dash()
-	// {
-	// 	animatedSprite.Play("dash");
-	// 	if (isFacingLeft)
-	// 	{
-	// 		velocity = new Vector2(-DASH_SPEED, 0);
-	// 	}
+	private void Dash()
+	{
+		animatedSprite.Play("dash");
+		if (isFacingLeft)
+		{
+			velocity = new Vector2(-DASH_SPEED, 0);
+		}
 
-	// 	else
-	// 	{
-	// 		velocity = new Vector2(DASH_SPEED, 0);
-	// 	}
-	// 	isDashing = true;
-	// 	canDash = false;
-	// }
+		else
+		{
+			velocity = new Vector2(DASH_SPEED, 0);
+		}
+		isDashing = true;
+		canDash = false;
+	}
+
+	private void Slide()
+	{
+		ClearSpritesAndHitboxes();
+		ActivateSlide();
+
+		GD.Print("Is sliding!");
+
+		if (isFacingLeft)
+		{
+			velocity = new Vector2(-SLIDE_SPEED, 0);
+		}
+
+		else
+		{
+			velocity = new Vector2(SLIDE_SPEED, 0);
+		}
+		isSliding = true;
+		//canSlide = false;
+	}
 
 	private void UnequipShotgun()
 	{
@@ -330,5 +375,41 @@ public class Player : KinematicBody2D
 	{
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
+	}
+
+	private void ClearSpritesAndHitboxes()
+	{
+		animatedSprite.Visible = false;
+		crouchingSprite.Visible = false;
+		slidingSprite.Visible = false;
+
+		normalCollision.Disabled = true;
+		crouchingCollision.Disabled = true;
+		slidingCollision.Disabled = true;
+
+		normalInteraction.Disabled = true;
+		crouchingInteraction.Disabled = true;
+		slidingInteraction.Disabled = true;
+	}
+
+	private void ActivateNormal()
+	{
+		animatedSprite.Visible = true;
+		normalCollision.Disabled = false;
+		normalInteraction.Disabled = false;
+	}
+
+	private void ActivateCrouch()
+	{
+		crouchingSprite.Visible = true;
+		crouchingCollision.Disabled = false;
+		crouchingInteraction.Disabled = false;
+	}
+
+	private void ActivateSlide()
+	{
+		slidingSprite.Visible = true;
+		slidingCollision.Disabled = false;
+		slidingInteraction.Disabled = false;
 	}
 }

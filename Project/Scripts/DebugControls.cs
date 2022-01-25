@@ -31,7 +31,7 @@ public class DebugControls : Control
 	{
 		labeledSpinner = GD.Load<PackedScene>("res://Scenes/LabeledSpinner.tscn");
 
-		String playerPath = Global.inLevelEditor ? "/root/LevelEditor/Level/PlayerNode/Player" : "../Player";
+		String playerPath = Global.inLevelEditor ? "/root/LevelEditor/Level/PlayerNode/Player" : "../PlayerNode/Player";
 
 		player = GetNode<Player>(playerPath);
 
