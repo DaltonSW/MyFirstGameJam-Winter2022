@@ -12,7 +12,6 @@ public class LevelEditor : Node2D
 	{
 		editorObject = GetNode<EditorObject>("EditorObject");
 		level = GetNode<Level>("Level");
-		Global.inLevelEditor = true;
 	}
 
 	public override void _Process(float delta)

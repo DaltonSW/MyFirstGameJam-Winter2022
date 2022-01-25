@@ -48,8 +48,8 @@ margin_right = 457.0
 margin_bottom = 278.0
 rect_min_size = Vector2( 300, 105 )
 access = 2
-current_dir = "/Godot/MyFirstGameJam-Winter22/Project"
-current_path = "/Godot/MyFirstGameJam-Winter22/Project/"
+current_dir = "/Users/david/Godot Projects/MyFirstGameJam-Winter22/Project"
+current_path = "/Users/david/Godot Projects/MyFirstGameJam-Winter22/Project/"
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -75,9 +75,6 @@ __meta__ = {
 }
 
 [node name="DebugControls" parent="UI" instance=ExtResource( 7 )]
-anchor_right = 0.337
-anchor_bottom = 0.3
-margin_right = 0.639984
 
 [connection signal="confirmed" from="UI/FileDialog" to="." method="_on_FileDialog_confirmed"]
 [connection signal="hide" from="UI/FileDialog" to="." method="_on_FileDialog_hide"]

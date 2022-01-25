@@ -36,12 +36,12 @@ public class Player : KinematicBody2D
 	[Export] public float BASE_WALL_JUMP_AWAY = 350;
 	[Export] public float WALL_JUMP_SCALE = 2;
 
-	[Export] private float DASH_SPEED = 400;
-	[Export] private float DASH_DISTANCE = 200;
+	[Export] public float DASH_SPEED = 400;
+	[Export] public float DASH_DISTANCE = 200;
 	private float CURRENT_DASH = 0;
 	
-	[Export] private float SLIDE_SPEED = 400;
-	[Export] private float SLIDE_DISTANCE = 1000;
+	[Export] public float SLIDE_SPEED = 400;
+	[Export] public float SLIDE_DISTANCE = 1000;
 	private float CURRENT_SLIDE = 0;
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames

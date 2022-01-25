@@ -31,6 +31,7 @@ public class DebugControls : Control
 	{
 		labeledSpinner = GD.Load<PackedScene>("res://Scenes/LabeledSpinner.tscn");
 
+		GD.Print(Global.inLevelEditor);
 		String playerPath = Global.inLevelEditor ? "/root/LevelEditor/Level/PlayerNode/Player" : "../PlayerNode/Player";
 
 		player = GetNode<Player>(playerPath);
@@ -46,7 +47,11 @@ public class DebugControls : Control
 		AddSpinner(v => player.GROUND_SPEED_CAP = v,    "Ground Speed Cap",     player.GROUND_SPEED_CAP, 5);
 		AddSpinner(v => player.FRICTION = v,            "Friction",             player.FRICTION);
 		AddSpinner(v => player.BASE_WALL_JUMP_AWAY = v, "Wall Jump - Away",     player.BASE_WALL_JUMP_AWAY);
-		AddSpinner(v => player.WALL_JUMP_SCALE = v,     "Wall Jump Away Scale", player.WALL_JUMP_SCALE,   0.02f);
+		AddSpinner(v => player.WALL_JUMP_SCALE = v,     "Wall Jump Away Scale", player.WALL_JUMP_SCALE,  0.02f);
+		AddSpinner(v => player.SLIDE_DISTANCE = v,      "Slide Distance",       player.SLIDE_DISTANCE,   0.02f);
+		AddSpinner(v => player.SLIDE_SPEED = v,         "Slide Speed",          player.SLIDE_SPEED,      0.02f);
+		AddSpinner(v => player.DASH_DISTANCE = v,       "Dash Distance",        player.DASH_DISTANCE,    0.02f);
+		AddSpinner(v => player.DASH_SPEED = v,          "Dash Speed",           player.DASH_SPEED,       0.02f);
 
 		AddPropertyLabel("Gravity",    () => player.GRAVITY);
 		AddPropertyLabel("Jump Speed", () => player.JUMP_SPEED);

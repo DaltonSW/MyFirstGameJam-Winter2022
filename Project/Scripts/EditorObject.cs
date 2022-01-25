@@ -43,6 +43,7 @@ public class EditorObject : Node2D
 
 	public override void _Ready()
 	{
+		Global.inLevelEditor = true;
 		playerScene = GD.Load<PackedScene>("res://Scenes/Player.tscn");
 
 		level = GetNode<Node2D>("/root/LevelEditor/Level");
