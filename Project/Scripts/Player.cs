@@ -110,43 +110,6 @@ public class Player : KinematicBody2D
 		bool melee = 		Input.IsActionJustPressed("player_melee");
 		bool interacted = 	Input.IsActionJustPressed("ui_select");
 
-
-		if (isSliding)
-		{
-			if(!IsOnFloor())
-			{
-				isSliding = false;
-				velocity = new Vector2(0, 0);
-				canSlide = true;
-				return;
-			}
-
-			if (jump)
-			{
-				velocity.y -= JUMP_SPEED;
-				isSliding = false;
-				canSlide = true;
-				CURRENT_DASH = 0;
-				ClearSpritesAndHitboxes();
-				ActivateNormal();
-				//animatedSprite.Play("jump");
-			}
-
-			CURRENT_SLIDE += SLIDE_SPEED * delta;
-			MoveAndSlide(velocity);
-			if(CURRENT_SLIDE > SLIDE_DISTANCE)
-			{
-				velocity = new Vector2(0, 0);
-				isSliding = false;
-				ClearSpritesAndHitboxes();
-				ActivateNormal();
-				animatedSprite.Play("idle");
-				CURRENT_SLIDE = 0;
-				canSlide = true;
-			}
-			return;
-		}
-
 		if (isDashing)
 		{
 			if (IsOnWall())
@@ -166,6 +129,34 @@ public class Player : KinematicBody2D
 		}
 
 		velocity.y += GRAVITY * delta;
+
+		if (isSliding)
+		{
+			if (jump)
+			{
+				velocity.y -= JUMP_SPEED;
+				isSliding = false;
+				canSlide = true;
+				CURRENT_SLIDE = 0;
+				ClearSpritesAndHitboxes();
+				ActivateNormal();
+				//animatedSprite.Play("jump");
+			}
+
+			CURRENT_SLIDE += SLIDE_SPEED * delta;
+			MoveAndSlide(velocity);
+			if(CURRENT_SLIDE > SLIDE_DISTANCE)
+			{
+				velocity = new Vector2(0, 0);
+				isSliding = false;
+				ClearSpritesAndHitboxes();
+				ActivateNormal();
+				animatedSprite.Play("idle");
+				CURRENT_SLIDE = 0;
+				canSlide = true;
+			}
+			return;
+		}
 		
 		// Iterate through bodies colliding with interaction hitbox
 		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
@@ -338,9 +329,6 @@ public class Player : KinematicBody2D
 	{
 		ClearSpritesAndHitboxes();
 		ActivateSlide();
-
-		GD.Print("Is sliding!");
-
 		if (isFacingLeft)
 		{
 			velocity = new Vector2(-SLIDE_SPEED, 0);
