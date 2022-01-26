@@ -6,7 +6,6 @@ public class Player : KinematicBody2D
 	private PackedScene projectileScene;
 	private PackedScene shotgunScene;
 
-
 	private AnimatedSprite animatedSprite;
 	private Sprite crouchingSprite;
 	private Sprite slidingSprite;
@@ -40,8 +39,8 @@ public class Player : KinematicBody2D
 	[Export] public float DASH_DISTANCE = 200;
 	private float CURRENT_DASH = 0;
 	
-	[Export] public float SLIDE_SPEED = 400;
-	[Export] public float SLIDE_DISTANCE = 1000;
+	[Export] public float SLIDE_SPEED = 600;
+	[Export] public float SLIDE_DISTANCE = 200;
 	private float CURRENT_SLIDE = 0;
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames
@@ -63,11 +62,6 @@ public class Player : KinematicBody2D
 
 	private bool canDash = false;
 	private bool canSlide = true;
-
-	enum EquippedWeapon
-	{
-
-	}
 
 	//if down, change sprite and collisions
 	//if holding down + dash, change sprite and collisions, and apply dash velocity
@@ -106,8 +100,38 @@ public class Player : KinematicBody2D
 			return;
 		}
 
+		bool right = 		Input.IsActionPressed("player_right"); 
+		bool left = 		Input.IsActionPressed("player_left"); 
+		bool crouch =		Input.IsActionPressed("player_crouch");
+
+		bool jump = 		Input.IsActionJustPressed("player_jump");
+		bool dash = 		Input.IsActionJustPressed("player_dash");
+		bool shoot = 		Input.IsActionJustPressed("player_shoot");
+		bool melee = 		Input.IsActionJustPressed("player_melee");
+		bool interacted = 	Input.IsActionJustPressed("ui_select");
+
+
 		if (isSliding)
 		{
+			if(!IsOnFloor())
+			{
+				isSliding = false;
+				velocity = new Vector2(0, 0);
+				canSlide = true;
+				return;
+			}
+
+			if (jump)
+			{
+				velocity.y -= JUMP_SPEED;
+				isSliding = false;
+				canSlide = true;
+				CURRENT_DASH = 0;
+				ClearSpritesAndHitboxes();
+				ActivateNormal();
+				//animatedSprite.Play("jump");
+			}
+
 			CURRENT_SLIDE += SLIDE_SPEED * delta;
 			MoveAndSlide(velocity);
 			if(CURRENT_SLIDE > SLIDE_DISTANCE)
@@ -118,7 +142,9 @@ public class Player : KinematicBody2D
 				ActivateNormal();
 				animatedSprite.Play("idle");
 				CURRENT_SLIDE = 0;
+				canSlide = true;
 			}
+			return;
 		}
 
 		if (isDashing)
@@ -139,16 +165,7 @@ public class Player : KinematicBody2D
 			return;
 		}
 
-		bool right = 		Input.IsActionPressed("player_right"); 
-		bool left = 		Input.IsActionPressed("player_left"); 
-		bool crouch =		Input.IsActionPressed("player_crouch");
-
-		bool jump = 		Input.IsActionJustPressed("player_jump");
-		bool dash = 		Input.IsActionJustPressed("player_dash");
-		bool shoot = 		Input.IsActionJustPressed("player_shoot");
-		bool melee = 		Input.IsActionJustPressed("player_melee");
-		bool interacted = 	Input.IsActionJustPressed("ui_select");
-
+		velocity.y += GRAVITY * delta;
 		
 		// Iterate through bodies colliding with interaction hitbox
 		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
@@ -184,20 +201,14 @@ public class Player : KinematicBody2D
 		{
 			ClearSpritesAndHitboxes();
 			ActivateCrouch();
-
 			isCrouching = true;
 		}
 
 		if (isCrouching && !crouch)
 		{
-			animatedSprite.Visible = true;
-			crouchingSprite.Visible = false;
-
-			normalCollision.Disabled = false;
-			crouchingCollision.Disabled = true;
-
-			normalInteraction.Disabled = false;
-			crouchingInteraction.Disabled = true;
+			ClearSpritesAndHitboxes();
+			ActivateNormal();
+			isCrouching = false;
 		}
 
 		if (Input.IsActionJustPressed("player_dash"))
@@ -209,7 +220,7 @@ public class Player : KinematicBody2D
 				return;
 			}
 
-			if (IsOnFloor())
+			if (IsOnFloor() && isCrouching && canSlide)
 			{
 				Slide();
 				MoveAndSlide(velocity);
@@ -258,8 +269,6 @@ public class Player : KinematicBody2D
 		if (velocity.x < 0){
 			velocity.x = Math.Min(0, velocity.x + FRICTION);
 		}
-
-		velocity.y += GRAVITY * delta;
 
 		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
 	}
@@ -342,7 +351,7 @@ public class Player : KinematicBody2D
 			velocity = new Vector2(SLIDE_SPEED, 0);
 		}
 		isSliding = true;
-		//canSlide = false;
+		canSlide = false;
 	}
 
 	private void UnequipShotgun()
