@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Scripts/Player.cs" type="Script" id=1]
 [ext_resource path="res://Resources/Images/hippie_run_1.png" type="Texture" id=2]
@@ -28,7 +28,13 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 7.5, 15 )
+extents = Vector2( 7.5, 12 )
+
+[sub_resource type="RayShape2D" id=8]
+length = 16.0
+
+[sub_resource type="RayShape2D" id=9]
+length = 16.0
 
 [sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 8, 7.5 )
@@ -66,10 +72,17 @@ position = Vector2( 0, 8 )
 texture = ExtResource( 8 )
 flip_h = true
 
-[node name="NormalCollision" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2( 0, 1 )
+[node name="NormalCollision0" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -2 )
 shape = SubResource( 1 )
+
+[node name="NormalCollision1" type="CollisionShape2D" parent="."]
+position = Vector2( -7, 0 )
+shape = SubResource( 8 )
+
+[node name="NormalCollision2" type="CollisionShape2D" parent="."]
+position = Vector2( 6.5, 0 )
+shape = SubResource( 9 )
 
 [node name="CrouchingCollision" type="CollisionShape2D" parent="."]
 visible = false

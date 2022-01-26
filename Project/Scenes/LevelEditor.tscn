@@ -28,7 +28,7 @@ scale = Vector2( 2, 2 )
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 16, 16 )
 format = 1
-tile_data = PoolIntArray( 983052, 0, 0, 983053, 0, 0, 983054, 0, 0, 983055, 0, 0, 983056, 0, 0, 983057, 0, 0, 983058, 0, 0, 983059, 0, 0, 983060, 0, 0, 983061, 0, 0, 983062, 0, 0, 983063, 0, 0, 983064, 0, 0, 983065, 0, 0, 983066, 0, 0, 983067, 0, 0, 983068, 0, 0, 1441808, 0, 65536, 1966097, 0, 65536 )
+tile_data = PoolIntArray( 589851, 0, 1, 589852, 0, 0, 589853, 0, 0, 655386, 0, 1, 720921, 0, 1, 786456, 0, 1, 851991, 0, 1, 917526, 0, 1, 983051, 0, 1, 983052, 0, 0, 983053, 0, 0, 983054, 0, 0, 983055, 0, 0, 983056, 0, 0, 983057, 0, 0, 983058, 0, 0, 983059, 0, 0, 983060, 0, 0, 983061, 0, 0, 983062, 0, 0, 983063, 0, 0, 983064, 0, 0, 983065, 0, 0, 983066, 0, 0, 983067, 0, 0, 983068, 0, 0, 983069, 0, 0, 1048586, 0, 1, 1114121, 0, 1, 1179656, 0, 1, 1245190, 0, 0, 1245191, 0, 0, 1441808, 0, 65536, 1966097, 0, 65536 )
 
 [node name="CamContainer" type="Node2D" parent="."]
 
@@ -48,8 +48,8 @@ margin_right = 457.0
 margin_bottom = 278.0
 rect_min_size = Vector2( 300, 105 )
 access = 2
-current_dir = "/Godot/MyFirstGameJam-Winter22/Project"
-current_path = "/Godot/MyFirstGameJam-Winter22/Project/"
+current_dir = "/Users/david/Godot Projects/MyFirstGameJam-Winter22/Project"
+current_path = "/Users/david/Godot Projects/MyFirstGameJam-Winter22/Project/"
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false

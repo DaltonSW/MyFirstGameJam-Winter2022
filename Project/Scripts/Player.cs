@@ -10,10 +10,10 @@ public class Player : KinematicBody2D
 	private Sprite crouchingSprite;
 	private Sprite slidingSprite;
 
-	private CollisionShape2D normalCollision;
+	private CollisionShape2D[] normalCollisionBoxes;
 	private CollisionShape2D crouchingCollision;
 	private CollisionShape2D slidingCollision;
-	
+
 	private CollisionShape2D normalInteraction;
 	private CollisionShape2D crouchingInteraction;
 	private CollisionShape2D slidingInteraction;
@@ -37,31 +37,34 @@ public class Player : KinematicBody2D
 
 	[Export] public float DASH_SPEED = 400;
 	[Export] public float DASH_DISTANCE = 200;
-	private float CURRENT_DASH = 0;
-	
+	private float currentDashDistance = 0;
+
 	[Export] public float SLIDE_SPEED = 600;
 	[Export] public float SLIDE_DISTANCE = 200;
-	private float CURRENT_SLIDE = 0;
+	private float currentSlideDistance = 0;
 
 	[Export] private float JUMP_LOCKOUT = 10; //frames
-	[Export] private float CUR_JUMP_BUFFER;
+	[Export] private float currentJumpBuffer;
 	[Export] private float SHOTGUN_LOCKOUT = 1; //seconds
 	[Export] private float CUR_SHOTGUN_BUFFER;
 
-	[Export(PropertyHint.Range, "1,20,")] 
+	[Export(PropertyHint.Range, "1,20,")]
 	private int SHOTGUN_BLAST_COUNT = 7;
 
 	[Export] public bool interacting = false;
-	
+
 	private bool IS_SHOTGUN_EQUIPPED = false;
 
 	public bool isFacingLeft = false;
+	public bool isJumping = false;
 	public bool isDashing = false;
 	public bool isCrouching = false;
 	public bool isSliding = false;
 
 	private bool canDash = false;
 	private bool canSlide = true;
+
+	private const int SPRITE_SCALE = 2;
 
 	//if down, change sprite and collisions
 	//if holding down + dash, change sprite and collisions, and apply dash velocity
@@ -77,7 +80,12 @@ public class Player : KinematicBody2D
 		crouchingSprite = GetNode<Sprite>("CrouchingSprite");
 		slidingSprite = GetNode<Sprite>("SlidingSprite");
 
-		normalCollision = GetNode<CollisionShape2D>("NormalCollision");
+		normalCollisionBoxes = new CollisionShape2D[]
+		{
+			GetNode<CollisionShape2D>("NormalCollision0"),
+			GetNode<CollisionShape2D>("NormalCollision1"),
+			GetNode<CollisionShape2D>("NormalCollision2"),
+		};
 		crouchingCollision = GetNode<CollisionShape2D>("CrouchingCollision");
 		slidingCollision = GetNode<CollisionShape2D>("SlidingCollision");
 
@@ -86,78 +94,14 @@ public class Player : KinematicBody2D
 		slidingInteraction = GetNode<CollisionShape2D>("InteractionArea/SlidingInteraction");
 
 		interactionArea = GetNode<Area2D>("InteractionArea");
-		
+
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 	}
 
-	public override void _PhysicsProcess(float delta)
+	private void TryInteractions()
 	{
-		if (!Global.isPlaying)
-		{
-			velocity = new Vector2(0, 0);
-			MoveAndSlide(velocity);
-			return;
-		}
-
-		bool right = 		Input.IsActionPressed("player_right"); 
-		bool left = 		Input.IsActionPressed("player_left"); 
-		bool crouch =		Input.IsActionPressed("player_crouch");
-
-		bool jump = 		Input.IsActionJustPressed("player_jump");
-		bool dash = 		Input.IsActionJustPressed("player_dash");
-		bool shoot = 		Input.IsActionJustPressed("player_shoot");
-		bool melee = 		Input.IsActionJustPressed("player_melee");
-		bool interacted = 	Input.IsActionJustPressed("ui_select");
-
-		if (isDashing)
-		{
-			if (IsOnWall())
-			{
-				isDashing = false;
-			}
-			CURRENT_DASH += DASH_SPEED * delta;
-			MoveAndSlide(velocity);
-			if (CURRENT_DASH > DASH_DISTANCE)
-			{
-				velocity = new Vector2(0, 0);
-				isDashing = false;
-				animatedSprite.Play("idle");
-				CURRENT_DASH = 0;
-			}
-			return;
-		}
-
-		velocity.y += GRAVITY * delta;
-
-		if (isSliding)
-		{
-			if (jump)
-			{
-				velocity.y -= JUMP_SPEED;
-				isSliding = false;
-				canSlide = true;
-				CURRENT_SLIDE = 0;
-				ClearSpritesAndHitboxes();
-				ActivateNormal();
-				//animatedSprite.Play("jump");
-			}
-
-			CURRENT_SLIDE += SLIDE_SPEED * delta;
-			MoveAndSlide(velocity);
-			if(CURRENT_SLIDE > SLIDE_DISTANCE)
-			{
-				velocity = new Vector2(0, 0);
-				isSliding = false;
-				ClearSpritesAndHitboxes();
-				ActivateNormal();
-				animatedSprite.Play("idle");
-				CURRENT_SLIDE = 0;
-				canSlide = true;
-			}
-			return;
-		}
-		
+		bool interacted = Input.IsActionJustPressed("ui_select");
 		// Iterate through bodies colliding with interaction hitbox
 		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
 			// Interact if button just pressed
@@ -172,96 +116,168 @@ public class Player : KinematicBody2D
 				body.Call(collectMethodName);
 			}
 		}
-		
-		if (right && !crouch) 
+	}
+
+	private void Face(bool left)
+	{
+		int xMultiplier = left ? -1 : 1;
+		GlobalTransform = new Transform2D(new Vector2(xMultiplier * SPRITE_SCALE, 0), new Vector2(0, SPRITE_SCALE), new Vector2(Position.x, Position.y));
+		isFacingLeft = left;
+	}
+	private void FaceRight() { Face(false); }
+	private void FaceLeft() { Face(true); }
+
+	public override void _PhysicsProcess(float delta)
+	{
+		if (!Global.isPlaying)
+		{
+			velocity = new Vector2(0, 0);
+			DoMove();
+			return;
+		}
+
+		bool right = Input.IsActionPressed("player_right");
+		bool left = Input.IsActionPressed("player_left");
+		bool crouch = Input.IsActionPressed("player_crouch");
+
+		bool jump = Input.IsActionJustPressed("player_jump");
+		bool dash = Input.IsActionJustPressed("player_dash");
+		bool shoot = Input.IsActionJustPressed("player_shoot");
+		bool melee = Input.IsActionJustPressed("player_melee");
+
+		if (isDashing)
+		{
+			if (IsOnWall())
+			{
+				isDashing = false;
+			}
+			currentDashDistance += DASH_SPEED * delta;
+			DoMove();
+			if (currentDashDistance > DASH_DISTANCE)
+			{
+				velocity = new Vector2(0, 0);
+				isDashing = false;
+				animatedSprite.Play("idle");
+				currentDashDistance = 0;
+			}
+			return;
+		}
+
+		velocity.y += GRAVITY * delta;
+
+		if (isSliding)
+		{
+			if (jump)
+			{
+				velocity.y -= JUMP_SPEED;
+				StopSlide();
+				//animatedSprite.Play("jump");
+				DoMove();
+				return;
+			}
+
+			currentSlideDistance += SLIDE_SPEED * delta;
+			DoMove();
+			if (currentSlideDistance > SLIDE_DISTANCE)
+			{
+				velocity = new Vector2(0, 0);
+				StopSlide();
+				animatedSprite.Play("idle");
+			}
+			return;
+		}
+
+		TryInteractions();
+
+		if (right && !crouch)
 		{
 			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
-			GlobalTransform = new Transform2D(new Vector2(2, 0), new Vector2(0, 2), new Vector2(Position.x, Position.y));
-			isFacingLeft = false;
-
+			FaceRight();
 		}
 
-		if (left && !crouch) 
+		if (left && !crouch)
 		{
 			velocity.x = Math.Max(velocity.x - MOVE_SPEED, -GROUND_SPEED_CAP);
-			GlobalTransform = new Transform2D(new Vector2(-2, 0), new Vector2(0, 2), new Vector2(Position.x, Position.y));
-			isFacingLeft = true;
+			FaceLeft();
 		}
-		
+
 		if (crouch && !isSliding && !isDashing)
 		{
-			ClearSpritesAndHitboxes();
-			ActivateCrouch();
-			isCrouching = true;
+			StartCrouch();
 		}
 
 		if (isCrouching && !crouch)
 		{
-			ClearSpritesAndHitboxes();
-			ActivateNormal();
-			isCrouching = false;
+			StopCrouch();
 		}
 
 		if (Input.IsActionJustPressed("player_dash"))
 		{
 			if (!IsOnFloor() && canDash)
 			{
-				Dash();
-				MoveAndSlide(velocity);
+				StartDash();
+				DoMove();
 				return;
 			}
 
 			if (IsOnFloor() && isCrouching && canSlide)
 			{
-				Slide();
-				MoveAndSlide(velocity);
+				StartSlide();
+				DoMove();
 				return;
 			}
-			
+
 		}
 
-		if (jump && CUR_JUMP_BUFFER == 0)
+		// Jump
+		if (jump && currentJumpBuffer == 0)
 		{
-			if (IsOnFloor())
-			{
-				velocity.y -= JUMP_SPEED;
-			}
-
-			else if (IsOnWall())
-			{
-				float mult = WALL_JUMP_SCALE;
-				mult *= GetSlideCollision(0).Normal.x > 0 ? 1 : -1 ;
-				velocity.y = (float)(-1.1 * JUMP_SPEED);
-				velocity.x = (float)(mult * BASE_WALL_JUMP_AWAY);
-			}
-			CUR_JUMP_BUFFER += 1;
+			StartJump();
 		}
 
 		if (IsOnFloor())
 		{
+			// Reset dash
 			canDash = true;
-			CUR_JUMP_BUFFER = 0;
-			CURRENT_DASH = 0;
+			currentDashDistance = 0;
+
+			// Reset jump
+			StopJump();
 		}
 
-		if(CUR_JUMP_BUFFER != 0)
+		if (currentJumpBuffer != 0)
 		{
-			CUR_JUMP_BUFFER += 1;
-			if(CUR_JUMP_BUFFER > JUMP_LOCKOUT)
+			currentJumpBuffer += 1;
+			if (currentJumpBuffer > JUMP_LOCKOUT)
 			{
-					CUR_JUMP_BUFFER = 0;
+				currentJumpBuffer = 0;
 			}
 		}
 
-		if (velocity.x > 0){
+		ApplyFriction();
+		DoMove();
+	}
+
+	private void ApplyFriction()
+	{
+		if (velocity.x > 0)
+		{
 			velocity.x = Math.Max(0, velocity.x - FRICTION);
 		}
 
-		if (velocity.x < 0){
+		if (velocity.x < 0)
+		{
 			velocity.x = Math.Min(0, velocity.x + FRICTION);
 		}
+	}
 
-		velocity = MoveAndSlide(velocity, new Vector2(0, -1));
+	private readonly Vector2 UP = new Vector2(0, -1);
+
+	private void DoMove()
+	{
+		bool snapToGround = !isJumping;
+		Vector2 snapVector = snapToGround ? new Vector2(0, 10) : new Vector2(0, 0);
+		velocity = MoveAndSlideWithSnap(velocity, snapVector, UP, true);
 	}
 
 	public override void _Process(float delta)
@@ -282,13 +298,13 @@ public class Player : KinematicBody2D
 
 		if (CUR_SHOTGUN_BUFFER != 0)
 		{
-			CUR_SHOTGUN_BUFFER += delta;	
+			CUR_SHOTGUN_BUFFER += delta;
 		}
 
 		if (CUR_SHOTGUN_BUFFER > SHOTGUN_LOCKOUT)
 		{
 			CUR_SHOTGUN_BUFFER = 0;
-		}		
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent inputEvent)
@@ -297,7 +313,7 @@ public class Player : KinematicBody2D
 		{
 			if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.G)
 			{
-				if(!IS_SHOTGUN_EQUIPPED)
+				if (!IS_SHOTGUN_EQUIPPED)
 				{
 					EquipShotgun();
 				}
@@ -309,37 +325,65 @@ public class Player : KinematicBody2D
 		}
 	}
 
-	private void Dash()
+	private void StartJump()
 	{
-		animatedSprite.Play("dash");
-		if (isFacingLeft)
+		if (IsOnFloor())
 		{
-			velocity = new Vector2(-DASH_SPEED, 0);
+			velocity.y -= JUMP_SPEED;
 		}
 
-		else
+		else if (IsOnWall())
 		{
-			velocity = new Vector2(DASH_SPEED, 0);
+			float mult = WALL_JUMP_SCALE;
+			mult *= GetSlideCollision(0).Normal.x > 0 ? 1 : -1;
+			velocity.y = (float)(-1.1 * JUMP_SPEED);
+			velocity.x = (float)(mult * BASE_WALL_JUMP_AWAY);
 		}
+		isJumping = true;
+		currentJumpBuffer += 1;
+	}
+
+	private void StopJump()
+	{
+		isJumping = false;
+		currentJumpBuffer = 0;
+	}
+	private void StartDash()
+	{
+		animatedSprite.Play("dash");
+		int xMultiplier = isFacingLeft ? -1 : 1;
+		velocity = new Vector2(xMultiplier * DASH_SPEED, 0);
 		isDashing = true;
 		canDash = false;
 	}
 
-	private void Slide()
+	private void StartCrouch()
 	{
-		ClearSpritesAndHitboxes();
-		ActivateSlide();
-		if (isFacingLeft)
-		{
-			velocity = new Vector2(-SLIDE_SPEED, 0);
-		}
+		SwitchToCrouchSpriteAndHitboxes();
+		isCrouching = true;
+	}
 
-		else
-		{
-			velocity = new Vector2(SLIDE_SPEED, 0);
-		}
+	private void StopCrouch()
+	{
+		SwitchToNormalSpriteAndHitboxes();
+		isCrouching = false;
+	}
+
+	private void StartSlide()
+	{
+		SwitchToSlideSpriteAndHitboxes();
+		int xMultiplier = isFacingLeft ? -1 : 1;
+		velocity = new Vector2(xMultiplier * SLIDE_SPEED, 0);
 		isSliding = true;
 		canSlide = false;
+	}
+
+	private void StopSlide()
+	{
+		isSliding = false;
+		canSlide = true;
+		currentSlideDistance = 0;
+		SwitchToNormalSpriteAndHitboxes();
 	}
 
 	private void UnequipShotgun()
@@ -380,7 +424,10 @@ public class Player : KinematicBody2D
 		crouchingSprite.Visible = false;
 		slidingSprite.Visible = false;
 
-		normalCollision.Disabled = true;
+		foreach (CollisionShape2D normalCollisionBox in normalCollisionBoxes)
+		{
+			normalCollisionBox.Disabled = true;
+		}
 		crouchingCollision.Disabled = true;
 		slidingCollision.Disabled = true;
 
@@ -389,24 +436,51 @@ public class Player : KinematicBody2D
 		slidingInteraction.Disabled = true;
 	}
 
-	private void ActivateNormal()
+	private void ActivateNormalSpriteAndHitboxes()
 	{
 		animatedSprite.Visible = true;
-		normalCollision.Disabled = false;
+		foreach (CollisionShape2D normalCollisionBox in normalCollisionBoxes)
+		{
+			normalCollisionBox.Disabled = false;
+		}
 		normalInteraction.Disabled = false;
 	}
 
-	private void ActivateCrouch()
+	private void SwitchToNormalSpriteAndHitboxes()
+	{
+		ClearSpritesAndHitboxes();
+		ActivateNormalSpriteAndHitboxes();
+	}
+
+	private void ActivateCrouchSpriteAndHitboxes()
 	{
 		crouchingSprite.Visible = true;
 		crouchingCollision.Disabled = false;
 		crouchingInteraction.Disabled = false;
 	}
 
-	private void ActivateSlide()
+	private void SwitchToCrouchSpriteAndHitboxes()
+	{
+		ClearSpritesAndHitboxes();
+		ActivateCrouchSpriteAndHitboxes();
+	}
+
+	private void ActivateSlideSpriteAndHitboxes()
 	{
 		slidingSprite.Visible = true;
 		slidingCollision.Disabled = false;
 		slidingInteraction.Disabled = false;
 	}
+
+	private void SwitchToSlideSpriteAndHitboxes()
+	{
+		ClearSpritesAndHitboxes();
+		ActivateSlideSpriteAndHitboxes();
+	}
+}
+
+public static class FloatExtensions
+{
+	public static float DegreesToRadians(this float degrees)
+		=> degrees / 180 * (float) Math.PI;
 }
