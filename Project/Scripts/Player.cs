@@ -282,14 +282,27 @@ public class Player : KinematicBody2D
 
 	public override void _Process(float delta)
 	{
-		if (velocity.x == 0)
+		if (IsOnWall())
+		{
+			animatedSprite.Play("wall_slide");
+		}
+		else if (!IsOnFloor() && velocity.y < 0)
+		{
+			animatedSprite.Play("jump");
+		}
+		else if (!IsOnFloor() && velocity.y > 0)
+		{
+			animatedSprite.Play("fall");
+		}
+		else if (velocity.x == 0)
 		{
 			animatedSprite.Play("idle");
 		}
-
-		else {
+		else
+		{
 			animatedSprite.Play("run");
 		}
+
 		if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
 		{
 			CUR_SHOTGUN_BUFFER = delta;
@@ -477,10 +490,4 @@ public class Player : KinematicBody2D
 		ClearSpritesAndHitboxes();
 		ActivateSlideSpriteAndHitboxes();
 	}
-}
-
-public static class FloatExtensions
-{
-	public static float DegreesToRadians(this float degrees)
-		=> degrees / 180 * (float) Math.PI;
 }
