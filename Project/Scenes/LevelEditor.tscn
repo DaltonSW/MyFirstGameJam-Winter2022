@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/EditorObject.cs" type="Script" id=1]
 [ext_resource path="res://Scripts/LevelEditorSaveLoad.cs" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://Scripts/Level.cs" type="Script" id=5]
 [ext_resource path="res://Scripts/PlayerCamera.cs" type="Script" id=6]
 [ext_resource path="res://Scenes/DebugControls.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/PauseMenu.tscn" type="PackedScene" id=8]
 
 [node name="LevelEditor" type="Node2D"]
 script = ExtResource( 4 )
@@ -76,5 +77,8 @@ __meta__ = {
 
 [node name="DebugControls" parent="UI" instance=ExtResource( 7 )]
 
+[node name="PauseMenu" parent="UI" instance=ExtResource( 8 )]
+
 [connection signal="confirmed" from="UI/FileDialog" to="." method="_on_FileDialog_confirmed"]
 [connection signal="hide" from="UI/FileDialog" to="." method="_on_FileDialog_hide"]
+[connection signal="ResumeRequested" from="UI/PauseMenu" to="." method="_on_PauseMenu_ResumeRequested"]

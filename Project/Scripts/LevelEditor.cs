@@ -8,10 +8,14 @@ public class LevelEditor : Node2D
 	private bool showingUI = true;
 	//TODO: Not relevant to this file, but need camera to follow player properly
 
+	private PauseMenu pauseMenu;
+
 	public override void _Ready()
 	{
 		editorObject = GetNode<EditorObject>("EditorObject");
 		level = GetNode<Level>("Level");
+		pauseMenu = GetNode<PauseMenu>("/root/LevelEditor/UI/PauseMenu");
+		pauseMenu.Hide();
 	}
 
 	public override void _Process(float delta)
@@ -44,6 +48,11 @@ public class LevelEditor : Node2D
 			}
 			
 		}
+
+		if (Input.IsActionJustPressed("game_pause"))
+		{
+			Pause();
+		}
 	}
 
 	private void _on_FileDialog_confirmed()
@@ -68,4 +77,23 @@ public class LevelEditor : Node2D
 		Global.fileDialogShowing = false;
 		editorObject.fileBoxMode = EditorObject.PopupMode.NULL;
 	}
+
+	private void Pause()
+	{
+		GetTree().Paused = true;
+		pauseMenu.Show();
+	}
+
+	private void Resume()
+	{
+		GetTree().Paused = false;
+		pauseMenu.Hide();
+	}
+	
+	private void _on_PauseMenu_ResumeRequested()
+	{
+		Resume();
+	}
 }
+
+
