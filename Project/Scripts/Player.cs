@@ -285,7 +285,15 @@ public class Player : KinematicBody2D
 		if (IsOnWall())
 		{
 			animatedSprite.Play("wall_slide");
-		} 
+		}
+		else if (!IsOnFloor() && velocity.y < 0)
+		{
+			animatedSprite.Play("jump");
+		}
+		else if (!IsOnFloor() && velocity.y > 0)
+		{
+			animatedSprite.Play("fall");
+		}
 		else if (velocity.x == 0)
 		{
 			animatedSprite.Play("idle");
