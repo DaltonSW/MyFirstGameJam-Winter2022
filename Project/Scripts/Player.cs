@@ -3,6 +3,7 @@ using System;
 
 public class Player : KinematicBody2D
 {
+	#region Properties
 	private PackedScene projectileScene;
 	private PackedScene shotgunScene;
 
@@ -66,10 +67,8 @@ public class Player : KinematicBody2D
 
 	private const int SPRITE_SCALE = 2;
 
-	//if down, change sprite and collisions
-	//if holding down + dash, change sprite and collisions, and apply dash velocity
-	//	if sliding, be able to jump out (might take a bit to feel good)
-
+	private readonly Vector2 UP = new Vector2(0, -1);
+	#endregion
 
 	public override void _Ready()
 	{
@@ -98,34 +97,6 @@ public class Player : KinematicBody2D
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 	}
-
-	private void TryInteractions()
-	{
-		bool interacted = Input.IsActionJustPressed("ui_select");
-		// Iterate through bodies colliding with interaction hitbox
-		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
-			// Interact if button just pressed
-			string interactionMethodName = "interact_with_player";
-			if (!interacting && interacted && body.HasMethod(interactionMethodName)) {
-				interacting = true;
-				body.Call(interactionMethodName);
-			}
-			// Collect if collectable on collision
-			string collectMethodName = "collect";
-			if (body.HasMethod(collectMethodName)) {
-				body.Call(collectMethodName);
-			}
-		}
-	}
-
-	private void Face(bool left)
-	{
-		int xMultiplier = left ? -1 : 1;
-		GlobalTransform = new Transform2D(new Vector2(xMultiplier * SPRITE_SCALE, 0), new Vector2(0, SPRITE_SCALE), new Vector2(Position.x, Position.y));
-		isFacingLeft = left;
-	}
-	private void FaceRight() { Face(false); }
-	private void FaceLeft() { Face(true); }
 
 	public override void _PhysicsProcess(float delta)
 	{
@@ -258,28 +229,6 @@ public class Player : KinematicBody2D
 		DoMove();
 	}
 
-	private void ApplyFriction()
-	{
-		if (velocity.x > 0)
-		{
-			velocity.x = Math.Max(0, velocity.x - FRICTION);
-		}
-
-		if (velocity.x < 0)
-		{
-			velocity.x = Math.Min(0, velocity.x + FRICTION);
-		}
-	}
-
-	private readonly Vector2 UP = new Vector2(0, -1);
-
-	private void DoMove()
-	{
-		bool snapToGround = !isJumping;
-		Vector2 snapVector = snapToGround ? new Vector2(0, 10) : new Vector2(0, 0);
-		velocity = MoveAndSlideWithSnap(velocity, snapVector, UP, true);
-	}
-
 	public override void _Process(float delta)
 	{
 		if (IsOnWall())
@@ -320,6 +269,45 @@ public class Player : KinematicBody2D
 		}
 	}
 
+	private void TryInteractions()
+	{
+		bool interacted = Input.IsActionJustPressed("ui_select");
+		// Iterate through bodies colliding with interaction hitbox
+		foreach (Node2D body in interactionArea.GetOverlappingBodies()) {
+			// Interact if button just pressed
+			string interactionMethodName = "interact_with_player";
+			if (!interacting && interacted && body.HasMethod(interactionMethodName)) {
+				interacting = true;
+				body.Call(interactionMethodName);
+			}
+			// Collect if collectable on collision
+			string collectMethodName = "collect";
+			if (body.HasMethod(collectMethodName)) {
+				body.Call(collectMethodName);
+			}
+		}
+	}
+
+	private void ApplyFriction()
+	{
+		if (velocity.x > 0)
+		{
+			velocity.x = Math.Max(0, velocity.x - FRICTION);
+		}
+
+		if (velocity.x < 0)
+		{
+			velocity.x = Math.Min(0, velocity.x + FRICTION);
+		}
+	}
+
+	private void DoMove()
+	{
+		bool snapToGround = !isJumping;
+		Vector2 snapVector = snapToGround ? new Vector2(0, 10) : new Vector2(0, 0);
+		velocity = MoveAndSlideWithSnap(velocity, snapVector, UP, true);
+	}
+
 	public override void _UnhandledInput(InputEvent inputEvent)
 	{
 		if (inputEvent is InputEventKey eventKey)
@@ -338,6 +326,7 @@ public class Player : KinematicBody2D
 		}
 	}
 
+	#region Movement Methods
 	private void StartJump()
 	{
 		if (IsOnFloor())
@@ -360,14 +349,6 @@ public class Player : KinematicBody2D
 	{
 		isJumping = false;
 		currentJumpBuffer = 0;
-	}
-	private void StartDash()
-	{
-		animatedSprite.Play("dash");
-		int xMultiplier = isFacingLeft ? -1 : 1;
-		velocity = new Vector2(xMultiplier * DASH_SPEED, 0);
-		isDashing = true;
-		canDash = false;
 	}
 
 	private void StartCrouch()
@@ -398,6 +379,16 @@ public class Player : KinematicBody2D
 		currentSlideDistance = 0;
 		SwitchToNormalSpriteAndHitboxes();
 	}
+	
+	private void StartDash()
+	{
+		animatedSprite.Play("dash");
+		int xMultiplier = isFacingLeft ? -1 : 1;
+		velocity = new Vector2(xMultiplier * DASH_SPEED, 0);
+		isDashing = true;
+		canDash = false;
+	}
+	#endregion
 
 	private void UnequipShotgun()
 	{
@@ -431,6 +422,7 @@ public class Player : KinematicBody2D
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 	}
 
+	#region Visual Methods
 	private void ClearSpritesAndHitboxes()
 	{
 		animatedSprite.Visible = false;
@@ -490,4 +482,15 @@ public class Player : KinematicBody2D
 		ClearSpritesAndHitboxes();
 		ActivateSlideSpriteAndHitboxes();
 	}
+	
+	private void Face(bool left)
+	{
+		int xMultiplier = left ? -1 : 1;
+		GlobalTransform = new Transform2D(new Vector2(xMultiplier * SPRITE_SCALE, 0), new Vector2(0, SPRITE_SCALE), new Vector2(Position.x, Position.y));
+		isFacingLeft = left;
+	}
+
+	private void FaceRight() { Face(false); }
+	private void FaceLeft() { Face(true); }
+	#endregion
 }

@@ -6,7 +6,6 @@ public class LevelEditor : Node2D
 	private EditorObject editorObject;
 	private Level level;
 	private bool showingUI = true;
-	//TODO: Not relevant to this file, but need camera to follow player properly
 
 	private PauseMenu pauseMenu;
 
