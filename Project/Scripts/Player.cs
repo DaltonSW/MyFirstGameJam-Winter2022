@@ -282,14 +282,19 @@ public class Player : KinematicBody2D
 
 	public override void _Process(float delta)
 	{
-		if (velocity.x == 0)
+		if (IsOnWall())
+		{
+			animatedSprite.Play("wall_slide");
+		} 
+		else if (velocity.x == 0)
 		{
 			animatedSprite.Play("idle");
 		}
-
-		else {
+		else
+		{
 			animatedSprite.Play("run");
 		}
+
 		if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
 		{
 			CUR_SHOTGUN_BUFFER = delta;

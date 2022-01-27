@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Scripts/Player.cs" type="Script" id=1]
 [ext_resource path="res://Resources/Images/hippie_run_1.png" type="Texture" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://Resources/Images/hippie_run_0.png" type="Texture" id=6]
 [ext_resource path="res://Resources/Images/hippie_crouch.png" type="Texture" id=7]
 [ext_resource path="res://Resources/Images/hippie_ground_slide.png" type="Texture" id=8]
+[ext_resource path="res://Resources/Images/hippie_wall_slide.png" type="Texture" id=9]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -16,14 +17,19 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "dash",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 6 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "run",
 "speed": 3.0
 }, {
-"frames": [ ExtResource( 3 ) ],
+"frames": [ ExtResource( 9 ) ],
 "loop": true,
-"name": "dash",
+"name": "wall_slide",
 "speed": 5.0
 } ]
 
