@@ -324,20 +324,3 @@ public class EditorObject : Node2D
 		}
 	}
 }
-
-public static class TileMapExtensions
-{
-	public static int NumSubtiles(this TileMap tileMap, int tileID)
-		=> tileMap.TileSet.TileGetShapes(tileID).Count;
-
-	public static Vector2 GetSubtileCoord(this TileMap tileMap, int tileID, int subtileID)
-		=> (Vector2)((Godot.Collections.Dictionary) tileMap.TileSet.TileGetShapes(tileID)[subtileID])["autotile_coord"];
-
-	public static Rect2 GetSubtileRegion(this TileMap tileMap, int tileID, int subtileID)
-	{
-		var autotileOffset = tileMap.GetSubtileCoord(tileID, subtileID);
-		var tileSize = tileMap.TileSet.AutotileGetSize(tileID);
-		var position = new Vector2(tileSize.x * autotileOffset.x, tileSize.y * autotileOffset.y);
-		return new Rect2(position, tileSize);
-	}
-}

@@ -478,9 +478,3 @@ public class Player : KinematicBody2D
 		ActivateSlideSpriteAndHitboxes();
 	}
 }
-
-public static class FloatExtensions
-{
-	public static float DegreesToRadians(this float degrees)
-		=> degrees / 180 * (float) Math.PI;
-}
