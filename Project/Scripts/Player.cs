@@ -282,14 +282,27 @@ public class Player : KinematicBody2D
 
 	public override void _Process(float delta)
 	{
-		if (velocity.x == 0)
+		if (IsOnWall())
+		{
+			animatedSprite.Play("wall_slide");
+		}
+		else if (!IsOnFloor() && velocity.y < 0)
+		{
+			animatedSprite.Play("jump");
+		}
+		else if (!IsOnFloor() && velocity.y > 0)
+		{
+			animatedSprite.Play("fall");
+		}
+		else if (velocity.x == 0)
 		{
 			animatedSprite.Play("idle");
 		}
-
-		else {
+		else
+		{
 			animatedSprite.Play("run");
 		}
+
 		if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
 		{
 			CUR_SHOTGUN_BUFFER = delta;
@@ -325,7 +338,6 @@ public class Player : KinematicBody2D
 		}
 	}
 
-	#region Movement Functions
 	private void StartJump()
 	{
 		if (IsOnFloor())
@@ -348,6 +360,14 @@ public class Player : KinematicBody2D
 	{
 		isJumping = false;
 		currentJumpBuffer = 0;
+	}
+	private void StartDash()
+	{
+		animatedSprite.Play("dash");
+		int xMultiplier = isFacingLeft ? -1 : 1;
+		velocity = new Vector2(xMultiplier * DASH_SPEED, 0);
+		isDashing = true;
+		canDash = false;
 	}
 
 	private void StartCrouch()
@@ -378,16 +398,6 @@ public class Player : KinematicBody2D
 		currentSlideDistance = 0;
 		SwitchToNormalSpriteAndHitboxes();
 	}
-	
-	private void StartDash()
-	{
-		animatedSprite.Play("dash");
-		int xMultiplier = isFacingLeft ? -1 : 1;
-		velocity = new Vector2(xMultiplier * DASH_SPEED, 0);
-		isDashing = true;
-		canDash = false;
-	}
-	#endregion
 
 	private void UnequipShotgun()
 	{
@@ -421,7 +431,6 @@ public class Player : KinematicBody2D
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 	}
 
-	#region Visuals Methods
 	private void ClearSpritesAndHitboxes()
 	{
 		animatedSprite.Visible = false;
@@ -481,11 +490,4 @@ public class Player : KinematicBody2D
 		ClearSpritesAndHitboxes();
 		ActivateSlideSpriteAndHitboxes();
 	}
-	#endregion
-}
-
-public static class FloatExtensions
-{
-	public static float DegreesToRadians(this float degrees)
-		=> degrees / 180 * (float) Math.PI;
 }
