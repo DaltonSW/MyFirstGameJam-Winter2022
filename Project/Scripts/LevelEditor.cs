@@ -94,5 +94,3 @@ public class LevelEditor : Node2D
 		Resume();
 	}
 }
-
-

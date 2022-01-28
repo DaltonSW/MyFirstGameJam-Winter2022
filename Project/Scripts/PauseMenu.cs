@@ -20,5 +20,14 @@ public class PauseMenu : Control
 	{
 		GetTree().Quit(0); // Exit game
 	}
+	
+	private void _on_ExitToMainMenuButton_pressed()
+	{
+		GetTree().Paused = false;
+		GetTree().ChangeScene("res://Scenes/MainMenu.tscn");
+	}
 
 }
+
+
+

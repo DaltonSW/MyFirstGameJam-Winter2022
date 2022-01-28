@@ -83,3 +83,4 @@ visible = false
 
 [connection signal="confirmed" from="UI/FileDialog" to="." method="_on_FileDialog_confirmed"]
 [connection signal="hide" from="UI/FileDialog" to="." method="_on_FileDialog_hide"]
+[connection signal="ResumeRequested" from="UI/PauseMenu" to="." method="_on_PauseMenu_ResumeRequested"]
