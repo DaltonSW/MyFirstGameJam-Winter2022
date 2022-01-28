@@ -24,6 +24,8 @@ public class Player : KinematicBody2D
 	public Vector2 velocity = new Vector2();
 	private Vector2 spawnPosition = new Vector2(0, 0);
 
+	[Signal] delegate void PlayerKilled();
+
 	[Export] public float HEALTH = 10;
 
 	[Export] public float JUMP_HEIGHT = 145; //pixels
@@ -105,11 +107,7 @@ public class Player : KinematicBody2D
 	{
 		if (isDying)
 		{
-			if (animatedSprite.Frame == 15)
-			{
-				animatedSprite.Stop();
-				GetTree().Paused = false;
-			}
+
 		}
 
 		else 
@@ -525,6 +523,7 @@ public class Player : KinematicBody2D
 		animatedSprite.Play("health_death");
 		isDying = true;
 		GetTree().Paused = true;
+		EmitSignal(nameof(PlayerKilled));
 	}
 }
 
