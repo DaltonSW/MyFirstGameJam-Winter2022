@@ -61,6 +61,7 @@ public class Player : KinematicBody2D
 	public bool isDashing = false;
 	public bool isCrouching = false;
 	public bool isSliding = false;
+	public bool isDying = false;
 
 	private bool canDash = false;
 	private bool canSlide = true;
@@ -96,176 +97,193 @@ public class Player : KinematicBody2D
 
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
+
+		isDying = false;
 	}
 
 	public override void _PhysicsProcess(float delta)
 	{
-		if (!Global.isPlaying)
+		if (isDying)
 		{
-			velocity = new Vector2(0, 0);
-			DoMove();
-			return;
+			if (animatedSprite.Frame == 15)
+			{
+				animatedSprite.Stop();
+				GetTree().Paused = false;
+			}
 		}
 
-		bool right = Input.IsActionPressed("player_right");
-		bool left = Input.IsActionPressed("player_left");
-		bool crouch = Input.IsActionPressed("player_crouch");
-
-		bool jump = Input.IsActionJustPressed("player_jump");
-		bool dash = Input.IsActionJustPressed("player_dash");
-		bool shoot = Input.IsActionJustPressed("player_shoot");
-		bool melee = Input.IsActionJustPressed("player_melee");
-
-		if (isDashing)
+		else 
 		{
-			if (IsOnWall())
-			{
-				isDashing = false;
-			}
-			currentDashDistance += DASH_SPEED * delta;
-			DoMove();
-			if (currentDashDistance > DASH_DISTANCE)
+			if (!Global.isPlaying)
 			{
 				velocity = new Vector2(0, 0);
-				isDashing = false;
-				animatedSprite.Play("idle");
+				DoMove();
+				return;
+			}
+
+			bool right = Input.IsActionPressed("player_right");
+			bool left = Input.IsActionPressed("player_left");
+			bool crouch = Input.IsActionPressed("player_crouch");
+
+			bool jump = Input.IsActionJustPressed("player_jump");
+			bool dash = Input.IsActionJustPressed("player_dash");
+			bool shoot = Input.IsActionJustPressed("player_shoot");
+			bool melee = Input.IsActionJustPressed("player_melee");
+
+			if (isDashing)
+			{
+				if (IsOnWall())
+				{
+					isDashing = false;
+				}
+				currentDashDistance += DASH_SPEED * delta;
+				DoMove();
+				if (currentDashDistance > DASH_DISTANCE)
+				{
+					velocity = new Vector2(0, 0);
+					isDashing = false;
+					animatedSprite.Play("idle");
+					currentDashDistance = 0;
+				}
+				return;
+			}
+
+			velocity.y += GRAVITY * delta;
+
+			if (isSliding)
+			{
+				if (jump)
+				{
+					velocity.y -= JUMP_SPEED;
+					StopSlide();
+					//animatedSprite.Play("jump");
+					DoMove();
+					return;
+				}
+
+				currentSlideDistance += SLIDE_SPEED * delta;
+				DoMove();
+				if (currentSlideDistance > SLIDE_DISTANCE)
+				{
+					velocity = new Vector2(0, 0);
+					StopSlide();
+					animatedSprite.Play("idle");
+				}
+				return;
+			}
+
+			TryInteractions();
+
+			if (right && !crouch)
+			{
+				velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
+				FaceRight();
+			}
+
+			if (left && !crouch)
+			{
+				velocity.x = Math.Max(velocity.x - MOVE_SPEED, -GROUND_SPEED_CAP);
+				FaceLeft();
+			}
+
+			if (crouch && !isSliding && !isDashing)
+			{
+				StartCrouch();
+			}
+
+			if (isCrouching && !crouch)
+			{
+				StopCrouch();
+			}
+
+			if (Input.IsActionJustPressed("player_dash"))
+			{
+				if (!IsOnFloor() && canDash)
+				{
+					StartDash();
+					DoMove();
+					return;
+				}
+
+				if (IsOnFloor() && isCrouching && canSlide)
+				{
+					StartSlide();
+					DoMove();
+					return;
+				}
+
+			}
+
+			// Jump
+			if (jump && currentJumpBuffer == 0)
+			{
+				StartJump();
+			}
+
+			if (IsOnFloor())
+			{
+				// Reset dash
+				canDash = true;
 				currentDashDistance = 0;
+
+				// Reset jump
+				StopJump();
 			}
-			return;
-		}
 
-		velocity.y += GRAVITY * delta;
-
-		if (isSliding)
-		{
-			if (jump)
+			if (currentJumpBuffer != 0)
 			{
-				velocity.y -= JUMP_SPEED;
-				StopSlide();
-				//animatedSprite.Play("jump");
-				DoMove();
-				return;
+				currentJumpBuffer += 1;
+				if (currentJumpBuffer > JUMP_LOCKOUT)
+				{
+					currentJumpBuffer = 0;
+				}
 			}
 
-			currentSlideDistance += SLIDE_SPEED * delta;
+			ApplyFriction();
 			DoMove();
-			if (currentSlideDistance > SLIDE_DISTANCE)
-			{
-				velocity = new Vector2(0, 0);
-				StopSlide();
-				animatedSprite.Play("idle");
-			}
-			return;
 		}
-
-		TryInteractions();
-
-		if (right && !crouch)
-		{
-			velocity.x = Math.Min(velocity.x + MOVE_SPEED, GROUND_SPEED_CAP);
-			FaceRight();
-		}
-
-		if (left && !crouch)
-		{
-			velocity.x = Math.Max(velocity.x - MOVE_SPEED, -GROUND_SPEED_CAP);
-			FaceLeft();
-		}
-
-		if (crouch && !isSliding && !isDashing)
-		{
-			StartCrouch();
-		}
-
-		if (isCrouching && !crouch)
-		{
-			StopCrouch();
-		}
-
-		if (Input.IsActionJustPressed("player_dash"))
-		{
-			if (!IsOnFloor() && canDash)
-			{
-				StartDash();
-				DoMove();
-				return;
-			}
-
-			if (IsOnFloor() && isCrouching && canSlide)
-			{
-				StartSlide();
-				DoMove();
-				return;
-			}
-
-		}
-
-		// Jump
-		if (jump && currentJumpBuffer == 0)
-		{
-			StartJump();
-		}
-
-		if (IsOnFloor())
-		{
-			// Reset dash
-			canDash = true;
-			currentDashDistance = 0;
-
-			// Reset jump
-			StopJump();
-		}
-
-		if (currentJumpBuffer != 0)
-		{
-			currentJumpBuffer += 1;
-			if (currentJumpBuffer > JUMP_LOCKOUT)
-			{
-				currentJumpBuffer = 0;
-			}
-		}
-
-		ApplyFriction();
-		DoMove();
 	}
 
 	public override void _Process(float delta)
 	{
-		if (IsOnWall())
+		if (!isDying)
 		{
-			animatedSprite.Play("wall_slide");
-		}
-		else if (!IsOnFloor() && velocity.y < 0)
-		{
-			animatedSprite.Play("jump");
-		}
-		else if (!IsOnFloor() && velocity.y > 0)
-		{
-			animatedSprite.Play("fall");
-		}
-		else if (velocity.x == 0)
-		{
-			animatedSprite.Play("idle");
-		}
-		else
-		{
-			animatedSprite.Play("run");
-		}
+			if (IsOnWall())
+			{
+				animatedSprite.Play("wall_slide");
+			}
+			else if (!IsOnFloor() && velocity.y < 0)
+			{
+				animatedSprite.Play("jump");
+			}
+			else if (!IsOnFloor() && velocity.y > 0)
+			{
+				animatedSprite.Play("fall");
+			}
+			else if (velocity.x == 0)
+			{
+				animatedSprite.Play("idle");
+			}
+			else
+			{
+				animatedSprite.Play("run");
+			}
 
-		if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
-		{
-			CUR_SHOTGUN_BUFFER = delta;
-			ShootShotgun();
-		}
+			if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
+			{
+				CUR_SHOTGUN_BUFFER = delta;
+				ShootShotgun();
+			}
 
-		if (CUR_SHOTGUN_BUFFER != 0)
-		{
-			CUR_SHOTGUN_BUFFER += delta;
-		}
+			if (CUR_SHOTGUN_BUFFER != 0)
+			{
+				CUR_SHOTGUN_BUFFER += delta;
+			}
 
-		if (CUR_SHOTGUN_BUFFER > SHOTGUN_LOCKOUT)
-		{
-			CUR_SHOTGUN_BUFFER = 0;
+			if (CUR_SHOTGUN_BUFFER > SHOTGUN_LOCKOUT)
+			{
+				CUR_SHOTGUN_BUFFER = 0;
+			}
 		}
 	}
 
@@ -310,17 +328,20 @@ public class Player : KinematicBody2D
 
 	public override void _UnhandledInput(InputEvent inputEvent)
 	{
-		if (inputEvent is InputEventKey eventKey)
+		if (!isDying)
 		{
-			if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.G)
+			if (inputEvent is InputEventKey eventKey)
 			{
-				if (!IS_SHOTGUN_EQUIPPED)
+				if (eventKey.Pressed && eventKey.Scancode == (int)KeyList.G)
 				{
-					EquipShotgun();
-				}
-				else
-				{
-					UnequipShotgun();
+					if (!IS_SHOTGUN_EQUIPPED)
+					{
+						EquipShotgun();
+					}
+					else
+					{
+						UnequipShotgun();
+					}
 				}
 			}
 		}
@@ -390,6 +411,7 @@ public class Player : KinematicBody2D
 	}
 	#endregion
 
+	#region Gun Methods
 	private void UnequipShotgun()
 	{
 		GetNode("Shotgun").QueueFree();
@@ -415,12 +437,7 @@ public class Player : KinematicBody2D
 			GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
 		}
 	}
-
-	public void RecalcPhysics()
-	{
-		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
-		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
-	}
+	#endregion
 
 	#region Visual Methods
 	private void ClearSpritesAndHitboxes()
@@ -493,6 +510,22 @@ public class Player : KinematicBody2D
 	private void FaceRight() { Face(false); }
 	private void FaceLeft() { Face(true); }
 	#endregion
+	
+	public void RecalcPhysics()
+	{
+		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
+		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
+	}
+
+	public void KillPlayer()
+	{
+
+		ClearSpritesAndHitboxes();
+		ActivateNormalSpriteAndHitboxes();
+		animatedSprite.Play("health_death");
+		isDying = true;
+		GetTree().Paused = true;
+	}
 }
 
 

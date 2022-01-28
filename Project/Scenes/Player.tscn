@@ -1,22 +1,40 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Scripts/Player.cs" type="Script" id=1]
-[ext_resource path="res://Resources/Images/hippie_run_1.png" type="Texture" id=2]
-[ext_resource path="res://Resources/Images/hippie_run_2.png" type="Texture" id=3]
-[ext_resource path="res://Resources/Images/hippie_idle_0.png" type="Texture" id=4]
-[ext_resource path="res://Resources/Images/hippie_idle_1.png" type="Texture" id=5]
-[ext_resource path="res://Resources/Images/hippie_run_0.png" type="Texture" id=6]
-[ext_resource path="res://Resources/Images/hippie_crouch.png" type="Texture" id=7]
-[ext_resource path="res://Resources/Images/hippie_ground_slide.png" type="Texture" id=8]
-[ext_resource path="res://Resources/Images/hippie_wall_slide.png" type="Texture" id=9]
-[ext_resource path="res://Resources/Images/hippie_jump.png" type="Texture" id=10]
-[ext_resource path="res://Resources/Images/hippie_fall.png" type="Texture" id=11]
+[ext_resource path="res://Resources/Images/Player/hippie_run_1.png" type="Texture" id=2]
+[ext_resource path="res://Resources/Images/Player/hippie_run_2.png" type="Texture" id=3]
+[ext_resource path="res://Resources/Images/Player/hippie_idle_0.png" type="Texture" id=4]
+[ext_resource path="res://Resources/Images/Player/hippie_idle_1.png" type="Texture" id=5]
+[ext_resource path="res://Resources/Images/Player/hippie_run_0.png" type="Texture" id=6]
+[ext_resource path="res://Resources/Images/Player/hippie_crouch.png" type="Texture" id=7]
+[ext_resource path="res://Resources/Images/Player/hippie_ground_slide.png" type="Texture" id=8]
+[ext_resource path="res://Resources/Images/Player/hippie_wall_slide.png" type="Texture" id=9]
+[ext_resource path="res://Resources/Images/Player/hippie_jump.png" type="Texture" id=10]
+[ext_resource path="res://Resources/Images/Player/hippie_fall.png" type="Texture" id=11]
+[ext_resource path="res://Resources/Images/Player/hippie_die_05.png" type="Texture" id=12]
+[ext_resource path="res://Resources/Images/Player/hippie_die_07.png" type="Texture" id=13]
+[ext_resource path="res://Resources/Images/Player/hippie_die_06.png" type="Texture" id=14]
+[ext_resource path="res://Resources/Images/Player/hippie_die_08.png" type="Texture" id=15]
+[ext_resource path="res://Resources/Images/Player/hippie_die_11.png" type="Texture" id=16]
+[ext_resource path="res://Resources/Images/Player/hippie_die_12.png" type="Texture" id=17]
+[ext_resource path="res://Resources/Images/Player/hippie_die_09.png" type="Texture" id=18]
+[ext_resource path="res://Resources/Images/Player/hippie_die_10.png" type="Texture" id=19]
+[ext_resource path="res://Resources/Images/Player/hippie_die_00.png" type="Texture" id=20]
+[ext_resource path="res://Resources/Images/Player/hippie_die_01.png" type="Texture" id=21]
+[ext_resource path="res://Resources/Images/Player/hippie_die_02.png" type="Texture" id=22]
+[ext_resource path="res://Resources/Images/Player/hippie_die_03.png" type="Texture" id=23]
+[ext_resource path="res://Resources/Images/Player/hippie_die_04.png" type="Texture" id=24]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 20 ), ExtResource( 21 ), ExtResource( 22 ), ExtResource( 23 ), ExtResource( 24 ), ExtResource( 12 ), ExtResource( 14 ), ExtResource( 13 ), ExtResource( 15 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 17 ), ExtResource( 17 ), ExtResource( 17 ), ExtResource( 17 ) ],
+"loop": true,
+"name": "health_death",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 3 ) ],
@@ -70,6 +88,7 @@ extents = Vector2( 8, 7.5 )
 extents = Vector2( 15, 7.5 )
 
 [node name="Player" type="KinematicBody2D"]
+pause_mode = 2
 scale = Vector2( 2, 2 )
 script = ExtResource( 1 )
 

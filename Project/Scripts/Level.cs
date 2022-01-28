@@ -22,10 +22,23 @@ public class Level : Node2D
 		}
 	}
 
+	public override void _UnhandledInput(InputEvent inputEvent)
+	{
+		// if(inputEvent is InputEventKey eventKey)
+		// {
+		// 	if(eventKey.Scancode == (int)KeyList.K && eventKey.Pressed)
+		// 	{
+		// 		player = GetNodeOrNull<Player>("PlayerNode/Player");
+		// 		if (player != null)
+		// 		{
+		// 			player.KillPlayer();
+		// 		}
+		// 	}
+		// }
+	}
+
 	private void _on_DeathBox_body_entered(Node2D body)
 	{
-		GD.Print("Dead!!!!");
-		GD.Print(body.Name);
 		respawnPlayer();
 	}
 }

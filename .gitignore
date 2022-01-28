@@ -9,3 +9,4 @@ export_presets.cfg
 Project/data_Project
 Project/Resources/Images/*.import
 Project/.vscode/*
+*.import
