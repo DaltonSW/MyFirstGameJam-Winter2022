@@ -15,6 +15,9 @@ using System.Collections.Generic;
  */
 public class DebugControls : Control
 {
+	[Export]
+	private bool IN_LEVEL_EDITOR = false;
+	
 	private PackedScene playerScene;
 	private Player player;
 	private Position2D SpawnPoint;
@@ -31,8 +34,7 @@ public class DebugControls : Control
 	{
 		labeledSpinner = GD.Load<PackedScene>("res://Scenes/LabeledSpinner.tscn");
 
-		GD.Print(Global.inLevelEditor);
-		String playerPath = Global.inLevelEditor ? "/root/LevelEditor/Level/PlayerNode/Player" : "../PlayerNode/Player";
+		String playerPath = IN_LEVEL_EDITOR ? "/root/LevelEditor/Level/PlayerNode/Player" : "../PlayerNode/Player";
 
 		player = GetNode<Player>(playerPath);
 

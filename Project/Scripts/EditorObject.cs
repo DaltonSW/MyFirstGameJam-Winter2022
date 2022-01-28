@@ -57,7 +57,7 @@ public class EditorObject : Node2D
 		systemPopup = GetNode<FileDialog>("/root/LevelEditor/UI/FileDialog");
 
 		tileSpriteForMouse = (Texture)GD.Load("res://Resources/Images/LevelEditorBlocks.png");
-		playerSpriteForMouse = (Texture)GD.Load("res://Resources/Images/hippie_idle_0.png");
+		playerSpriteForMouse = (Texture)GD.Load("res://Resources/Images/Player/hippie_idle_0.png");
 
 		Color temp = currentMouseSprite.Modulate;
 		temp.a = 0.5F;
