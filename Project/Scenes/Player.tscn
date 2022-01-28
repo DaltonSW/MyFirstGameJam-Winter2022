@@ -24,14 +24,9 @@ animations = [ {
 "name": "dash",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 6 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 2 ) ],
+"frames": [ ExtResource( 10 ) ],
 "loop": true,
-"name": "run",
-"speed": 3.0
-}, {
-"frames": [ ExtResource( 9 ) ],
-"loop": true,
-"name": "wall_slide",
+"name": "jump",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 11 ) ],
@@ -39,10 +34,15 @@ animations = [ {
 "name": "fall",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 10 ) ],
+"frames": [ ExtResource( 9 ) ],
 "loop": true,
-"name": "jump",
+"name": "wall_slide",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "run",
+"speed": 3.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=1]

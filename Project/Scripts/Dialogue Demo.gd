@@ -11,10 +11,6 @@ var dialogue = preload("res://Resources/Dialogue/dialogue_test.tres")
 
 var coin_collected = false
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass
-
 func show_dialogue(line_id: String):
 	var line = yield(DialogueManager.get_next_dialogue_line(line_id, dialogue), "completed")
 	if line == null:
@@ -26,10 +22,6 @@ func show_dialogue(line_id: String):
 	var next_line_id = yield(dialogue_box, "next_line_requested")
 	yield(get_tree().create_timer(.1), "timeout")
 	show_dialogue(next_line_id)
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 
 func _on_Cultist1_player_interaction_requested():
 	show_dialogue("Test 1")

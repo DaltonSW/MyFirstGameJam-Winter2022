@@ -494,3 +494,6 @@ public class Player : KinematicBody2D
 	private void FaceLeft() { Face(true); }
 	#endregion
 }
+
+
+
