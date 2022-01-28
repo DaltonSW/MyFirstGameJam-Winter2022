@@ -24,7 +24,7 @@ public class PlayerCamera : Camera2D
 			float maxX = 26 * BLOCK_WIDTH - centerXOffset;
 			float minY = 0                + centerYOffset;
 			float maxY = 26 * BLOCK_WIDTH - centerYOffset;
-			GlobalPosition = player.GlobalPosition.Clamp(minX, maxX, minY, maxY);
+			GlobalPosition = player.GlobalPosition;
 		}
 	}
 
