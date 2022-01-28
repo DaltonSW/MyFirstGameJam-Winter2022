@@ -248,7 +248,7 @@ public class Player : KinematicBody2D
 	{
 		if (!isDying)
 		{
-			if (IsOnWall())
+			if (IsOnWall() && !IsOnFloor())
 			{
 				animatedSprite.Play("wall_slide");
 			}
