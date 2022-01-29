@@ -97,6 +97,14 @@ public class LevelHolder : Node2D
 	private void PlayerKilledCallback()
 	{
 	}
+
+	public void DeathboxBodyEntered(Node body)
+	{
+		if(body is Player player)
+		{
+			player.KillPlayer();
+		}
+	}
 }
 
 
