@@ -70,10 +70,18 @@ public class LevelHolder : Node2D
 
 	private void AnimationFinishedCallback()
 	{
-		if(playerSprite.Animation == "health_death")
+		//GD.Print("Animation finished");
+		//GD.Print(playerSprite.Animation);
+		if (playerSprite.Animation == "health_death")
 		{
 			respawnScene.Visible = true;
 			playerSprite.Stop();
+		}
+
+		else if (playerSprite.Animation == "melee")
+		{
+			//GD.Print("Swing has stopped!");
+			player.StopSwing();
 		}
 	}
 

@@ -16,6 +16,9 @@ public class Player : KinematicBody2D
 	private CollisionShape2D crouchingArrowUpShape;
 	private Area2D crouchingArrowUp;
 	private CollisionShape2D slidingCollision;
+	
+	private Area2D meleeCollision;
+	private CollisionShape2D meleeCollisionShape;
 
 	private CollisionShape2D normalInteraction;
 	private CollisionShape2D crouchingInteraction;
@@ -67,6 +70,7 @@ public class Player : KinematicBody2D
 	public bool isCrouching = false;
 	public bool isSliding = false;
 	public bool isDying = false;
+	public bool isSwinging = false;
 
 	private bool canDash = false;
 	private bool canSlide = true;
@@ -100,6 +104,9 @@ public class Player : KinematicBody2D
 		crouchingInteraction = GetNode<CollisionShape2D>("InteractionArea/CrouchingInteraction");
 		slidingInteraction = GetNode<CollisionShape2D>("InteractionArea/SlidingInteraction");
 
+		meleeCollision = GetNode<Area2D>("GuitarHitbox");
+		meleeCollisionShape = meleeCollision.GetNode<CollisionShape2D>("CollisionShape2D");
+
 		interactionArea = GetNode<Area2D>("InteractionArea");
 
 		GRAVITY = (float)(JUMP_HEIGHT / (2 * Math.Pow(TIME_IN_AIR, 2)));
@@ -113,9 +120,35 @@ public class Player : KinematicBody2D
 
 	public override void _PhysicsProcess(float delta)
 	{
-		if (isDying)
+		if (isSwinging)
 		{
+			if (animatedSprite.Frame == 2)
+			{
+				meleeCollisionShape.Disabled = false;
+			}
 
+			else 
+			{
+				meleeCollisionShape.Disabled = true;
+			}
+
+			if (!meleeCollisionShape.Disabled)
+			{
+				if (meleeCollision.GetOverlappingBodies().Count != 0)
+				{
+					foreach (Node2D body in meleeCollision.GetOverlappingBodies())
+					{
+						if (body is Enemy enemy)
+						{
+							enemy.QueueFree();
+						}
+					}
+				}
+			}
+
+			//GD.Print(meleeCollisionShape.Disabled);
+			//GD.Print(animatedSprite.Frame);
+			//GD.Print(animatedSprite.Animation);
 		}
 
 		else 
@@ -201,6 +234,11 @@ public class Player : KinematicBody2D
 				StopCrouch();
 			}
 
+			if (Input.IsActionJustPressed("player_melee") && IsOnFloor() && !isCrouching)
+			{
+				SwingGuitar();
+			}
+
 			if (Input.IsActionJustPressed("player_dash"))
 			{
 				if (!IsOnFloor() && canDash)
@@ -253,22 +291,31 @@ public class Player : KinematicBody2D
 	{
 		if (!isDying)
 		{
-			if (IsOnWall() && !IsOnFloor())
+			if (isSwinging)
+			{
+				animatedSprite.Play("melee");
+			}
+
+			else if (IsOnWall() && !IsOnFloor())
 			{
 				animatedSprite.Play("wall_slide");
 			}
+
 			else if (!IsOnFloor() && velocity.y < 0)
 			{
 				animatedSprite.Play("jump");
 			}
+
 			else if (!IsOnFloor() && velocity.y > 0)
 			{
 				animatedSprite.Play("fall");
 			}
+
 			else if (velocity.x == 0)
 			{
 				animatedSprite.Play("idle");
 			}
+			
 			else
 			{
 				animatedSprite.Play("run");
@@ -424,7 +471,7 @@ public class Player : KinematicBody2D
 	}
 	#endregion
 
-	#region Gun Methods
+	#region Attack Methods
 	private void UnequipShotgun()
 	{
 		GetNode("Shotgun").QueueFree();
@@ -449,6 +496,28 @@ public class Player : KinematicBody2D
 			projectile.Position = bulletSpawn.GlobalPosition;
 			GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
 		}
+	}
+
+	private void SwingGuitar()
+	{
+		//Double the speed of the animation playback (10FPS) while in the guitar swing animation
+		ClearSpritesAndHitboxes();
+		ActivateNormalSpriteAndHitboxes();
+		velocity = new Vector2(0, 0);
+		MoveAndSlide(velocity);
+		animatedSprite.Play("melee");
+		animatedSprite.Centered = false;
+		animatedSprite.Offset = new Vector2(-20, -45);
+		animatedSprite.SpeedScale = 2;
+		isSwinging = true;
+	}
+
+	public void StopSwing()
+	{
+		isSwinging = false;
+		animatedSprite.Centered = true;
+		animatedSprite.Offset = new Vector2(0, 0);
+		animatedSprite.SpeedScale = 1;
 	}
 	#endregion
 

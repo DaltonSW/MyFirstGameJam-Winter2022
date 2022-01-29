@@ -934,7 +934,7 @@ tile_data = PoolIntArray( -1, 1, 0, -65536, 1, 0, -65535, 1, 0, -65534, 1, 0, -6
 [node name="PlayerNode" type="Node2D" parent="."]
 
 [node name="Player" parent="PlayerNode" instance=ExtResource( 2 )]
-position = Vector2( 192, 624 )
+position = Vector2( 120, 608 )
 input_pickable = true
 SHOTGUN_BLAST_COUNT = 3
 

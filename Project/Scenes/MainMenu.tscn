@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Scripts/MainMenu.gd" type="Script" id=1]
+[ext_resource path="res://Resources/Images/TitleScreen.png" type="Texture" id=2]
 
 [node name="Menu" type="Control"]
 anchor_right = 1.0
@@ -14,25 +15,39 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 445.0
-margin_top = 407.0
-margin_right = 787.0
-margin_bottom = 638.0
+[node name="StartButton" type="Button" parent="."]
+margin_left = 429.0
+margin_top = 381.0
+margin_right = 845.0
+margin_bottom = 445.0
+text = "Start"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="StartButton" type="Button" parent="VBoxContainer"]
-margin_right = 342.0
-margin_bottom = 20.0
-text = "Start"
-
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
-margin_top = 24.0
-margin_right = 342.0
-margin_bottom = 44.0
+[node name="QuitButton" type="Button" parent="."]
+margin_left = 426.0
+margin_top = 495.0
+margin_right = 851.0
+margin_bottom = 565.0
 text = "Quit"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_StartButton_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_QuitButton_pressed"]
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 637, 365 )
+texture = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 869.0
+margin_top = 509.0
+margin_right = 1285.0
+margin_bottom = 693.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="StartButton" to="." method="_on_StartButton_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_QuitButton_pressed"]
