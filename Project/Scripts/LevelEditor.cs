@@ -15,6 +15,7 @@ public class LevelEditor : Node2D
 		level = GetNode<Level>("Level");
 		pauseMenu = GetNode<PauseMenu>("/root/LevelEditor/UI/PauseMenu");
 		pauseMenu.Hide();
+		Global.inLevelEditor = true;
 	}
 
 	public override void _Process(float delta)

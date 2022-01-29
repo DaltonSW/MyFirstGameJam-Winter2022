@@ -9,8 +9,8 @@ public class Level : Node2D
 	public override void _Ready()
 	{
 		spawnPoint = GetNode<Position2D>("SpawnPoint");
-		Global.isPlaying = true;
-		Global.inLevelEditor = false;
+		// Global.isPlaying = true;
+		// Global.inLevelEditor = false;
 	}
 
 	public void respawnPlayer()
