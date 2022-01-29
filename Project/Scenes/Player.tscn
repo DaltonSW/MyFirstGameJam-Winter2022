@@ -88,7 +88,6 @@ extents = Vector2( 8, 7.5 )
 extents = Vector2( 15, 7.5 )
 
 [sub_resource type="RayShape2D" id=10]
-length = 10.0
 
 [node name="Player" type="KinematicBody2D"]
 pause_mode = 2

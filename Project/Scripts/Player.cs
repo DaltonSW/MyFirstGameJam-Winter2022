@@ -13,6 +13,7 @@ public class Player : KinematicBody2D
 
 	private CollisionShape2D[] normalCollisionBoxes;
 	private CollisionShape2D crouchingCollision;
+	private CollisionShape2D crouchingArrowUpShape;
 	private Area2D crouchingArrowUp;
 	private CollisionShape2D slidingCollision;
 
@@ -92,6 +93,7 @@ public class Player : KinematicBody2D
 		};
 		crouchingCollision = GetNode<CollisionShape2D>("CrouchingCollision");
 		crouchingArrowUp = GetNode<Area2D>("CrouchCollisionUp");
+		crouchingArrowUpShape = crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape");
 		slidingCollision = GetNode<CollisionShape2D>("SlidingCollision");
 
 		normalInteraction = GetNode<CollisionShape2D>("InteractionArea/NormalInteraction");
@@ -104,6 +106,9 @@ public class Player : KinematicBody2D
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 
 		isDying = false;
+
+		ActivateNormalSpriteAndHitboxes();
+		crouchingArrowUpShape.Disabled = true;
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -198,9 +203,11 @@ public class Player : KinematicBody2D
 
 			else
 			{
+				GD.Print(crouchingArrowUpShape.Disabled);
+
 				foreach (Node2D area in crouchingArrowUp.GetOverlappingBodies())
 				{
-					GD.Print(area.Name);
+					// GD.Print(area.Name);
 				}
 			}
 
@@ -467,7 +474,7 @@ public class Player : KinematicBody2D
 			normalCollisionBox.Disabled = true;
 		}
 		crouchingCollision.Disabled = true;
-		crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape").Disabled = true;
+		crouchingArrowUpShape.Disabled = true;
 		slidingCollision.Disabled = true;
 
 		normalInteraction.Disabled = true;
@@ -495,7 +502,7 @@ public class Player : KinematicBody2D
 	{
 		crouchingSprite.Visible = true;
 		crouchingCollision.Disabled = false;
-		crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape").Disabled = false;
+		crouchingArrowUpShape.Disabled = false;
 		crouchingInteraction.Disabled = false;
 	}
 
@@ -509,7 +516,7 @@ public class Player : KinematicBody2D
 	{
 		slidingSprite.Visible = true;
 		slidingCollision.Disabled = false;
-		crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape").Disabled = false;
+		crouchingArrowUpShape.Disabled = false;
 		slidingInteraction.Disabled = false;
 	}
 
