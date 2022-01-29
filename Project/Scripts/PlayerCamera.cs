@@ -9,11 +9,16 @@ public class PlayerCamera : Camera2D
 
 	public override void _Ready()
 	{
-		player = GetNode<Player>("/root/LevelEditor/Level/PlayerNode/Player");
+		player = GetNode<Player>("/root/LevelHolder/Level/PlayerNode/Player");
 	}
 
 	public override void _Process(float delta)
 	{
+		if (player == null)
+		{
+			loadPlayer();
+		}
+
 		if (player != null)
 		{
 			float windowWidth = GetViewportRect().Size.x;
@@ -31,7 +36,7 @@ public class PlayerCamera : Camera2D
 	public void loadPlayer()
 	{
 		// This needs to be not hard coded eventually
-		player = GetNode<Player>("/root/LevelEditor/Level/PlayerNode/Player");
+		player = GetNode<Player>("/root/LevelHolder/Level/PlayerNode/Player");
 	}
 
 }

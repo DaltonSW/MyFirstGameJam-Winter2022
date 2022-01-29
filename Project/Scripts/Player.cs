@@ -474,8 +474,11 @@ public class Player : KinematicBody2D
 	#region Attack Methods
 	private void UnequipShotgun()
 	{
-		GetNode("Shotgun").QueueFree();
-		IS_SHOTGUN_EQUIPPED = false;
+		if(IS_SHOTGUN_EQUIPPED)
+		{
+			GetNode("Shotgun").QueueFree();
+			IS_SHOTGUN_EQUIPPED = false;
+		}
 	}
 
 	private void EquipShotgun()
@@ -615,6 +618,16 @@ public class Player : KinematicBody2D
 	public void HealPlayer()
 	{
 		CURRENT_HEALTH = MAX_HEALTH;
+	}
+
+	public void ResetPlayer()
+	{
+		HealPlayer();
+		ClearSpritesAndHitboxes();
+		ActivateNormalSpriteAndHitboxes();
+		animatedSprite.Play("idle");
+		isDying = false;
+		UnequipShotgun();
 	}
 }
 

@@ -11,6 +11,12 @@ public class LevelHolder : Node2D
 
     private Vector2 currentSpawnPoint;
 
+	private Camera2D camera;
+
+	private bool isRespawning = false;
+	private float RESPAWN_LENGTH = 2;
+	private float CURRENT_RESPAWN_COUNT = 0;
+
 
 	public override void _Ready()
 	{
@@ -20,9 +26,27 @@ public class LevelHolder : Node2D
             currentSpawnPoint = level.GetNode<Position2D>("SpawnPoint").GlobalPosition;
         }
 		respawnScene = GetNode<RespawnScene>("RespawnScene");
+		camera = GetNode<Camera2D>("PlayerCamera");
 		Global.isPlaying = true;
 		ConnectPlayer();
         ConnectCheckpoints();
+	}
+
+	public override void _Process(float delta)
+	{
+		if (isRespawning)
+		{
+			CURRENT_RESPAWN_COUNT += delta;
+			if (CURRENT_RESPAWN_COUNT > RESPAWN_LENGTH)
+			{
+				GD.Print("Respawned!");
+				CURRENT_RESPAWN_COUNT = 0;
+				player.ResetPlayer();
+				isRespawning = false;
+				GetTree().Paused = false;
+				respawnScene.Visible = false;
+			}
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent inputEvent)
@@ -70,27 +94,25 @@ public class LevelHolder : Node2D
 
 	private void AnimationFinishedCallback()
 	{
-		//GD.Print("Animation finished");
-		//GD.Print(playerSprite.Animation);
 		if (playerSprite.Animation == "health_death")
 		{
 			respawnScene.Visible = true;
+			InitiateRespawn();
 			playerSprite.Stop();
 		}
 
 		else if (playerSprite.Animation == "melee")
 		{
-			//GD.Print("Swing has stopped!");
 			player.StopSwing();
 		}
 	}
 
 	private void InitiateRespawn()
 	{
-		// Have respawn point
-		// Reset player animation and health
-		// Reset all enemies positions and healths
-		
+		isRespawning = true;
+		respawnScene.GlobalPosition = currentSpawnPoint;
+		camera.GlobalPosition = currentSpawnPoint;
+		player.GlobalPosition = currentSpawnPoint;
 	}
 
     public void RespawnPlayer()
