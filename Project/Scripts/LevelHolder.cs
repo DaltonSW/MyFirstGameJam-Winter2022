@@ -6,6 +6,7 @@ public class LevelHolder : Node2D
 	private Player player;
 	private AnimatedSprite playerSprite;
 	private RespawnScene respawnScene;
+	private PauseMenu pauseMenu;
 
 	private Level level;
 
@@ -27,6 +28,7 @@ public class LevelHolder : Node2D
 		}
 		respawnScene = GetNode<RespawnScene>("RespawnScene");
 		camera = GetNode<Camera2D>("PlayerCamera");
+		pauseMenu = GetNode<PauseMenu>("UI/PauseMenu");
 		Global.isPlaying = true;
 		ConnectPlayer();
 		ConnectCheckpoints();
@@ -65,6 +67,11 @@ public class LevelHolder : Node2D
 			{
 				RespawnPlayer();
 			}
+		}
+
+		if (Input.IsActionJustPressed("game_pause"))
+		{
+			Pause();
 		}
 	}
 
@@ -140,7 +147,25 @@ public class LevelHolder : Node2D
 			player.KillPlayer();
 		}
 	}
+	private void Pause()
+	{
+		GetTree().Paused = true;
+		pauseMenu.Show();
+	}
+
+	private void Resume()
+	{
+		GetTree().Paused = false;
+		pauseMenu.Hide();
+	}
+	
+	private void _on_PauseMenu_ResumeRequested()
+	{
+		Resume();
+	}
 }
+
+
 
 
 
