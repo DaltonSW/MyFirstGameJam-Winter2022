@@ -1,19 +1,19 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://Resources/Images/Checkpoint/Flag Down Faded.png" type="Texture" id=1]
-[ext_resource path="res://Resources/Images/Checkpoint/Flag Up 1.png" type="Texture" id=2]
+[ext_resource path="res://Resources/Images/Checkpoint/active_1.png" type="Texture" id=1]
+[ext_resource path="res://Resources/Images/Checkpoint/active_0.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/Checkpoint.cs" type="Script" id=3]
-[ext_resource path="res://Resources/Images/Checkpoint/Flag Up 2.png" type="Texture" id=4]
-[ext_resource path="res://Resources/Images/Checkpoint/Flag Up 3.png" type="Texture" id=5]
+[ext_resource path="res://Resources/Images/Checkpoint/inactive.png" type="Texture" id=4]
+[ext_resource path="res://Resources/Images/Checkpoint/active_2.png" type="Texture" id=5]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 2 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"frames": [ ExtResource( 2 ), ExtResource( 1 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "active",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 1 ) ],
+"frames": [ ExtResource( 4 ) ],
 "loop": true,
 "name": "inactive",
 "speed": 5.0

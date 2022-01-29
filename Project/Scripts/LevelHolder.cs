@@ -54,17 +54,13 @@ public class LevelHolder : Node2D
 
 	private void ConnectCheckpoints()
 	{
-        GD.Print("Help");
 		GetTree().CallGroup("checkpoints", "ConnectToLevelHolder", this);
 	}
 
     private void CheckpointBodyEntered(Node2D body, Checkpoint checkpoint)
     {
-		GD.Print((body is Player));
-
         if (body is Player player)
         {
-			GD.Print("Woo!");
 			player.HealPlayer();
 			GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "checkpoints", "DeactivateCheckpoint");
             currentSpawnPoint = checkpoint.GetNode<Position2D>("SpawnPoint").GlobalPosition;
@@ -78,7 +74,6 @@ public class LevelHolder : Node2D
 		{
 			respawnScene.Visible = true;
 			playerSprite.Stop();
-			GD.Print("Woooo");
 		}
 	}
 
@@ -101,7 +96,6 @@ public class LevelHolder : Node2D
 	
 	private void PlayerKilledCallback()
 	{
-		GD.Print("oh no");
 	}
 }
 
