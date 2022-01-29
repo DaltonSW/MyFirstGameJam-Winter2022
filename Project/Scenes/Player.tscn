@@ -171,8 +171,7 @@ position = Vector2( 0, 8.5 )
 shape = SubResource( 7 )
 
 [node name="ItemHold" type="Position2D" parent="."]
-visible = false
-position = Vector2( 8, 0 )
+position = Vector2( 7, 3 )
 __meta__ = {
 "_gizmo_extents_": 4.0
 }

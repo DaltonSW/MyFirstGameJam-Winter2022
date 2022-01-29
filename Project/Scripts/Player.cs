@@ -82,7 +82,7 @@ public class Player : KinematicBody2D
 
 	public override void _Ready()
 	{
-		//projectileScene = GD.Load<PackedScene>("res://Scenes/Projectile.tscn");
+		projectileScene = GD.Load<PackedScene>("res://Scenes/ShotgunPellet.tscn");
 		shotgunScene = GD.Load<PackedScene>("res://Scenes/Shotgun.tscn");
 
 		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
@@ -490,13 +490,13 @@ public class Player : KinematicBody2D
 
 	private void ShootShotgun()
 	{
-		// for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
-		// {
-		// 	Projectile projectile = (Projectile)projectileScene.Instance();
-		// 	Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
-		// 	projectile.Position = bulletSpawn.GlobalPosition;
-		// 	GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
-		// }
+		for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
+		{
+			ShotgunPellet projectile = (ShotgunPellet)projectileScene.Instance();
+			Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
+			projectile.Position = bulletSpawn.GlobalPosition;
+			GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
+		}
 	}
 
 	private void SwingGuitar()
