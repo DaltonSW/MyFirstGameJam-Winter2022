@@ -12,7 +12,6 @@ public class Checkpoint : Node2D
 
     void ConnectToLevelHolder(LevelHolder levelHolder)
     {
-        GD.Print("Connecting!");
         Godot.Collections.Array binds = new Godot.Collections.Array();
         binds.Add(this);
         Connect("body_entered", levelHolder, "CheckpointBodyEntered", binds);
@@ -20,13 +19,11 @@ public class Checkpoint : Node2D
 
     public void ActivateCheckpoint()
     {
-        GD.Print("Activating!");
         this.sprite.Play("active");
     }
 
     public void DeactivateCheckpoint()
     {
-        GD.Print("Deactivating!");
         this.sprite.Play("inactive");
     }
 }
