@@ -7,11 +7,18 @@ public class LevelHolder : Node2D
 	private AnimatedSprite playerSprite;
 	private RespawnScene respawnScene;
 
+    private Level level;
+
     private Vector2 currentSpawnPoint;
 
 
 	public override void _Ready()
 	{
+        level = GetNodeOrNull<Level>("Level");
+        if(level != null)
+        {
+            currentSpawnPoint = level.GetNode<Position2D>("SpawnPoint").GlobalPosition;
+        }
 		respawnScene = GetNode<RespawnScene>("RespawnScene");
 		Global.isPlaying = true;
 		ConnectPlayer();
@@ -39,8 +46,8 @@ public class LevelHolder : Node2D
 
 	private void ConnectPlayer()
 	{
-		player = GetNodeOrNull<Player>("PlayerNode/Player");
-		playerSprite = GetNodeOrNull<AnimatedSprite>("PlayerNode/Player/AnimatedSprite");
+		player = GetNodeOrNull<Player>("Level/PlayerNode/Player");
+		playerSprite = player.GetNode<AnimatedSprite>("AnimatedSprite");
 		player.Connect("PlayerKilled", this, "PlayerKilledCallback");
 		playerSprite.Connect("animation_finished", this, "AnimationFinishedCallback");
 	}
@@ -78,9 +85,8 @@ public class LevelHolder : Node2D
 		
 	}
 
-    private void RespawnPlayer()
+    public void RespawnPlayer()
     {
-		player = GetNodeOrNull<Player>("PlayerNode/Player");
 		if (player != null)
 		{
 			player.GlobalPosition = currentSpawnPoint;

@@ -39,6 +39,6 @@ public class Level : Node2D
 
 	private void _on_DeathBox_body_entered(Node2D body)
 	{
-		respawnPlayer();
+		GetParent<LevelHolder>().RespawnPlayer();
 	}
 }

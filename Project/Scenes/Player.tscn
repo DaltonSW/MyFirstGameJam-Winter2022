@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Scripts/Player.cs" type="Script" id=1]
 [ext_resource path="res://Resources/Images/Player/hippie_run_1.png" type="Texture" id=2]
@@ -87,6 +87,9 @@ extents = Vector2( 8, 7.5 )
 [sub_resource type="RectangleShape2D" id=7]
 extents = Vector2( 15, 7.5 )
 
+[sub_resource type="RayShape2D" id=10]
+length = 10.0
+
 [node name="Player" type="KinematicBody2D"]
 pause_mode = 2
 scale = Vector2( 2, 2 )
@@ -113,11 +116,11 @@ flip_h = true
 position = Vector2( 0, -2 )
 shape = SubResource( 1 )
 
-[node name="NormalCollision1" type="CollisionShape2D" parent="."]
+[node name="NormalCollisionDown1" type="CollisionShape2D" parent="."]
 position = Vector2( -7, 0 )
 shape = SubResource( 8 )
 
-[node name="NormalCollision2" type="CollisionShape2D" parent="."]
+[node name="NormalCollisionDown2" type="CollisionShape2D" parent="."]
 position = Vector2( 6.5, 0 )
 shape = SubResource( 9 )
 
@@ -159,3 +162,14 @@ position = Vector2( 8, 0 )
 __meta__ = {
 "_gizmo_extents_": 4.0
 }
+
+[node name="CrouchCollisionUp" type="Area2D" parent="."]
+position = Vector2( 0, -8.5 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CrouchCollisionUpShape" type="CollisionShape2D" parent="CrouchCollisionUp"]
+position = Vector2( 0, 8.5 )
+rotation = -3.14159
+shape = SubResource( 10 )

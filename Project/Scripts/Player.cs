@@ -13,6 +13,7 @@ public class Player : KinematicBody2D
 
 	private CollisionShape2D[] normalCollisionBoxes;
 	private CollisionShape2D crouchingCollision;
+	private Area2D crouchingArrowUp;
 	private CollisionShape2D slidingCollision;
 
 	private CollisionShape2D normalInteraction;
@@ -86,10 +87,11 @@ public class Player : KinematicBody2D
 		normalCollisionBoxes = new CollisionShape2D[]
 		{
 			GetNode<CollisionShape2D>("NormalCollision0"),
-			GetNode<CollisionShape2D>("NormalCollision1"),
-			GetNode<CollisionShape2D>("NormalCollision2"),
+			GetNode<CollisionShape2D>("NormalCollisionDown1"),
+			GetNode<CollisionShape2D>("NormalCollisionDown2"),
 		};
 		crouchingCollision = GetNode<CollisionShape2D>("CrouchingCollision");
+		crouchingArrowUp = GetNode<Area2D>("CrouchCollisionUp");
 		slidingCollision = GetNode<CollisionShape2D>("SlidingCollision");
 
 		normalInteraction = GetNode<CollisionShape2D>("InteractionArea/NormalInteraction");
@@ -166,7 +168,6 @@ public class Player : KinematicBody2D
 				{
 					velocity = new Vector2(0, 0);
 					StopSlide();
-					animatedSprite.Play("idle");
 				}
 				return;
 			}
@@ -190,9 +191,17 @@ public class Player : KinematicBody2D
 				StartCrouch();
 			}
 
-			if (isCrouching && !crouch)
+			if (isCrouching && !crouch && crouchingArrowUp.GetOverlappingBodies().Count == 0)
 			{
 				StopCrouch();
+			}
+
+			else
+			{
+				foreach (Node2D area in crouchingArrowUp.GetOverlappingBodies())
+				{
+					GD.Print(area.Name);
+				}
 			}
 
 			if (Input.IsActionJustPressed("player_dash"))
@@ -397,7 +406,15 @@ public class Player : KinematicBody2D
 		isSliding = false;
 		canSlide = true;
 		currentSlideDistance = 0;
-		SwitchToNormalSpriteAndHitboxes();
+		if (crouchingArrowUp.GetOverlappingBodies().Count != 0)
+		{
+			SwitchToCrouchSpriteAndHitboxes();
+		}
+
+		else
+		{
+			SwitchToNormalSpriteAndHitboxes();
+		}
 	}
 	
 	private void StartDash()
@@ -450,6 +467,7 @@ public class Player : KinematicBody2D
 			normalCollisionBox.Disabled = true;
 		}
 		crouchingCollision.Disabled = true;
+		crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape").Disabled = true;
 		slidingCollision.Disabled = true;
 
 		normalInteraction.Disabled = true;
@@ -477,6 +495,7 @@ public class Player : KinematicBody2D
 	{
 		crouchingSprite.Visible = true;
 		crouchingCollision.Disabled = false;
+		crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape").Disabled = false;
 		crouchingInteraction.Disabled = false;
 	}
 
@@ -490,6 +509,7 @@ public class Player : KinematicBody2D
 	{
 		slidingSprite.Visible = true;
 		slidingCollision.Disabled = false;
+		crouchingArrowUp.GetNode<CollisionShape2D>("CrouchCollisionUpShape").Disabled = false;
 		slidingInteraction.Disabled = false;
 	}
 
