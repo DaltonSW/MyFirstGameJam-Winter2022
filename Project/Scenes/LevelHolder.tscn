@@ -11,7 +11,10 @@ script = ExtResource( 1 )
 [node name="Checkpoints" type="Node" parent="."]
 
 [node name="Checkpoint" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
-position = Vector2( 936, 480 )
+position = Vector2( 1000, 656 )
+
+[node name="Checkpoint2" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( 48, 656 )
 
 [node name="RespawnScene" parent="." instance=ExtResource( 2 )]
 pause_mode = 2

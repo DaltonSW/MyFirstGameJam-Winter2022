@@ -21,7 +21,7 @@ animations = [ {
 extents = Vector2( 8, 16 )
 
 [node name="Checkpoint" type="Area2D"]
-light_mask = 2
+light_mask = 3
 scale = Vector2( 2, 2 )
 script = ExtResource( 3 )
 

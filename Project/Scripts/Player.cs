@@ -201,16 +201,6 @@ public class Player : KinematicBody2D
 				StopCrouch();
 			}
 
-			else
-			{
-				GD.Print(crouchingArrowUpShape.Disabled);
-
-				foreach (Node2D area in crouchingArrowUp.GetOverlappingBodies())
-				{
-					// GD.Print(area.Name);
-				}
-			}
-
 			if (Input.IsActionJustPressed("player_dash"))
 			{
 				if (!IsOnFloor() && canDash)
@@ -551,6 +541,11 @@ public class Player : KinematicBody2D
 		isDying = true;
 		GetTree().Paused = true;
 		EmitSignal(nameof(PlayerKilled));
+	}
+
+	public void HealPlayer()
+	{
+		CURRENT_HEALTH = MAX_HEALTH;
 	}
 }
 

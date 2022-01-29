@@ -60,10 +60,15 @@ public class LevelHolder : Node2D
 
     private void CheckpointBodyEntered(Node2D body, Checkpoint checkpoint)
     {
+		GD.Print((body is Player));
+
         if (body is Player player)
         {
+			GD.Print("Woo!");
+			player.HealPlayer();
+			GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "checkpoints", "DeactivateCheckpoint");
             currentSpawnPoint = checkpoint.GetNode<Position2D>("SpawnPoint").GlobalPosition;
-            checkpoint.GetNode<AnimatedSprite>("AnimatedSprite").Play("active");
+            checkpoint.ActivateCheckpoint();
         }
     }
 
