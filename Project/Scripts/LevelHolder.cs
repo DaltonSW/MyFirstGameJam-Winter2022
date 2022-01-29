@@ -7,9 +7,9 @@ public class LevelHolder : Node2D
 	private AnimatedSprite playerSprite;
 	private RespawnScene respawnScene;
 
-    private Level level;
+	private Level level;
 
-    private Vector2 currentSpawnPoint;
+	private Vector2 currentSpawnPoint;
 
 	private Camera2D camera;
 
@@ -20,16 +20,17 @@ public class LevelHolder : Node2D
 
 	public override void _Ready()
 	{
-        level = GetNodeOrNull<Level>("Level");
-        if(level != null)
-        {
-            currentSpawnPoint = level.GetNode<Position2D>("SpawnPoint").GlobalPosition;
-        }
+		level = GetNodeOrNull<Level>("Level");
+		if(level != null)
+		{
+			currentSpawnPoint = level.GetNode<Position2D>("SpawnPoint").GlobalPosition;
+		}
 		respawnScene = GetNode<RespawnScene>("RespawnScene");
 		camera = GetNode<Camera2D>("PlayerCamera");
 		Global.isPlaying = true;
 		ConnectPlayer();
-        ConnectCheckpoints();
+		ConnectCheckpoints();
+		SetCameraLimits(-4256, 1408, 0, 2815); // Cave level
 	}
 
 	public override void _Process(float delta)
@@ -60,11 +61,16 @@ public class LevelHolder : Node2D
 				}
 			}
 
-            if(eventKey.Scancode == (int)KeyList.R && eventKey.Pressed)
+			if(eventKey.Scancode == (int)KeyList.R && eventKey.Pressed)
 			{
 				RespawnPlayer();
 			}
 		}
+	}
+
+	private void SetCameraLimits(int minX, int maxX, int minY, int maxY)
+	{
+		GetNode<PlayerCamera>("PlayerCamera").SetLimits(minX, maxX, minY, maxY);
 	}
 
 	private void ConnectPlayer()
@@ -80,16 +86,16 @@ public class LevelHolder : Node2D
 		GetTree().CallGroup("checkpoints", "ConnectToLevelHolder", this);
 	}
 
-    private void CheckpointBodyEntered(Node2D body, Checkpoint checkpoint)
-    {
-        if (body is Player player)
-        {
+	private void CheckpointBodyEntered(Node2D body, Checkpoint checkpoint)
+	{
+		if (body is Player player)
+		{
 			player.HealPlayer();
 			GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "checkpoints", "DeactivateCheckpoint");
-            currentSpawnPoint = checkpoint.GetNode<Position2D>("SpawnPoint").GlobalPosition;
-            checkpoint.ActivateCheckpoint();
-        }
-    }
+			currentSpawnPoint = checkpoint.GetNode<Position2D>("SpawnPoint").GlobalPosition;
+			checkpoint.ActivateCheckpoint();
+		}
+	}
 
 	private void AnimationFinishedCallback()
 	{
@@ -114,12 +120,12 @@ public class LevelHolder : Node2D
 		player.GlobalPosition = currentSpawnPoint;
 	}
 
-    public void RespawnPlayer()
-    {
+	public void RespawnPlayer()
+	{
 		if (player != null)
 		{
 			player.GlobalPosition = currentSpawnPoint;
-            player.velocity = new Vector2(0, 0);
+			player.velocity = new Vector2(0, 0);
 		}
 	}
 	
