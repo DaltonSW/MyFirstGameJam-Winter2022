@@ -31,8 +31,8 @@ public class Player : KinematicBody2D
 
 	[Signal] delegate void PlayerKilled();
 
-	[Export] public float MAX_HEALTH = 10;
-	private float CURRENT_HEALTH = 10;
+	[Export] public float MAX_HEALTH = 1;
+	private float CURRENT_HEALTH;
 
 	[Export] public float JUMP_HEIGHT = 145; //pixels
 	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
@@ -82,7 +82,7 @@ public class Player : KinematicBody2D
 
 	public override void _Ready()
 	{
-		projectileScene = GD.Load<PackedScene>("res://Scenes/Projectile.tscn");
+		//projectileScene = GD.Load<PackedScene>("res://Scenes/Projectile.tscn");
 		shotgunScene = GD.Load<PackedScene>("res://Scenes/Shotgun.tscn");
 
 		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
@@ -106,6 +106,7 @@ public class Player : KinematicBody2D
 
 		meleeCollision = GetNode<Area2D>("GuitarHitbox");
 		meleeCollisionShape = meleeCollision.GetNode<CollisionShape2D>("CollisionShape2D");
+		meleeCollisionShape.Disabled = true;
 
 		interactionArea = GetNode<Area2D>("InteractionArea");
 
@@ -113,6 +114,7 @@ public class Player : KinematicBody2D
 		JUMP_SPEED = (float)Math.Sqrt(2 * JUMP_HEIGHT * GRAVITY);
 
 		isDying = false;
+		CURRENT_HEALTH = MAX_HEALTH;
 
 		ActivateNormalSpriteAndHitboxes();
 		crouchingArrowUpShape.Disabled = true;
@@ -145,13 +147,9 @@ public class Player : KinematicBody2D
 					}
 				}
 			}
-
-			//GD.Print(meleeCollisionShape.Disabled);
-			//GD.Print(animatedSprite.Frame);
-			//GD.Print(animatedSprite.Animation);
 		}
 
-		else 
+		else if (!isDying)
 		{
 			if (!Global.isPlaying)
 			{
@@ -492,13 +490,13 @@ public class Player : KinematicBody2D
 
 	private void ShootShotgun()
 	{
-		for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
-		{
-			Projectile projectile = (Projectile)projectileScene.Instance();
-			Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
-			projectile.Position = bulletSpawn.GlobalPosition;
-			GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
-		}
+		// for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
+		// {
+		// 	Projectile projectile = (Projectile)projectileScene.Instance();
+		// 	Position2D bulletSpawn = (Position2D)GetNode("Shotgun/BulletSpawn");
+		// 	projectile.Position = bulletSpawn.GlobalPosition;
+		// 	GetParent().GetParent().AddChild(projectile); //Have to use 2 to get the root of the level, not the Node2D the player is stored in
+		// }
 	}
 
 	private void SwingGuitar()
@@ -533,15 +531,15 @@ public class Player : KinematicBody2D
 
 		foreach (CollisionShape2D normalCollisionBox in normalCollisionBoxes)
 		{
-			normalCollisionBox.Disabled = true;
+			normalCollisionBox.SetDeferred("disabled", true);
 		}
-		crouchingCollision.Disabled = true;
-		crouchingArrowUpShape.Disabled = true;
-		slidingCollision.Disabled = true;
+		crouchingCollision.SetDeferred("disabled", true);
+		crouchingArrowUpShape.SetDeferred("disabled", true);
+		slidingCollision.SetDeferred("disabled", true);
 
-		normalInteraction.Disabled = true;
-		crouchingInteraction.Disabled = true;
-		slidingInteraction.Disabled = true;
+		normalInteraction.SetDeferred("disabled", true);
+		crouchingInteraction.SetDeferred("disabled", true);
+		slidingInteraction.SetDeferred("disabled", true);
 	}
 
 	private void ActivateNormalSpriteAndHitboxes()
@@ -549,9 +547,9 @@ public class Player : KinematicBody2D
 		animatedSprite.Visible = true;
 		foreach (CollisionShape2D normalCollisionBox in normalCollisionBoxes)
 		{
-			normalCollisionBox.Disabled = false;
+			normalCollisionBox.SetDeferred("disabled", false);
 		}
-		normalInteraction.Disabled = false;
+		normalInteraction.SetDeferred("disabled", false);
 	}
 
 	private void SwitchToNormalSpriteAndHitboxes()
@@ -563,9 +561,9 @@ public class Player : KinematicBody2D
 	private void ActivateCrouchSpriteAndHitboxes()
 	{
 		crouchingSprite.Visible = true;
-		crouchingCollision.Disabled = false;
-		crouchingArrowUpShape.Disabled = false;
-		crouchingInteraction.Disabled = false;
+		crouchingCollision.SetDeferred("disabled", false);
+		crouchingArrowUpShape.SetDeferred("disabled", false);
+		crouchingInteraction.SetDeferred("disabled", false);
 	}
 
 	private void SwitchToCrouchSpriteAndHitboxes()
@@ -577,9 +575,9 @@ public class Player : KinematicBody2D
 	private void ActivateSlideSpriteAndHitboxes()
 	{
 		slidingSprite.Visible = true;
-		slidingCollision.Disabled = false;
-		crouchingArrowUpShape.Disabled = false;
-		slidingInteraction.Disabled = false;
+		slidingCollision.SetDeferred("disabled", false);
+		crouchingArrowUpShape.SetDeferred("disabled", false);
+		slidingInteraction.SetDeferred("disabled", false);
 	}
 
 	private void SwitchToSlideSpriteAndHitboxes()
@@ -618,6 +616,15 @@ public class Player : KinematicBody2D
 	public void HealPlayer()
 	{
 		CURRENT_HEALTH = MAX_HEALTH;
+	}
+
+	public void HurtPlayer()
+	{
+		CURRENT_HEALTH--;
+		if(CURRENT_HEALTH == 0)
+		{
+			KillPlayer();
+		}
 	}
 
 	public void ResetPlayer()

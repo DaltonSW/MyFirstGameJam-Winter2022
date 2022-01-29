@@ -1,17 +1,41 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Resources/Images/Goomba.png" type="Texture" id=1]
+[ext_resource path="res://Resources/Images/Enemies/ground_bot_1.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Enemy.cs" type="Script" id=2]
+[ext_resource path="res://Resources/Images/Enemies/ground_bot_0.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 1.0
+} ]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 16, 16 )
+extents = Vector2( 32, 24 )
 
 [node name="Enemy" type="KinematicBody2D"]
 script = ExtResource( 2 )
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Sight" type="RayCast2D" parent="."]
+rotation = 1.5708
+enabled = true
+cast_to = Vector2( 0, 500 )
+
+[node name="Line2D" type="Line2D" parent="Sight"]
+visible = false
+points = PoolVector2Array( 2.20305e-05, 504, 0, 0 )
+width = 5.0
+default_color = Color( 1, 0.4, 0.85098, 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -8 )
 scale = Vector2( 2, 2 )
-texture = ExtResource( 1 )
+frames = SubResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
+
+[node name="BulletSpawn" type="Position2D" parent="."]
+position = Vector2( -32, 0 )

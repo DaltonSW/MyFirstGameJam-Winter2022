@@ -39,7 +39,6 @@ public class LevelHolder : Node2D
 			CURRENT_RESPAWN_COUNT += delta;
 			if (CURRENT_RESPAWN_COUNT > RESPAWN_LENGTH)
 			{
-				GD.Print("Respawned!");
 				CURRENT_RESPAWN_COUNT = 0;
 				player.ResetPlayer();
 				isRespawning = false;
