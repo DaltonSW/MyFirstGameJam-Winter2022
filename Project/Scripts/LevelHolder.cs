@@ -7,11 +7,15 @@ public class LevelHolder : Node2D
 	private AnimatedSprite playerSprite;
 	private RespawnScene respawnScene;
 
+    private Vector2 currentSpawnPoint;
+
+
 	public override void _Ready()
 	{
 		respawnScene = GetNode<RespawnScene>("RespawnScene");
 		Global.isPlaying = true;
 		ConnectPlayer();
+        ConnectCheckpoints();
 	}
 
 	public override void _UnhandledInput(InputEvent inputEvent)
@@ -25,6 +29,11 @@ public class LevelHolder : Node2D
 					player.KillPlayer();
 				}
 			}
+
+            if(eventKey.Scancode == (int)KeyList.R && eventKey.Pressed)
+			{
+				RespawnPlayer();
+			}
 		}
 	}
 
@@ -36,6 +45,21 @@ public class LevelHolder : Node2D
 		playerSprite.Connect("animation_finished", this, "AnimationFinishedCallback");
 	}
 
+	private void ConnectCheckpoints()
+	{
+        GD.Print("Help");
+		GetTree().CallGroup("checkpoints", "ConnectToLevelHolder", this);
+	}
+
+    private void CheckpointBodyEntered(Node2D body, Checkpoint checkpoint)
+    {
+        if (body is Player player)
+        {
+            currentSpawnPoint = checkpoint.GetNode<Position2D>("SpawnPoint").GlobalPosition;
+            checkpoint.GetNode<AnimatedSprite>("AnimatedSprite").Play("active");
+        }
+    }
+
 	private void AnimationFinishedCallback()
 	{
 		if(playerSprite.Animation == "health_death")
@@ -43,6 +67,24 @@ public class LevelHolder : Node2D
 			respawnScene.Visible = true;
 			playerSprite.Stop();
 			GD.Print("Woooo");
+		}
+	}
+
+	private void InitiateRespawn()
+	{
+		// Have respawn point
+		// Reset player animation and health
+		// Reset all enemies positions and healths
+		
+	}
+
+    private void RespawnPlayer()
+    {
+		player = GetNodeOrNull<Player>("PlayerNode/Player");
+		if (player != null)
+		{
+			player.GlobalPosition = currentSpawnPoint;
+            player.velocity = new Vector2(0, 0);
 		}
 	}
 	

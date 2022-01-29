@@ -26,7 +26,8 @@ public class Player : KinematicBody2D
 
 	[Signal] delegate void PlayerKilled();
 
-	[Export] public float HEALTH = 10;
+	[Export] public float MAX_HEALTH = 10;
+	private float CURRENT_HEALTH = 10;
 
 	[Export] public float JUMP_HEIGHT = 145; //pixels
 	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
@@ -517,7 +518,6 @@ public class Player : KinematicBody2D
 
 	public void KillPlayer()
 	{
-
 		ClearSpritesAndHitboxes();
 		ActivateNormalSpriteAndHitboxes();
 		animatedSprite.Play("health_death");
