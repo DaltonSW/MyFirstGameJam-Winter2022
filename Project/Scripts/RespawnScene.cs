@@ -5,6 +5,6 @@ public class RespawnScene : Node2D
 {
 	public override void _Ready()
 	{
-		Global.isPlaying = false;
+		//Global.isPlaying = false;
 	}
 }

@@ -11,6 +11,7 @@ public class LevelHolder : Node2D
 	private Level level;
 
 	private Camera2D camera;
+	private Camera2D respawnCamera;
 
 	private bool isRespawning = false;
 	private float RESPAWN_LENGTH = 2;
@@ -49,8 +50,9 @@ public class LevelHolder : Node2D
 		{
 			currentSpawnPoint = level.GetNode<Position2D>("SpawnPoint").GlobalPosition;
 		}
-		respawnScene = GetNode<RespawnScene>("UI/RespawnScene");
+		respawnScene = GetNode<RespawnScene>("RespawnScene");
 		camera = GetNode<Camera2D>("PlayerCamera");
+		respawnCamera = GetNode<Camera2D>("RespawnCamera");
 		pauseMenu = GetNode<PauseMenu>("UI/PauseMenu");
 		Global.isPlaying = true;
 		ConnectPlayer();
@@ -73,7 +75,8 @@ public class LevelHolder : Node2D
 				player.ResetPlayer();
 				isRespawning = false;
 				GetTree().Paused = false;
-				respawnScene.Visible = false;
+				camera.Current = true;
+				respawnCamera.Current = false;
 			}
 		}
 
@@ -147,9 +150,10 @@ public class LevelHolder : Node2D
 
 	private void AnimationFinishedCallback()
 	{
-		if (playerSprite.Animation == "health_death")
+		if (playerSprite.Animation == "health_death" || playerSprite.Animation == "fall_death")
 		{
-			respawnScene.Visible = true;
+			camera.Current = false;
+			respawnCamera.Current = true;
 			InitiateRespawn();
 			playerSprite.Stop();
 		}
@@ -164,7 +168,7 @@ public class LevelHolder : Node2D
 	{
 		isRespawning = true;
 		CURRENT_DEATHBOX_TICKS = 1;
-		respawnScene.GlobalPosition = currentSpawnPoint;
+		//respawnScene.GlobalPosition = currentSpawnPoint;
 		camera.GlobalPosition = currentSpawnPoint;
 		player.GlobalPosition = currentSpawnPoint;
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
