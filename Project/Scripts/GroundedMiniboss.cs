@@ -31,7 +31,10 @@ public class GroundedMiniboss : KinematicBody2D
 
 	private PackedScene laserScene;
 
-	private Vector2 globalSpawnPoint; // This needs to be set at some point so we can have a "Reset all enemies" function call 
+	private Vector2 globalSpawnPoint; 
+
+	private float INVINCIBILITY_BUFFER = 0.5F;
+	private float CURRENT_INVINCIBILITY = 0;
 
 	public override void _Ready()
 	{
@@ -84,6 +87,17 @@ public class GroundedMiniboss : KinematicBody2D
 			CURRENT_SHOT_COOLDOWN = 0;
 			canShoot = true;
 		}
+
+		if (CURRENT_INVINCIBILITY != 0)
+		{
+			CURRENT_INVINCIBILITY += delta;
+		}
+
+		if (CURRENT_INVINCIBILITY > INVINCIBILITY_BUFFER)
+		{
+			CURRENT_INVINCIBILITY = 0;
+			CycleTransparency(true);
+		}
 	}
 
 	private void Shoot()
@@ -102,12 +116,23 @@ public class GroundedMiniboss : KinematicBody2D
 		}
 	}
 
+	private void CycleTransparency(bool lighten)
+	{
+		Color tempNormal = sprite.Modulate;
+		tempNormal.a = lighten ? 1 : 0.5F;	
+		sprite.Modulate = tempNormal;
+	}
+
 	public void HurtEnemy()
 	{
-		CURRENT_HEALTH--;
-		if(CURRENT_HEALTH == 0)
+		if (CURRENT_INVINCIBILITY == 0)
 		{
-			KillEnemy();
+			CURRENT_HEALTH--;
+			if(CURRENT_HEALTH == 0)
+			{
+				KillEnemy();
+			}
+			CycleTransparency(false);
 		}
 	}
 
