@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Scripts/MainMenu.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/MainMenu.cs" type="Script" id=1]
 [ext_resource path="res://Resources/Images/TitleScreen.png" type="Texture" id=2]
 
 [node name="Menu" type="Control"]
@@ -38,6 +38,8 @@ __meta__ = {
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 637, 365 )
 texture = ExtResource( 2 )
+
+[node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
 
 [connection signal="pressed" from="StartButton" to="." method="_on_StartButton_pressed"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_QuitButton_pressed"]

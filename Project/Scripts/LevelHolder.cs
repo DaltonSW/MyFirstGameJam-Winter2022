@@ -33,6 +33,11 @@ public class LevelHolder : Node2D
 		ConnectPlayer();
 		ConnectCheckpoints();
 		SetCameraLimits(-4256, 1408, 0, 2815); // Cave level
+
+		// currentSong;
+		// forestSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
+		// caveSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
+		// treeSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
 	}
 
 	public override void _Process(float delta)

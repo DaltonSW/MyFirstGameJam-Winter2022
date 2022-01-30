@@ -32,7 +32,7 @@ public class Player : KinematicBody2D
 	[Signal] delegate void PlayerKilled();
 
 	[Export] public float MAX_HEALTH = 1;
-	private float CURRENT_HEALTH;
+	public float CURRENT_HEALTH;
 
 	[Export] public float JUMP_HEIGHT = 145; //pixels
 	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
@@ -615,7 +615,7 @@ public class Player : KinematicBody2D
 		isDying = true;
 		PauseMode = PauseModeEnum.Process;
 		GetTree().Paused = true;
-		EmitSignal(nameof(PlayerKilled));
+		//EmitSignal(nameof(PlayerKilled));
 	}
 
 	public void HealPlayer()
@@ -634,6 +634,7 @@ public class Player : KinematicBody2D
 
 	public void ResetPlayer()
 	{
+		GD.Print("resetting");
 		HealPlayer();
 		ClearSpritesAndHitboxes();
 		ActivateNormalSpriteAndHitboxes();
@@ -643,6 +644,3 @@ public class Player : KinematicBody2D
 		UnequipShotgun();
 	}
 }
-
-
-
