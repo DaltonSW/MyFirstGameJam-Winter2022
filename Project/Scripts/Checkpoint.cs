@@ -17,9 +17,15 @@ public class Checkpoint : Node2D
         Connect("body_entered", levelHolder, "CheckpointBodyEntered", binds);
     }
 
-    public void ActivateCheckpoint()
+    public bool ActivateCheckpoint()
     {
-        this.sprite.Play("active");
+        if (sprite.Animation != "active")
+        {
+            this.sprite.Play("active");
+            return true;
+        }    
+
+        return false;
     }
 
     public void DeactivateCheckpoint()

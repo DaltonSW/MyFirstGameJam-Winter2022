@@ -75,5 +75,9 @@ frame = 5
 pause_mode = 2
 visible = false
 
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="ExtraPlayer" type="AudioStreamPlayer" parent="."]
+
 [connection signal="body_entered" from="Deathboxes/Deathbox" to="." method="DeathboxBodyEntered"]
 [connection signal="ResumeRequested" from="UI/PauseMenu" to="." method="_on_PauseMenu_ResumeRequested"]
