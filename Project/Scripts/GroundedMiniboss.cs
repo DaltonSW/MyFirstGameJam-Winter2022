@@ -142,6 +142,7 @@ public class GroundedMiniboss : KinematicBody2D
 		sprite.Visible = false;
 		canShoot = false;
 		collision.SetDeferred("disabled", true);
+		GetTree().ChangeScene("res://Scenes/Credits.tscn");
 	}
 
 	public void ResetEnemy()
