@@ -609,6 +609,7 @@ public class Player : KinematicBody2D
 		ActivateNormalSpriteAndHitboxes();
 		animatedSprite.Play("health_death");
 		isDying = true;
+		PauseMode = PauseModeEnum.Process;
 		GetTree().Paused = true;
 		//EmitSignal(nameof(PlayerKilled));
 	}
@@ -634,6 +635,7 @@ public class Player : KinematicBody2D
 		ClearSpritesAndHitboxes();
 		ActivateNormalSpriteAndHitboxes();
 		animatedSprite.Play("idle");
+		PauseMode = PauseModeEnum.Inherit;
 		isDying = false;
 		UnequipShotgun();
 	}

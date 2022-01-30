@@ -62,9 +62,9 @@ public class Enemy : KinematicBody2D
 		MoveAndSlideWithSnap(CUR_DIR, new Vector2(-1, 0));
 	}
 
-    public override void _Process(float delta)
-    {
-        if ((lineOfSight.GetCollider() is Player) && canShoot)
+	public override void _Process(float delta)
+	{
+		if ((lineOfSight.GetCollider() is Player) && canShoot)
 		{
 			//Shoot();
 		}
@@ -75,7 +75,7 @@ public class Enemy : KinematicBody2D
 			CURRENT_SHOT_COOLDOWN = 0;
 			canShoot = true;
 		}
-    }
+	}
 
 	private void Shoot()
 	{

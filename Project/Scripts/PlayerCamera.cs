@@ -5,8 +5,6 @@ public class PlayerCamera : Camera2D
 {
 	private Player player;
 
-	private const int BLOCK_WIDTH = 32;
-
 	public override void _Ready()
 	{
 		player = GetNode<Player>("/root/LevelHolder/Level/PlayerNode/Player");
@@ -21,16 +19,16 @@ public class PlayerCamera : Camera2D
 
 		if (player != null)
 		{
-			float windowWidth = GetViewportRect().Size.x;
-			float windowHeight = GetViewportRect().Size.y;
-			float centerXOffset = windowWidth / 2;
-			float centerYOffset = windowHeight / 2;
-			float minX = 0                + centerXOffset;
-			float maxX = 26 * BLOCK_WIDTH - centerXOffset;
-			float minY = 0                + centerYOffset;
-			float maxY = 26 * BLOCK_WIDTH - centerYOffset;
 			GlobalPosition = player.GlobalPosition;
 		}
+	}
+
+	public void SetLimits(int minX, int maxX, int minY, int maxY)
+	{
+		LimitLeft   = minX;
+		LimitRight  = maxX;
+		LimitTop    = minY;
+		LimitBottom = maxY;
 	}
 
 	public void loadPlayer()
