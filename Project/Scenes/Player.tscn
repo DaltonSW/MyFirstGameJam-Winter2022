@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=40 format=2]
 
 [ext_resource path="res://Scripts/Player.cs" type="Script" id=1]
 [ext_resource path="res://Resources/Images/Player/hippie_run_1.png" type="Texture" id=2]
@@ -27,12 +27,18 @@
 [ext_resource path="res://Resources/Images/Player/hippie_guitar_2.png" type="Texture" id=25]
 [ext_resource path="res://Resources/Images/Player/hippie_guitar_1.png" type="Texture" id=26]
 [ext_resource path="res://Resources/Images/Player/hippie_guitar_0.png" type="Texture" id=27]
+[ext_resource path="res://Resources/Images/Player/hippie_die_air.png" type="Texture" id=28]
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 5 ) ],
 "loop": true,
 "name": "idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 28 ) ],
+"loop": true,
+"name": "fall_death",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 11 ) ],
@@ -197,3 +203,5 @@ position = Vector2( 25.5, -10 )
 shape = SubResource( 11 )
 
 [node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="Tween" type="Tween" parent="."]

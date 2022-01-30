@@ -83,6 +83,7 @@ public class Player : KinematicBody2D
 	private const int SPRITE_SCALE = 2;
 
 	private readonly Vector2 UP = new Vector2(0, -1);
+	private Tween tween;
 	#endregion
 
 	#region Sound Properties
@@ -102,6 +103,8 @@ public class Player : KinematicBody2D
 		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		crouchingSprite = GetNode<Sprite>("CrouchingSprite");
 		slidingSprite = GetNode<Sprite>("SlidingSprite");
+		tween = GetNode<Tween>("Tween");
+		tween.Connect("tween_all_completed", this, nameof(OnTweenCompleted));
 		
 		healthSprite = GetNode<AnimatedSprite>("/root/LevelHolder/UI/HealthBar");
 		healthSprite.Frame = 5;
@@ -692,14 +695,34 @@ public class Player : KinematicBody2D
 
 	public void KillPlayer()
 	{
-		healthSprite.Frame = 0;
-		ClearSpritesAndHitboxes();
-		ActivateNormalSpriteAndHitboxes();
+		SwitchToNormalSpriteAndHitboxes();
 		CycleTransparency(true);
 		animatedSprite.Play("health_death");
+		Die();
+	}
+
+	private void Die()
+	{
+		healthSprite.Frame = 0;
 		isDying = true;
 		PauseMode = PauseModeEnum.Process;
 		GetTree().Paused = true;
+	}
+
+	public void FallAndDie()
+	{
+		animatedSprite.Play("fall_death");
+		Die();
+		Tween tween = GetNode<Tween>("Tween");
+		tween.InterpolateProperty(this, "position",
+			Position, new Vector2(Position.x, Position.y + 200), .3f,
+			Tween.TransitionType.Linear, Tween.EaseType.In, .3f);
+		tween.Start();
+	}
+
+	public void OnTweenCompleted()
+	{
+		EmitSignal(nameof(PlayerKilled));
 	}
 
 	public void HealPlayer()

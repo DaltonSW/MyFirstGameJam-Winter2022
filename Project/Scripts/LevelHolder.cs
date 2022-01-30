@@ -164,6 +164,7 @@ public class LevelHolder : Node2D
 	private void InitiateRespawn()
 	{
 		isRespawning = true;
+		CURRENT_DEATHBOX_TICKS = 1;
 		respawnScene.GlobalPosition = currentSpawnPoint;
 		camera.GlobalPosition = currentSpawnPoint;
 		player.GlobalPosition = currentSpawnPoint;
@@ -181,6 +182,8 @@ public class LevelHolder : Node2D
 	
 	private void PlayerKilledCallback()
 	{
+		respawnScene.Visible = true;
+		InitiateRespawn();
 	}
 
 	public void DeathboxBodyEntered(Node body)
@@ -188,7 +191,7 @@ public class LevelHolder : Node2D
 		if(body is Player player && deathboxActive)
 		{
 			deathboxActive = false;
-			player.KillPlayer();
+			player.FallAndDie();
 		}
 	}
 	
