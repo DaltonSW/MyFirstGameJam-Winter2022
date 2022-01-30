@@ -135,7 +135,7 @@ public class LevelHolder : Node2D
 
 	private void CheckpointBodyEntered(Node2D body, Checkpoint checkpoint)
 	{
-		if (body is Player player)
+		if ((body is Player player) && (!checkpoint.IsActive))
 		{
 			player.HealPlayer();
 			GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "checkpoints", "DeactivateCheckpoint");

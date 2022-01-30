@@ -5,6 +5,8 @@ public class Checkpoint : Node2D
 {
     private AnimatedSprite sprite;
 
+    public bool IsActive = false;
+
     public override void _Ready()
     {
         sprite = GetNode<AnimatedSprite>("AnimatedSprite");
@@ -19,17 +21,18 @@ public class Checkpoint : Node2D
 
     public bool ActivateCheckpoint()
     {
-        if (sprite.Animation != "active")
+        if (sprite.Animation == "active")
         {
-            this.sprite.Play("active");
-            return true;
+            return false;
         }    
-
-        return false;
+        this.sprite.Play("active");
+        IsActive = true;
+        return true;
     }
 
     public void DeactivateCheckpoint()
     {
+        IsActive = false;
         this.sprite.Play("inactive");
     }
 }
