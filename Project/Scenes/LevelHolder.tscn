@@ -56,6 +56,24 @@ script = ExtResource( 1 )
 [node name="Checkpoint" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
 position = Vector2( 200, 544 )
 
+[node name="Checkpoint2" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( 2392, -736 )
+
+[node name="Checkpoint3" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( 2152, 3104 )
+
+[node name="Checkpoint4" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( -1840, 2592 )
+
+[node name="Checkpoint5" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( 4288, 3712 )
+
+[node name="Checkpoint6" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( 3496, 3136 )
+
+[node name="Checkpoint7" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
+position = Vector2( 6112, 3232 )
+
 [node name="Deathboxes" type="Node" parent="."]
 
 [node name="Deathbox" type="Area2D" parent="Deathboxes"]
