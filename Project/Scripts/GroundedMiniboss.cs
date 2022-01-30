@@ -1,10 +1,10 @@
 using Godot;
 using System;
 
-public class Enemy : KinematicBody2D
+public class GroundedMiniboss : KinematicBody2D
 {
 
-	[Export] public float MAX_HEALTH = 2;
+	[Export] public float MAX_HEALTH = 10;
 	public float CURRENT_HEALTH;
 
 	[Export] private int RANDOM_DIR_TICKS = 8;
@@ -21,27 +21,26 @@ public class Enemy : KinematicBody2D
 	private bool canShoot;
 	private RayCast2D lineOfSight;
 	private Position2D bulletSpawn;
+	private CollisionShape2D collision;
 
 	private AnimatedSprite sprite;
 
-	private CollisionShape2D collision;
-
 	private float TIME_BETWEEN_SHOTS = 2;
 	private float CURRENT_SHOT_COOLDOWN = 0;
+	private int LASER_BLAST_COUNT = 3;
 
 	private PackedScene laserScene;
 
 	private Vector2 globalSpawnPoint; // This needs to be set at some point so we can have a "Reset all enemies" function call 
-
 
 	public override void _Ready()
 	{
 		laserScene = GD.Load<PackedScene>("res://Scenes/EnemyLaser.tscn");
 		lineOfSight = GetNode<RayCast2D>("Sight");
 		bulletSpawn = GetNode<Position2D>("BulletSpawn");
+		collision = GetNode<CollisionShape2D>("Collision");
 
 		sprite = GetNode<AnimatedSprite>("AnimatedSprite");
-		collision = GetNode<CollisionShape2D>("CollisionShape2D");
 
 		DIR_LEFT = new Vector2(-SPEED, GRAVITY);
 		DIR_RIGHT = new Vector2(SPEED, GRAVITY);
@@ -76,7 +75,7 @@ public class Enemy : KinematicBody2D
 	{
 		if ((lineOfSight.GetCollider() is Player) && canShoot)
 		{
-			//Shoot();
+			Shoot();
 		}
 
 		CURRENT_SHOT_COOLDOWN += delta;
@@ -90,10 +89,17 @@ public class Enemy : KinematicBody2D
 	private void Shoot()
 	{
 		canShoot = false;
-		EnemyLaser projectile = (EnemyLaser)laserScene.Instance();
-		projectile.Position = bulletSpawn.GlobalPosition;
-		projectile.Rotation += isFacingLeft ? 0 : (float)Math.PI;
-		GetNode<Level>("/root/LevelHolder/Level").AddChild(projectile);
+		for (int i = 1; i <= LASER_BLAST_COUNT; i++)
+		{
+			EnemyLaser projectile = (EnemyLaser)laserScene.Instance();
+			projectile.Scale = new Vector2 (2, 2);
+			projectile.DISTANCE_ALLOWED = 1000;
+			projectile.SPEED = 500;
+			projectile.Rotation = (float)(Math.PI * RNG.Next(87, 93) / 180);
+			projectile.Position = bulletSpawn.GlobalPosition;
+			projectile.Rotation += isFacingLeft ? 0 : (float)Math.PI;
+			GetNode<Level>("/root/LevelHolder/Level").AddChild(projectile);
+		}
 	}
 
 	public void HurtEnemy()

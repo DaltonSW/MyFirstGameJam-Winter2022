@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Resources/Images/Enemies/ground_bot_1.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/GroundedMiniboss.cs" type="Script" id=2]
+[ext_resource path="res://Resources/Images/Enemies/ground_bot_0.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 1.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 32, 24 )
+
+[node name="GroundedMiniboss" type="KinematicBody2D"]
+scale = Vector2( 2, 2 )
+script = ExtResource( 2 )
+
+[node name="Sight" type="RayCast2D" parent="."]
+rotation = 1.5708
+enabled = true
+cast_to = Vector2( 0, 500 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -8 )
+scale = Vector2( 2, 2 )
+frames = SubResource( 2 )
+frame = 1
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="BulletSpawn" type="Position2D" parent="."]
+position = Vector2( -32, 0 )

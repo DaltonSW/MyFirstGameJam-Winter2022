@@ -45,16 +45,22 @@ public class ShotgunPellet : Area2D
 	{
 		if(with.Filename != this.Filename)
 		{
-			if(with is Player player)
+			if (!(with is TileMap || with is Player))
 			{
-				
-			}
-
-			else
-			{
-				if (((with is Enemy) || (with is TileMap)))
+				FreeBullet();
+				if (with is Enemy enemy)
 				{
-					FreeBullet();
+					enemy.HurtEnemy();
+				}
+
+				if (with is FlyingEnemy flyingEnemy)
+				{
+					flyingEnemy.HurtEnemy();
+				}
+
+				if (with is GroundedMiniboss groundedMiniboss)
+				{
+					groundedMiniboss.HurtEnemy();
 				}
 			}
 		}

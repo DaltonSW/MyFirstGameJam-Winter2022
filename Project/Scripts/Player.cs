@@ -35,6 +35,9 @@ public class Player : KinematicBody2D
 	public float CURRENT_HEALTH;
 	private AnimatedSprite healthSprite;
 
+	private float INVINCIBILITY_BUFFER = 0.5F;
+	private float CURRENT_INVINCIBILITY = 0;
+
 	[Export] public float JUMP_HEIGHT = 145; //pixels
 	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
 	[Export] public float MOVE_SPEED = 60; //pixels per second
@@ -72,6 +75,7 @@ public class Player : KinematicBody2D
 	public bool isSliding = false;
 	public bool isDying = false;
 	public bool isSwinging = false;
+	public bool swingStruck = false;
 
 	private bool canDash = false;
 	private bool canSlide = true;
@@ -129,7 +133,7 @@ public class Player : KinematicBody2D
 	{
 		if (isSwinging)
 		{
-			if (animatedSprite.Frame == 2)
+			if (animatedSprite.Frame == 2 && !swingStruck)
 			{
 				meleeCollisionShape.Disabled = false;
 			}
@@ -147,12 +151,20 @@ public class Player : KinematicBody2D
 					{
 						if (body is Enemy enemy)
 						{
-							enemy.QueueFree();
+							enemy.HurtEnemy();
 						}
+
 						if (body is FlyingEnemy flyingEnemy)
 						{
-							flyingEnemy.QueueFree();
+							flyingEnemy.HurtEnemy();
 						}
+
+						if (body is GroundedMiniboss groundedMiniboss)
+						{
+							groundedMiniboss.HurtEnemy();
+						}
+						meleeCollisionShape.Disabled = true;
+						swingStruck = true;
 					}
 				}
 			}
@@ -343,6 +355,17 @@ public class Player : KinematicBody2D
 			{
 				CUR_SHOTGUN_BUFFER = 0;
 			}
+
+			if (CURRENT_INVINCIBILITY != 0)
+			{
+				CURRENT_INVINCIBILITY += delta;
+			}
+
+			if (CURRENT_INVINCIBILITY > INVINCIBILITY_BUFFER)
+			{
+				CURRENT_INVINCIBILITY = 0;
+				CycleTransparency(true);
+			}
 		}
 	}
 
@@ -510,7 +533,11 @@ public class Player : KinematicBody2D
 
 	private void SwingGuitar()
 	{
-		//Double the speed of the animation playback (10FPS) while in the guitar swing animation
+		if (IS_SHOTGUN_EQUIPPED)
+		{
+			UnequipShotgun();
+			IS_SHOTGUN_EQUIPPED = true;
+		}
 		ClearSpritesAndHitboxes();
 		ActivateNormalSpriteAndHitboxes();
 		velocity = new Vector2(0, 0);
@@ -528,6 +555,11 @@ public class Player : KinematicBody2D
 		animatedSprite.Centered = true;
 		animatedSprite.Offset = new Vector2(0, 0);
 		animatedSprite.SpeedScale = 1;
+		swingStruck = false;
+		if (IS_SHOTGUN_EQUIPPED)
+		{
+			EquipShotgun();
+		}
 	}
 	#endregion
 
@@ -549,6 +581,11 @@ public class Player : KinematicBody2D
 		normalInteraction.SetDeferred("disabled", true);
 		crouchingInteraction.SetDeferred("disabled", true);
 		slidingInteraction.SetDeferred("disabled", true);
+
+		if (IS_SHOTGUN_EQUIPPED)
+		{
+			UnequipShotgun();
+		}
 	}
 
 	private void ActivateNormalSpriteAndHitboxes()
@@ -594,6 +631,21 @@ public class Player : KinematicBody2D
 		ClearSpritesAndHitboxes();
 		ActivateSlideSpriteAndHitboxes();
 	}
+
+	private void CycleTransparency(bool lighten)
+	{
+		Color tempNormal = animatedSprite.Modulate;
+		Color tempCrouch = crouchingSprite.Modulate;
+		Color tempSlide = slidingSprite.Modulate;
+
+		tempNormal.a = lighten ? 1 : 0.5F;	
+		tempCrouch.a = lighten ? 1 : 0.5F;	
+		tempSlide.a = lighten ? 1 : 0.5F;
+
+		animatedSprite.Modulate = tempNormal;
+		crouchingSprite.Modulate = tempCrouch;
+		slidingSprite.Modulate = tempSlide;
+	}
 	
 	private void Face(bool left)
 	{
@@ -617,11 +669,11 @@ public class Player : KinematicBody2D
 		healthSprite.Frame = 0;
 		ClearSpritesAndHitboxes();
 		ActivateNormalSpriteAndHitboxes();
+		CycleTransparency(true);
 		animatedSprite.Play("health_death");
 		isDying = true;
 		PauseMode = PauseModeEnum.Process;
 		GetTree().Paused = true;
-		//EmitSignal(nameof(PlayerKilled));
 	}
 
 	public void HealPlayer()
@@ -632,12 +684,18 @@ public class Player : KinematicBody2D
 
 	public void HurtPlayer()
 	{
-		CURRENT_HEALTH--;
-		healthSprite.Frame = (int)CURRENT_HEALTH;
-		if(CURRENT_HEALTH == 0)
+		if (CURRENT_INVINCIBILITY == 0)
 		{
-			KillPlayer();
+			CURRENT_INVINCIBILITY = 0.016667F;
+			CycleTransparency(false);
+			CURRENT_HEALTH--;
+			healthSprite.Frame = (int)CURRENT_HEALTH;
+			if(CURRENT_HEALTH == 0)
+			{
+				KillPlayer();
+			}
 		}
+
 	}
 
 	public void ResetPlayer()

@@ -1843,7 +1843,7 @@ tile_data = PoolIntArray( 2490248, 0, 131074, 2490249, 0, 131074, 2490250, 0, 13
 [node name="PlayerNode" type="Node2D" parent="."]
 
 [node name="Player" parent="PlayerNode" instance=ExtResource( 4 )]
-position = Vector2( -1336, 1432 )
+position = Vector2( 664, 392 )
 
 [node name="SpawnPoint" type="Position2D" parent="."]
 position = Vector2( 664, 384 )

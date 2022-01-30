@@ -4,7 +4,8 @@ using System;
 public class FlyingEnemy : KinematicBody2D
 {
 
-	[Export] public float HEALTH = 10;
+	[Export] public float MAX_HEALTH = 2;
+	public float CURRENT_HEALTH;
 
 	[Export] private int TIME_TO_TURN = 50;
 	[Export] private int DIVE_TIME = 20;
@@ -25,17 +26,28 @@ public class FlyingEnemy : KinematicBody2D
 	private RayCast2D lineOfSight;
 	private Area2D drillHitbox;
 
+	private CollisionPolygon2D collision;
+
+	private AnimatedSprite sprite;
+
+	private Vector2 globalSpawnPoint; // This needs to be set at some point so we can have a "Reset all enemies" function call 
+
 
 	public override void _Ready()
 	{
 		lineOfSight = GetNode<RayCast2D>("Sight");
 		drillHitbox = GetNode<Area2D>("DrillHitbox");
+		sprite = GetNode<AnimatedSprite>("AnimatedSprite");
+		collision = GetNode<CollisionPolygon2D>("CollisionShape2D");
 		isDiving = false;
 		DIR_LEFT  = new Vector2(-SPEED, GRAVITY);
 		DIR_RIGHT = new Vector2( SPEED, GRAVITY);
 		DIR_DOWN  = new Vector2(0, DIVE_SPEED);
 		DIR_UP    = new Vector2(0, -DIVE_SPEED);
 		drillHitbox.Connect("body_entered", this, nameof(OnDrillBodyEntered));
+
+		CURRENT_HEALTH = MAX_HEALTH;
+		globalSpawnPoint = GlobalPosition;
 	}
 
 	private void OnDrillBodyEntered(Node body)
@@ -96,6 +108,23 @@ public class FlyingEnemy : KinematicBody2D
 		isDiving = true;
 		preDiveDirection = currentDirection;
 		currentDirection = DIR_DOWN;
+	}
+
+	public void HurtEnemy()
+	{
+		CURRENT_HEALTH--;
+		if(CURRENT_HEALTH == 0)
+		{
+			KillEnemy();
+		}
+	}
+
+	public void KillEnemy()
+	{
+		sprite.Playing = false;
+		sprite.Visible = false;
+		collision.SetDeferred("disabled", true);
+		drillHitbox.GetNode<CollisionPolygon2D>("CollisionShape2D").SetDeferred("disabled", true);
 	}
 
 }
