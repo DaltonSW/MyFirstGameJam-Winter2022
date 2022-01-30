@@ -33,6 +33,7 @@ default_color = Color( 1, 0.4, 0.85098, 1 )
 position = Vector2( 0, -8 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 2 )
+frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )

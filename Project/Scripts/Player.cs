@@ -144,6 +144,10 @@ public class Player : KinematicBody2D
 						{
 							enemy.QueueFree();
 						}
+						if (body is FlyingEnemy flyingEnemy)
+						{
+							flyingEnemy.QueueFree();
+						}
 					}
 				}
 			}

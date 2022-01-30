@@ -1,10 +1,11 @@
-[gd_scene load_steps=202 format=2]
+[gd_scene load_steps=203 format=2]
 
 [ext_resource path="res://Resources/Images/cave_tile_sheet_corner_overlay.png" type="Texture" id=1]
 [ext_resource path="res://Resources/Images/cave_tile_sheet.png" type="Texture" id=2]
 [ext_resource path="res://Resources/Images/cave_tile_sheet_ramp_overlay.png" type="Texture" id=3]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scenes/Enemy.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/FlyingEnemy.tscn" type="PackedScene" id=6]
 
 [sub_resource type="ConvexPolygonShape2D" id=18]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
@@ -1849,3 +1850,7 @@ position = Vector2( 664, 384 )
 
 [node name="Enemy" parent="." instance=ExtResource( 5 )]
 position = Vector2( 248, 2632 )
+
+[node name="FlyingEnemy" parent="." instance=ExtResource( 6 )]
+position = Vector2( 462, 290 )
+DIVE_TIME = 100
