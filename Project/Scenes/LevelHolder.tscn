@@ -72,7 +72,7 @@ position = Vector2( 4288, 3712 )
 position = Vector2( 3496, 3136 )
 
 [node name="Checkpoint7" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
-position = Vector2( 6112, 3232 )
+position = Vector2( 6240, 2816 )
 
 [node name="Deathboxes" type="Node" parent="."]
 
