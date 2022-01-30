@@ -230,6 +230,7 @@ public class LevelHolder : Node2D
 		// forestSong = GD.Load<AudioStreamSample>("res://Sounds/forest.wav");
 		// caveSong = GD.Load<AudioStreamSample>("res://Sounds/cave.wav");
 		// treeSong = GD.Load<AudioStreamSample>("res://Sounds/tree.wav");
+		musicPlayer.Connect("finished", musicPlayer, "play", new Godot.Collections.Array(0));
 
 		pauseSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/pause.wav");
 		checkpointSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/checkpoint.wav");
