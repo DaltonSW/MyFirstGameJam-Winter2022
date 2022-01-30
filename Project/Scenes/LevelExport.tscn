@@ -1,4 +1,4 @@
-[gd_scene load_steps=264 format=2]
+[gd_scene load_steps=265 format=2]
 
 [ext_resource path="res://Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Tree.tscn" type="PackedScene" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Scenes/Enemy.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Scenes/FlyingEnemy.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Scenes/GroundedMiniboss.tscn" type="PackedScene" id=13]
 
 [sub_resource type="ConvexPolygonShape2D" id=38]
 points = PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0 )
@@ -2467,3 +2468,62 @@ position = Vector2( -707, 1622 )
 
 [node name="FlyingEnemy6" parent="." groups=["enemies"] instance=ExtResource( 12 )]
 position = Vector2( -449, 1620 )
+
+[node name="FlyingEnemy8" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 4770, 3724 )
+
+[node name="FlyingEnemy9" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 4901, 3723 )
+
+[node name="FlyingEnemy10" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 5252, 3720 )
+
+[node name="FlyingEnemy11" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 5474, 3720 )
+
+[node name="Enemy8" parent="." groups=["enemies"] instance=ExtResource( 11 )]
+position = Vector2( 3687, 3752 )
+
+[node name="Enemy9" parent="." groups=["enemies"] instance=ExtResource( 11 )]
+position = Vector2( 3037, 3912 )
+
+[node name="FlyingEnemy12" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 2939, 3850 )
+
+[node name="FlyingEnemy13" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 2713, 3099 )
+
+[node name="FlyingEnemy14" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 2787, 3028 )
+
+[node name="FlyingEnemy15" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 2869, 2959 )
+
+[node name="Enemy10" parent="." groups=["enemies"] instance=ExtResource( 11 )]
+position = Vector2( 4448, 3496 )
+
+[node name="FlyingEnemy16" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 6310, 3394 )
+
+[node name="GroundedMiniboss" parent="." instance=ExtResource( 13 )]
+position = Vector2( 5268, 2574 )
+
+[node name="FlyingEnemy17" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 4938, 2368 )
+DIVE_TIME = 70
+DIVE_SPEED = 200
+
+[node name="FlyingEnemy18" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 5069, 2367 )
+DIVE_TIME = 70
+DIVE_SPEED = 200
+
+[node name="FlyingEnemy19" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 5420, 2364 )
+DIVE_TIME = 70
+DIVE_SPEED = 200
+
+[node name="FlyingEnemy20" parent="." groups=["enemies"] instance=ExtResource( 12 )]
+position = Vector2( 5642, 2364 )
+DIVE_TIME = 70
+DIVE_SPEED = 200
