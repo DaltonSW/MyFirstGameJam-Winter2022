@@ -18,6 +18,10 @@ public class LevelHolder : Node2D
 	private float RESPAWN_LENGTH = 2;
 	private float CURRENT_RESPAWN_COUNT = 0;
 
+	private float DEATHBOX_LOCKOUT = 4;
+	private float CURRENT_DEATHBOX_TICKS = 0;
+	private bool deathboxActive = true;
+
 
 	public override void _Ready()
 	{
@@ -52,6 +56,16 @@ public class LevelHolder : Node2D
 				isRespawning = false;
 				GetTree().Paused = false;
 				respawnScene.Visible = false;
+			}
+		}
+
+		if (CURRENT_DEATHBOX_TICKS > 0)
+		{
+			CURRENT_DEATHBOX_TICKS += delta;
+			if (CURRENT_DEATHBOX_TICKS > DEATHBOX_LOCKOUT)
+			{
+				deathboxActive = true;
+				CURRENT_DEATHBOX_TICKS = 0;
 			}
 		}
 	}
@@ -147,8 +161,9 @@ public class LevelHolder : Node2D
 
 	public void DeathboxBodyEntered(Node body)
 	{
-		if(body is Player player)
+		if(body is Player player && deathboxActive)
 		{
+			deathboxActive = false;
 			player.KillPlayer();
 		}
 	}
