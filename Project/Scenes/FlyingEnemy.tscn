@@ -31,6 +31,7 @@ default_color = Color( 1, 0.4, 0.85098, 1 )
 position = Vector2( 0, -8 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 2 )
+playing = true
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
 position = Vector2( 0, -20 )
@@ -39,6 +40,6 @@ polygon = PoolVector2Array( -24, -18, 24, -18, 24, 16, 2, 16, 2, 36, -2, 36, -2,
 [node name="DrillHitbox" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="DrillHitbox"]
-position = Vector2( 3.8743e-07, 11.5 )
+position = Vector2( 0, 10 )
 scale = Vector2( 1.3, 1.35 )
 polygon = PoolVector2Array( 1.53846, 9.25926, -1.53846, 9.25926, -11.5385, -10, 11.5385, -10 )
