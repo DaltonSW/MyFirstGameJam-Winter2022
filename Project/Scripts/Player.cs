@@ -356,7 +356,7 @@ public class Player : KinematicBody2D
 				animatedSprite.Play("run");
 			}
 
-			if (Input.IsActionJustPressed("ui_select") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
+			if (Input.IsActionJustPressed("player_shoot") && IS_SHOTGUN_EQUIPPED && (CUR_SHOTGUN_BUFFER == 0))
 			{
 				CUR_SHOTGUN_BUFFER = delta;
 				ShootShotgun();
