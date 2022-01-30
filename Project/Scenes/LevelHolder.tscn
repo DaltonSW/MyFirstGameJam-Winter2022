@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Scripts/LevelHolder.cs" type="Script" id=1]
 [ext_resource path="res://Scenes/RespawnScene.tscn" type="PackedScene" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://Resources/Images/Health/health_1.png" type="Texture" id=11]
 [ext_resource path="res://Resources/Images/Health/health_0.png" type="Texture" id=12]
 [ext_resource path="res://Resources/Images/Health/health_5.png" type="Texture" id=13]
+[ext_resource path="res://Resources/Images/Instructions.png" type="Texture" id=14]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 528, 48 )
@@ -186,6 +187,11 @@ position = Vector2( -2472, -832 )
 [node name="RespawnScene" parent="." instance=ExtResource( 2 )]
 pause_mode = 2
 position = Vector2( -3112, -1192 )
+
+[node name="Instructions" type="Sprite" parent="."]
+position = Vector2( 176, 352 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 14 )
 
 [connection signal="body_entered" from="Deathboxes/Deathbox" to="." method="DeathboxBodyEntered"]
 [connection signal="body_entered" from="Deathboxes/Deathbox2" to="." method="DeathboxBodyEntered"]
