@@ -17,9 +17,19 @@ __meta__ = {
 
 [node name="StartButton" type="Button" parent="."]
 margin_left = 429.0
-margin_top = 381.0
+margin_top = 339.0
 margin_right = 845.0
-margin_bottom = 445.0
+margin_bottom = 403.0
+text = "Start"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CreditsButton" type="Button" parent="."]
+margin_left = 429.0
+margin_top = 457.0
+margin_right = 845.0
+margin_bottom = 521.0
 text = "Start"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -27,9 +37,9 @@ __meta__ = {
 
 [node name="QuitButton" type="Button" parent="."]
 margin_left = 426.0
-margin_top = 495.0
+margin_top = 571.0
 margin_right = 851.0
-margin_bottom = 565.0
+margin_bottom = 641.0
 text = "Quit"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -42,4 +52,5 @@ texture = ExtResource( 2 )
 [node name="AudioPlayer" type="AudioStreamPlayer" parent="."]
 
 [connection signal="pressed" from="StartButton" to="." method="_on_StartButton_pressed"]
+[connection signal="pressed" from="CreditsButton" to="." method="_on_CreditsButton_pressed"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_QuitButton_pressed"]

@@ -8,7 +8,7 @@ public class MainMenu : Control
 
 	public override void _Ready()
 	{
-		menuSong = GD.Load<AudioStreamSample>("res://Sounds/MainMenu.wav");
+		menuSong = GD.Load<AudioStreamSample>("res://Sounds/mainmenu.wav");
 		audioPlayer = GetNode<AudioStreamPlayer>("AudioPlayer");
 		audioPlayer.Autoplay = true;
 		audioPlayer.Stream = menuSong;
@@ -24,4 +24,9 @@ public class MainMenu : Control
 	{
 		GetTree().Quit();
 	}
+
+    public void _on_CreditsButton_pressed()
+    {
+        GetTree().ChangeScene("res://Scenes/Credits.tscn");
+    }
 }
