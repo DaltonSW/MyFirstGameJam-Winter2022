@@ -254,6 +254,7 @@ public class LevelHolder : Node2D
 		currentSong = caveSong;
 		musicPlayer.Stream = currentSong;
 		musicPlayer.Play();
+		player.HealPlayer();
 	}
 
 	public void CaveToForestCallback(Node with)
@@ -270,6 +271,7 @@ public class LevelHolder : Node2D
 		currentSong = forestSong;
 		musicPlayer.Stream = currentSong;
 		musicPlayer.Play();
+		player.HealPlayer();
 	}
 
 	public void ForestToTreeCallback(Node with)
@@ -286,6 +288,7 @@ public class LevelHolder : Node2D
 		currentSong = treeSong;
 		musicPlayer.Stream = currentSong;
 		musicPlayer.Play();
+		player.HealPlayer();
 	}	
 	
 	private void SetCameraLimitsToForest()

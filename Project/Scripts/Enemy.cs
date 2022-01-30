@@ -120,5 +120,6 @@ public class Enemy : KinematicBody2D
 		canShoot = true;
 		collision.SetDeferred("disabled", false);
 		GlobalPosition = globalSpawnPoint;
+		CURRENT_HEALTH = MAX_HEALTH;
 	}
 }
