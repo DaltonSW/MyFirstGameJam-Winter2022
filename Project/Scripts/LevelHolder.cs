@@ -62,6 +62,10 @@ public class LevelHolder : Node2D
 		forestToCavePoint = GetNode<Position2D>("ForestToCavePoint").GlobalPosition;
 		caveToForestPoint = GetNode<Position2D>("CaveToForestPoint").GlobalPosition;
 		forestToTreePoint = GetNode<Position2D>("ForestToTreePoint").GlobalPosition;
+
+		currentSong = forestSong;
+		musicPlayer.Stream = currentSong;
+		musicPlayer.Play();
 	}
 
 	public override void _Process(float delta)
@@ -227,9 +231,9 @@ public class LevelHolder : Node2D
 		extraPlayer = GetNode<AudioStreamPlayer>("ExtraPlayer");
 		extraPlayer.VolumeDb = -10;
 
-		// forestSong = GD.Load<AudioStreamSample>("res://Sounds/forest.wav");
-		// caveSong = GD.Load<AudioStreamSample>("res://Sounds/cave.wav");
-		// treeSong = GD.Load<AudioStreamSample>("res://Sounds/tree.wav");
+		forestSong = GD.Load<AudioStreamSample>("res://Sounds/forest.wav");
+		caveSong = GD.Load<AudioStreamSample>("res://Sounds/cave.wav");
+		treeSong = GD.Load<AudioStreamSample>("res://Sounds/tree.wav");
 		musicPlayer.Connect("finished", musicPlayer, "play", new Godot.Collections.Array(0));
 
 		pauseSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/pause.wav");

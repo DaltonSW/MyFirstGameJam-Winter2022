@@ -7,7 +7,7 @@ public class Credits : Node2D
 	{
 		if (inputEvent is InputEventMouseButton mouseButton)
         {
-            GetTree().Quit();
+            GetTree().ChangeScene("res://Scenes/MainMenu.tscn");
         }
 	}
 }
