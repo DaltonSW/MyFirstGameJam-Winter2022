@@ -2422,7 +2422,7 @@ visible = false
 [node name="PlayerNode" type="Node2D" parent="."]
 
 [node name="Player" parent="PlayerNode" instance=ExtResource( 10 )]
-position = Vector2( 192, 544 )
+position = Vector2( 4384, -608 )
 
 [node name="SpawnPoint" type="Position2D" parent="."]
 position = Vector2( 192, 512 )

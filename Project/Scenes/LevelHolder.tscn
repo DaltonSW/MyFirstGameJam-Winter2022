@@ -129,7 +129,7 @@ scale = Vector2( 2.5, 2.5 )
 frames = SubResource( 2 )
 frame = 5
 
-[node name="RespawnScene" parent="." instance=ExtResource( 2 )]
+[node name="RespawnScene" parent="UI" instance=ExtResource( 2 )]
 pause_mode = 2
 visible = false
 

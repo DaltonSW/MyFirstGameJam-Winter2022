@@ -10,7 +10,6 @@ public class LevelHolder : Node2D
 
 	private Level level;
 
-
 	private Camera2D camera;
 
 	private bool isRespawning = false;
@@ -50,7 +49,7 @@ public class LevelHolder : Node2D
 		{
 			currentSpawnPoint = level.GetNode<Position2D>("SpawnPoint").GlobalPosition;
 		}
-		respawnScene = GetNode<RespawnScene>("RespawnScene");
+		respawnScene = GetNode<RespawnScene>("UI/RespawnScene");
 		camera = GetNode<Camera2D>("PlayerCamera");
 		pauseMenu = GetNode<PauseMenu>("UI/PauseMenu");
 		Global.isPlaying = true;
@@ -232,39 +231,57 @@ public class LevelHolder : Node2D
 		checkpointSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/checkpoint.wav");
 	}
 
-	public void ForestToCaveCallback()
+	public void ForestToCaveCallback(Node with)
 	{
+		if (!(with is Player))
+		{
+			return;
+		}
 		SetCameraLimits(-3392, 2271, 1153, 3968);
 		player.GlobalPosition = forestToCavePoint;
+		currentSpawnPoint = forestToCavePoint;
+		player.velocity = new Vector2(0, 0);
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 		currentSong = caveSong;
 		musicPlayer.Stream = currentSong;
 		musicPlayer.Play();
 	}
 
-	public void CaveToForestCallback()
+	public void CaveToForestCallback(Node with)
 	{
+		if (!(with is Player))
+		{
+			return;
+		}
 		SetCameraLimitsToForest();
 		player.GlobalPosition = caveToForestPoint;
+		currentSpawnPoint = caveToForestPoint;
+		player.velocity = new Vector2(0, 0);
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 		currentSong = forestSong;
 		musicPlayer.Stream = currentSong;
 		musicPlayer.Play();
 	}
 
-	private void SetCameraLimitsToForest()
+	public void ForestToTreeCallback(Node with)
 	{
-		SetCameraLimits(0, 5583, -1643, 831);
-	}
-
-	public void ForestToTreeCallback()
-	{
+		if (!(with is Player))
+		{
+			return;
+		}
 		SetCameraLimits(2528, 6816, 1792, 4032);
 		player.GlobalPosition = forestToTreePoint;
+		currentSpawnPoint = forestToTreePoint;
+		player.velocity = new Vector2(0, 0);
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 		currentSong = treeSong;
 		musicPlayer.Stream = currentSong;
 		musicPlayer.Play();
+	}	
+	
+	private void SetCameraLimitsToForest()
+	{
+		SetCameraLimits(0, 5583, -1643, 831);
 	}
 }
 
