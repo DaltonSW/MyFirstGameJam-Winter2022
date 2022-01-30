@@ -1,10 +1,9 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Scripts/LevelHolder.cs" type="Script" id=1]
 [ext_resource path="res://Scenes/RespawnScene.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scenes/Cave.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/LevelExport.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/Checkpoint.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Scripts/Level.cs" type="Script" id=5]
 [ext_resource path="res://Scripts/PlayerCamera.cs" type="Script" id=6]
 [ext_resource path="res://Scenes/PauseMenu.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Resources/Images/Health/health_2.png" type="Texture" id=8]
@@ -16,6 +15,18 @@
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 528, 48 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 384, 32 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 392, 56 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 512, 64 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 161, 245 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -29,15 +40,17 @@ animations = [ {
 pause_mode = 2
 script = ExtResource( 1 )
 
+[node name="Level" parent="." instance=ExtResource( 3 )]
+
 [node name="Checkpoints" type="Node" parent="."]
 
 [node name="Checkpoint" parent="Checkpoints" groups=["checkpoints"] instance=ExtResource( 4 )]
-position = Vector2( 664, 416 )
+position = Vector2( 272, 544 )
 
 [node name="Deathboxes" type="Node" parent="."]
 
 [node name="Deathbox" type="Area2D" parent="Deathboxes"]
-position = Vector2( -2144, 1552 )
+position = Vector2( -1280, 2712 )
 __meta__ = {
 "_edit_group_": true
 }
@@ -46,9 +59,45 @@ __meta__ = {
 position = Vector2( 144, 24 )
 shape = SubResource( 1 )
 
-[node name="Level" parent="." instance=ExtResource( 3 )]
-pause_mode = 1
-script = ExtResource( 5 )
+[node name="Deathbox2" type="Area2D" parent="Deathboxes"]
+position = Vector2( 3296, 664 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Deathboxes/Deathbox2"]
+position = Vector2( 288, 8 )
+shape = SubResource( 3 )
+
+[node name="Deathbox3" type="Area2D" parent="Deathboxes"]
+position = Vector2( 4896, 664 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Deathboxes/Deathbox3"]
+position = Vector2( 296, 0 )
+shape = SubResource( 4 )
+
+[node name="Deathbox4" type="Area2D" parent="Deathboxes"]
+position = Vector2( -800, 664 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Deathboxes/Deathbox4"]
+position = Vector2( 128, 8 )
+shape = SubResource( 5 )
+
+[node name="Deathbox5" type="Area2D" parent="Deathboxes"]
+position = Vector2( 4992, -344 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Deathboxes/Deathbox5"]
+position = Vector2( 137, -211 )
+shape = SubResource( 6 )
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
 pause_mode = 2
@@ -75,5 +124,22 @@ frame = 5
 pause_mode = 2
 visible = false
 
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="ExtraPlayer" type="AudioStreamPlayer" parent="."]
+
+[node name="CaveToForestPoint" type="Position2D" parent="."]
+position = Vector2( 4656, 544 )
+
+[node name="ForestToTreePoint" type="Position2D" parent="."]
+position = Vector2( 6608, 3912 )
+
+[node name="ForestToCavePoint" type="Position2D" parent="."]
+position = Vector2( 1536, 1536 )
+
 [connection signal="body_entered" from="Deathboxes/Deathbox" to="." method="DeathboxBodyEntered"]
+[connection signal="body_entered" from="Deathboxes/Deathbox2" to="." method="DeathboxBodyEntered"]
+[connection signal="body_entered" from="Deathboxes/Deathbox3" to="." method="DeathboxBodyEntered"]
+[connection signal="body_entered" from="Deathboxes/Deathbox4" to="." method="DeathboxBodyEntered"]
+[connection signal="body_entered" from="Deathboxes/Deathbox5" to="." method="DeathboxBodyEntered"]
 [connection signal="ResumeRequested" from="UI/PauseMenu" to="." method="_on_PauseMenu_ResumeRequested"]

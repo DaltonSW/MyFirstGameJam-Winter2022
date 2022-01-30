@@ -143,4 +143,13 @@ public class GroundedMiniboss : KinematicBody2D
 		canShoot = false;
 		collision.SetDeferred("disabled", true);
 	}
+
+	public void ResetEnemy()
+	{
+		sprite.Playing = true;
+		sprite.Visible = true;
+		canShoot = true;
+		collision.SetDeferred("disabled", false);
+		GlobalPosition = globalSpawnPoint;
+	}
 }

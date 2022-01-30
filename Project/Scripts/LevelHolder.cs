@@ -22,9 +22,23 @@ public class LevelHolder : Node2D
 	private float CURRENT_DEATHBOX_TICKS = 0;
 	private bool deathboxActive = true;
 
+	#region Sound Properties
+	private AudioStreamPlayer musicPlayer;
+	private AudioStreamPlayer extraPlayer;
+
+	private AudioStreamSample currentSong;
+	private AudioStreamSample forestSong;
+	private AudioStreamSample caveSong;
+	private AudioStreamSample treeSong;
+	private AudioStreamSample pauseSong;
+
+	private AudioStreamSample pauseSound;
+	private AudioStreamSample checkpointSound;
+	#endregion
 
 	public override void _Ready()
 	{
+		LoadSounds();
 		level = GetNodeOrNull<Level>("Level");
 		if(level != null)
 		{
@@ -37,11 +51,6 @@ public class LevelHolder : Node2D
 		ConnectPlayer();
 		ConnectCheckpoints();
 		SetCameraLimits(-4256, 1408, 0, 2815); // Cave level
-
-		// currentSong;
-		// forestSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
-		// caveSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
-		// treeSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
 	}
 
 	public override void _Process(float delta)
@@ -119,7 +128,11 @@ public class LevelHolder : Node2D
 			player.HealPlayer();
 			GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "checkpoints", "DeactivateCheckpoint");
 			currentSpawnPoint = checkpoint.GetNode<Position2D>("SpawnPoint").GlobalPosition;
-			checkpoint.ActivateCheckpoint();
+			if (checkpoint.ActivateCheckpoint())
+			{
+				extraPlayer.Stream = checkpointSound;
+				extraPlayer.Play();
+			}
 		}
 	}
 
@@ -145,6 +158,7 @@ public class LevelHolder : Node2D
 		respawnScene.GlobalPosition = currentSpawnPoint;
 		camera.GlobalPosition = currentSpawnPoint;
 		player.GlobalPosition = currentSpawnPoint;
+		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 	}
 
 	public void RespawnPlayer()
@@ -170,14 +184,21 @@ public class LevelHolder : Node2D
 			player.FallAndDie();
 		}
 	}
+	
 	private void Pause()
 	{
+		extraPlayer.Stream = pauseSound;
+		extraPlayer.Play();
+		musicPlayer.Stream = pauseSong;
+		musicPlayer.Play();
 		GetTree().Paused = true;
 		pauseMenu.Show();
 	}
 
 	private void Resume()
 	{
+		musicPlayer.Stream = currentSong;
+		musicPlayer.Play();
 		GetTree().Paused = false;
 		pauseMenu.Hide();
 	}
@@ -185,6 +206,20 @@ public class LevelHolder : Node2D
 	private void _on_PauseMenu_ResumeRequested()
 	{
 		Resume();
+	}
+
+	private void LoadSounds()
+	{
+		musicPlayer = GetNode<AudioStreamPlayer>("MusicPlayer");
+		extraPlayer = GetNode<AudioStreamPlayer>("ExtraPlayer");
+		extraPlayer.VolumeDb = -10;
+
+		// forestSong = GD.Load<AudioStreamSample>("res://Sounds/forest.wav");
+		// caveSong = GD.Load<AudioStreamSample>("res://Sounds/cave.wav");
+		// treeSong = GD.Load<AudioStreamSample>("res://Sounds/tree.wav");
+
+		pauseSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/pause.wav");
+		checkpointSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/checkpoint.wav");
 	}
 }
 

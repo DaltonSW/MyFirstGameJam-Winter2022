@@ -127,4 +127,13 @@ public class FlyingEnemy : KinematicBody2D
 		drillHitbox.GetNode<CollisionPolygon2D>("CollisionShape2D").SetDeferred("disabled", true);
 	}
 
+	public void ResetEnemy()
+	{
+		sprite.Playing = true;
+		sprite.Visible = true;
+		collision.SetDeferred("disabled", false);
+		drillHitbox.GetNode<CollisionPolygon2D>("CollisionShape2D").SetDeferred("disabled", false);
+		GlobalPosition = globalSpawnPoint;
+	}
+
 }
