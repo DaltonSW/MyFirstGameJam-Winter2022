@@ -56,7 +56,7 @@ public class LevelHolder : Node2D
 		Global.isPlaying = true;
 		ConnectPlayer();
 		ConnectCheckpoints();
-		SetCameraLimits(-4256, 1408, 0, 2815); // Cave level
+		SetCameraLimitsToForest();
 
 		forestToCavePoint = GetNode<Position2D>("ForestToCavePoint").GlobalPosition;
 		caveToForestPoint = GetNode<Position2D>("CaveToForestPoint").GlobalPosition;
@@ -234,6 +234,7 @@ public class LevelHolder : Node2D
 
 	public void ForestToCaveCallback()
 	{
+		SetCameraLimits(-3392, 2271, 1153, 3968);
 		player.GlobalPosition = forestToCavePoint;
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 		currentSong = caveSong;
@@ -243,6 +244,7 @@ public class LevelHolder : Node2D
 
 	public void CaveToForestCallback()
 	{
+		SetCameraLimitsToForest();
 		player.GlobalPosition = caveToForestPoint;
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 		currentSong = forestSong;
@@ -250,8 +252,14 @@ public class LevelHolder : Node2D
 		musicPlayer.Play();
 	}
 
+	private void SetCameraLimitsToForest()
+	{
+		SetCameraLimits(0, 5583, -1643, 831);
+	}
+
 	public void ForestToTreeCallback()
 	{
+		SetCameraLimits(2528, 6816, 1792, 4032);
 		player.GlobalPosition = forestToTreePoint;
 		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
 		currentSong = treeSong;
