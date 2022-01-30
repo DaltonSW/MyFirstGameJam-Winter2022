@@ -463,6 +463,7 @@ public class Player : KinematicBody2D
 			velocity.x = (float)(mult * BASE_WALL_JUMP_AWAY);
 			audioPlayer.Stream = jumpSound;
 			audioPlayer.Play();
+			canDash = true;
 		}
 		isJumping = true;
 		currentJumpBuffer += 1;
