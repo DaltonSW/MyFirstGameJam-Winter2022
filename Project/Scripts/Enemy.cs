@@ -76,7 +76,7 @@ public class Enemy : KinematicBody2D
 	{
 		if ((lineOfSight.GetCollider() is Player) && canShoot)
 		{
-			//Shoot();
+			Shoot();
 		}
 
 		CURRENT_SHOT_COOLDOWN += delta;
