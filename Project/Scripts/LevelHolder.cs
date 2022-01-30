@@ -17,6 +17,13 @@ public class LevelHolder : Node2D
 	private float RESPAWN_LENGTH = 2;
 	private float CURRENT_RESPAWN_COUNT = 0;
 
+	private AudioStreamSample currentSong;
+	private AudioStreamSample forestSong;
+	private AudioStreamSample caveSong;
+	private AudioStreamSample treeSong;
+	private AudioStreamSample titleSong;
+	private AudioStreamSample creditsSong;
+
 
 	public override void _Ready()
 	{
@@ -30,6 +37,11 @@ public class LevelHolder : Node2D
 		Global.isPlaying = true;
 		ConnectPlayer();
         ConnectCheckpoints();
+
+		// currentSong;
+		// forestSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
+		// caveSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
+		// treeSong = GD.Load<AudioStreamSample>("res://Sounds/SONG_TITLE.wav");
 	}
 
 	public override void _Process(float delta)
@@ -40,7 +52,6 @@ public class LevelHolder : Node2D
 			if (CURRENT_RESPAWN_COUNT > RESPAWN_LENGTH)
 			{
 				CURRENT_RESPAWN_COUNT = 0;
-				player.ResetPlayer();
 				isRespawning = false;
 				GetTree().Paused = false;
 				respawnScene.Visible = false;
@@ -108,10 +119,13 @@ public class LevelHolder : Node2D
 
 	private void InitiateRespawn()
 	{
+		player.ResetPlayer();
 		isRespawning = true;
 		respawnScene.GlobalPosition = currentSpawnPoint;
 		camera.GlobalPosition = currentSpawnPoint;
 		player.GlobalPosition = currentSpawnPoint;
+		GD.Print(player.CURRENT_HEALTH);
+		GD.Print(playerSprite.Animation);
 	}
 
     public void RespawnPlayer()
