@@ -1,9 +1,6 @@
 using Godot;
 using System;
 
-using Godot;
-using System;
-
 public class FlyingEnemy : KinematicBody2D
 {
 

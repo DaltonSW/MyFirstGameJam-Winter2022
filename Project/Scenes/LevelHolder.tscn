@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Scripts/LevelHolder.cs" type="Script" id=1]
 [ext_resource path="res://Scenes/RespawnScene.tscn" type="PackedScene" id=2]
@@ -7,9 +7,23 @@
 [ext_resource path="res://Scripts/Level.cs" type="Script" id=5]
 [ext_resource path="res://Scripts/PlayerCamera.cs" type="Script" id=6]
 [ext_resource path="res://Scenes/PauseMenu.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Resources/Images/Health/health_2.png" type="Texture" id=8]
+[ext_resource path="res://Resources/Images/Health/health_4.png" type="Texture" id=9]
+[ext_resource path="res://Resources/Images/Health/health_3.png" type="Texture" id=10]
+[ext_resource path="res://Resources/Images/Health/health_1.png" type="Texture" id=11]
+[ext_resource path="res://Resources/Images/Health/health_0.png" type="Texture" id=12]
+[ext_resource path="res://Resources/Images/Health/health_5.png" type="Texture" id=13]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 528, 48 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 12 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 10 ), ExtResource( 9 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
 
 [node name="LevelHolder" type="Node2D"]
 pause_mode = 2
@@ -48,10 +62,6 @@ shape = SubResource( 1 )
 pause_mode = 1
 script = ExtResource( 5 )
 
-[node name="RespawnScene" parent="." instance=ExtResource( 2 )]
-pause_mode = 2
-visible = false
-
 [node name="PlayerCamera" type="Camera2D" parent="."]
 pause_mode = 2
 position = Vector2( 640, 360 )
@@ -66,6 +76,16 @@ margin_left = -641.0
 margin_top = -362.0
 margin_right = 639.0
 margin_bottom = 358.0
+
+[node name="HealthBar" type="AnimatedSprite" parent="UI"]
+position = Vector2( 1160, 32 )
+scale = Vector2( 2.5, 2.5 )
+frames = SubResource( 2 )
+frame = 5
+
+[node name="RespawnScene" parent="." instance=ExtResource( 2 )]
+pause_mode = 2
+visible = false
 
 [connection signal="body_entered" from="Deathboxes/Deathbox" to="." method="DeathboxBodyEntered"]
 [connection signal="ResumeRequested" from="UI/PauseMenu" to="." method="_on_PauseMenu_ResumeRequested"]

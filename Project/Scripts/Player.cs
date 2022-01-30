@@ -31,8 +31,9 @@ public class Player : KinematicBody2D
 
 	[Signal] delegate void PlayerKilled();
 
-	[Export] public float MAX_HEALTH = 1;
+	[Export] public float MAX_HEALTH = 5;
 	public float CURRENT_HEALTH;
+	private AnimatedSprite healthSprite;
 
 	[Export] public float JUMP_HEIGHT = 145; //pixels
 	[Export] public float TIME_IN_AIR = 0.2F; //honestly no idea
@@ -88,6 +89,10 @@ public class Player : KinematicBody2D
 		animatedSprite = GetNode<AnimatedSprite>("AnimatedSprite");
 		crouchingSprite = GetNode<Sprite>("CrouchingSprite");
 		slidingSprite = GetNode<Sprite>("SlidingSprite");
+		
+		healthSprite = GetNode<AnimatedSprite>("/root/LevelHolder/UI/HealthBar");
+		healthSprite.Frame = 5;
+		healthSprite.Playing = false;
 
 		normalCollisionBoxes = new CollisionShape2D[]
 		{
@@ -609,6 +614,7 @@ public class Player : KinematicBody2D
 
 	public void KillPlayer()
 	{
+		healthSprite.Frame = 0;
 		ClearSpritesAndHitboxes();
 		ActivateNormalSpriteAndHitboxes();
 		animatedSprite.Play("health_death");
@@ -621,11 +627,13 @@ public class Player : KinematicBody2D
 	public void HealPlayer()
 	{
 		CURRENT_HEALTH = MAX_HEALTH;
+		healthSprite.Frame = 5;
 	}
 
 	public void HurtPlayer()
 	{
 		CURRENT_HEALTH--;
+		healthSprite.Frame = (int)CURRENT_HEALTH;
 		if(CURRENT_HEALTH == 0)
 		{
 			KillPlayer();
