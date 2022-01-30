@@ -85,6 +85,15 @@ public class Player : KinematicBody2D
 	private readonly Vector2 UP = new Vector2(0, -1);
 	#endregion
 
+	#region Sound Properties
+	private AudioStreamPlayer audioPlayer;
+	private AudioStreamSample jumpSound;
+	private AudioStreamSample shootSound;
+	private AudioStreamSample hurtSound;
+	private AudioStreamSample guitarHitSound;
+	private AudioStreamSample guitarMissSound;
+	#endregion
+
 	public override void _Ready()
 	{
 		projectileScene = GD.Load<PackedScene>("res://Scenes/ShotgunPellet.tscn");
@@ -125,6 +134,7 @@ public class Player : KinematicBody2D
 		isDying = false;
 		CURRENT_HEALTH = MAX_HEALTH;
 
+		LoadSounds();
 		ActivateNormalSpriteAndHitboxes();
 		crouchingArrowUpShape.Disabled = true;
 	}
@@ -165,6 +175,8 @@ public class Player : KinematicBody2D
 						}
 						meleeCollisionShape.Disabled = true;
 						swingStruck = true;
+						audioPlayer.Stream = guitarHitSound;
+						audioPlayer.Play();
 					}
 				}
 			}
@@ -214,7 +226,8 @@ public class Player : KinematicBody2D
 				{
 					velocity.y -= JUMP_SPEED;
 					StopSlide();
-					//animatedSprite.Play("jump");
+					audioPlayer.Stream = jumpSound;
+					audioPlayer.Play();
 					DoMove();
 					return;
 				}
@@ -435,6 +448,8 @@ public class Player : KinematicBody2D
 		if (IsOnFloor())
 		{
 			velocity.y -= JUMP_SPEED;
+			audioPlayer.Stream = jumpSound;
+			audioPlayer.Play();
 		}
 
 		else if (IsOnWall())
@@ -443,6 +458,8 @@ public class Player : KinematicBody2D
 			mult *= GetSlideCollision(0).Normal.x > 0 ? 1 : -1;
 			velocity.y = (float)(-1.1 * JUMP_SPEED);
 			velocity.x = (float)(mult * BASE_WALL_JUMP_AWAY);
+			audioPlayer.Stream = jumpSound;
+			audioPlayer.Play();
 		}
 		isJumping = true;
 		currentJumpBuffer += 1;
@@ -522,6 +539,8 @@ public class Player : KinematicBody2D
 
 	private void ShootShotgun()
 	{
+		audioPlayer.Stream = shootSound;
+		audioPlayer.Play();
 		for (int i = 1; i <= SHOTGUN_BLAST_COUNT; i++)
 		{
 			ShotgunPellet projectile = (ShotgunPellet)projectileScene.Instance();
@@ -555,11 +574,18 @@ public class Player : KinematicBody2D
 		animatedSprite.Centered = true;
 		animatedSprite.Offset = new Vector2(0, 0);
 		animatedSprite.SpeedScale = 1;
-		swingStruck = false;
+		if (!swingStruck)
+		{
+			audioPlayer.Stream = guitarMissSound;
+			audioPlayer.Play();
+		}
+
 		if (IS_SHOTGUN_EQUIPPED)
 		{
 			EquipShotgun();
 		}
+
+		swingStruck = false;
 	}
 	#endregion
 
@@ -690,6 +716,8 @@ public class Player : KinematicBody2D
 			CycleTransparency(false);
 			CURRENT_HEALTH--;
 			healthSprite.Frame = (int)CURRENT_HEALTH;
+			audioPlayer.Stream = hurtSound;
+			audioPlayer.Play();
 			if(CURRENT_HEALTH == 0)
 			{
 				KillPlayer();
@@ -708,5 +736,18 @@ public class Player : KinematicBody2D
 		PauseMode = PauseModeEnum.Inherit;
 		isDying = false;
 		UnequipShotgun();
+	}
+
+	private void LoadSounds()
+	{
+		audioPlayer = GetNode<AudioStreamPlayer>("AudioPlayer");
+		audioPlayer.VolumeDb = -18;
+
+		jumpSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/jump.wav");
+		//shootSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/shoot.wav");
+		//hurtSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/hurt.wav");
+		//guitarHitSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/guitar_hit.wav");
+		//guitarMissSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/guitar_miss.wav");
+		GD.Print("Sounds");
 	}
 }
