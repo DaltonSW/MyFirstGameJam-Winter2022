@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Scripts/LevelHolder.cs" type="Script" id=1]
 [ext_resource path="res://Scenes/RespawnScene.tscn" type="PackedScene" id=2]
@@ -35,6 +35,15 @@ animations = [ {
 "name": "default",
 "speed": 5.0
 } ]
+
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 16, 29 )
+
+[sub_resource type="RectangleShape2D" id=8]
+extents = Vector2( 32, 16 )
+
+[sub_resource type="RectangleShape2D" id=9]
+extents = Vector2( 16.5, 28 )
 
 [node name="LevelHolder" type="Node2D"]
 pause_mode = 2
@@ -137,9 +146,30 @@ position = Vector2( 6608, 3912 )
 [node name="ForestToCavePoint" type="Position2D" parent="."]
 position = Vector2( 1536, 1536 )
 
+[node name="ForestToCaveBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ForestToCaveBox"]
+position = Vector2( 4624, -571 )
+shape = SubResource( 7 )
+
+[node name="ForestToTreeBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ForestToTreeBox"]
+position = Vector2( 4352, -8 )
+shape = SubResource( 8 )
+
+[node name="CaveToForestBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CaveToForestBox"]
+position = Vector2( 655.5, 1572 )
+shape = SubResource( 9 )
+
 [connection signal="body_entered" from="Deathboxes/Deathbox" to="." method="DeathboxBodyEntered"]
 [connection signal="body_entered" from="Deathboxes/Deathbox2" to="." method="DeathboxBodyEntered"]
 [connection signal="body_entered" from="Deathboxes/Deathbox3" to="." method="DeathboxBodyEntered"]
 [connection signal="body_entered" from="Deathboxes/Deathbox4" to="." method="DeathboxBodyEntered"]
 [connection signal="body_entered" from="Deathboxes/Deathbox5" to="." method="DeathboxBodyEntered"]
 [connection signal="ResumeRequested" from="UI/PauseMenu" to="." method="_on_PauseMenu_ResumeRequested"]
+[connection signal="body_entered" from="ForestToCaveBox" to="." method="ForestToCaveCallback"]
+[connection signal="body_entered" from="ForestToTreeBox" to="." method="ForestToTreeCallback"]
+[connection signal="body_entered" from="CaveToForestBox" to="." method="CaveToForestCallback"]

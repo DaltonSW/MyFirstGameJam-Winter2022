@@ -10,7 +10,6 @@ public class LevelHolder : Node2D
 
 	private Level level;
 
-	private Vector2 currentSpawnPoint;
 
 	private Camera2D camera;
 
@@ -21,6 +20,13 @@ public class LevelHolder : Node2D
 	private float DEATHBOX_LOCKOUT = 4;
 	private float CURRENT_DEATHBOX_TICKS = 0;
 	private bool deathboxActive = true;
+
+	#region Spawn Points
+	private Vector2 currentSpawnPoint;
+	private Vector2 forestToCavePoint;
+	private Vector2 caveToForestPoint;
+	private Vector2 forestToTreePoint;
+	#endregion
 
 	#region Sound Properties
 	private AudioStreamPlayer musicPlayer;
@@ -51,6 +57,10 @@ public class LevelHolder : Node2D
 		ConnectPlayer();
 		ConnectCheckpoints();
 		SetCameraLimits(-4256, 1408, 0, 2815); // Cave level
+
+		forestToCavePoint = GetNode<Position2D>("ForestToCavePoint").GlobalPosition;
+		caveToForestPoint = GetNode<Position2D>("CaveToForestPoint").GlobalPosition;
+		forestToTreePoint = GetNode<Position2D>("ForestToTreePoint").GlobalPosition;
 	}
 
 	public override void _Process(float delta)
@@ -217,6 +227,33 @@ public class LevelHolder : Node2D
 
 		pauseSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/pause.wav");
 		checkpointSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/checkpoint.wav");
+	}
+
+	public void ForestToCaveCallback()
+	{
+		player.GlobalPosition = forestToCavePoint;
+		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
+		currentSong = caveSong;
+		musicPlayer.Stream = currentSong;
+		musicPlayer.Play();
+	}
+
+	public void CaveToForestCallback()
+	{
+		player.GlobalPosition = caveToForestPoint;
+		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
+		currentSong = forestSong;
+		musicPlayer.Stream = currentSong;
+		musicPlayer.Play();
+	}
+
+	public void ForestToTreeCallback()
+	{
+		player.GlobalPosition = forestToTreePoint;
+		GetTree().CallGroupFlags((int)SceneTree.GroupCallFlags.Realtime, "enemies", "ResetEnemy");
+		currentSong = treeSong;
+		musicPlayer.Stream = currentSong;
+		musicPlayer.Play();
 	}
 }
 
