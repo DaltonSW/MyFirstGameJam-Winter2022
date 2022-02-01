@@ -773,8 +773,8 @@ public class Player : KinematicBody2D
 		jumpSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/jump.wav");
 		shootSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/shoot.wav");
 		hurtSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/hurt.wav");
-		//guitarHitSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/guitar_hit.wav");
-		//guitarMissSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/guitar_miss.wav");
+		guitarHitSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/guitar_hit.wav");
+		guitarMissSound = GD.Load<AudioStreamSample>("res://Sounds/SFX/guitar_miss.wav");
 		GD.Print("Sounds");
 	}
 }
